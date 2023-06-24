@@ -89,6 +89,17 @@ class _State extends widgets.State<Tappable> with SingleTickerProviderStateMixin
     }
   }
 
+  void onTapCancel() {
+    final now = Services.of(context).clock.now();
+    switch (state) {
+      case Down():
+        state = GoingUp(now);
+        ticker.start();
+      default:
+        break;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Opacity(
@@ -100,6 +111,7 @@ class _State extends widgets.State<Tappable> with SingleTickerProviderStateMixin
       child: GestureDetector(
         onTapDown: (_) => onTapDown(),
         onTapUp: (_) => onTapUp(),
+        onTapCancel: () => onTapCancel(),
         child: widget.child,
       )
     );
