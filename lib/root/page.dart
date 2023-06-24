@@ -1,0 +1,79 @@
+import 'package:flutter/material.dart' hide TabBar, Theme, TextButton;
+import 'package:teaching_platform/common/widgets/button/text_button.dart';
+import 'package:teaching_platform/common/widgets/services.dart/services.dart';
+import 'package:teaching_platform/root/widgets/content.dart';
+
+import 'widgets/tab_bar.dart';
+
+const _titles = [
+  "HOME",
+  "COURSES",
+  "MISSION",
+  "MY STUDIO",
+  "SOCIAL MEDIA",
+  "CHAT ROOM",
+];
+
+// TODO: breakpoints
+
+class Page extends StatefulWidget {
+  const Page({
+    super.key,
+  });
+
+  @override
+  State<Page> createState() => _State();
+}
+
+class _State extends State<Page> {
+  int currentTabIndex = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Services.of(context).theme;
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return Column(
+          children: [
+            Text(
+              "FUTVENTURELAB",
+            ),
+            const SizedBox(
+              height: 24,
+            ),
+            SizedBox(
+              width: _tabBarWidth(constraints),
+              child: TabBar(
+                titles: _titles,
+                selectedIndex: currentTabIndex,
+                onTap: (index) => setState(() => currentTabIndex = index)
+              ),
+            ),
+            const SizedBox(
+              height: 8,
+            ),
+            Container(
+              width: constraints.maxWidth,
+              height: 1,
+              color: theme.colors.primary,
+            ),
+            Flexible(
+              flex: 1,
+              child: IndexedStack(
+                index: currentTabIndex,
+                children: _titles.map((title) =>
+                  Center(
+                    child: Content()
+                  )
+                ).toList(),
+              ),
+            )
+          ]
+        );
+      }
+    );
+  }
+}
+
+double _tabBarWidth(BoxConstraints constraints) =>
+  constraints.maxWidth * 0.9;

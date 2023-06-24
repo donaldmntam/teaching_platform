@@ -1,0 +1,4 @@
+enum ButtonStyle {
+  primary,
+  secondary,
+}
