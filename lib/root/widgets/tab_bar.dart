@@ -27,8 +27,9 @@ class TabBar extends StatelessWidget {
           fit: FlexFit.tight,
           child: GestureDetector(
             onTap: () => onTap(i),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 0),
+              // color: i % 2 == 0 ? Colors.red : Colors.blue,
               child: Transform.scale(
                 scale: selectedIndex == i ? 1 : 0.7,
                 child: FittedBox(
@@ -46,7 +47,7 @@ class TabBar extends StatelessWidget {
                   ),
                 ),
               ),
-            )
+            ),
           ),
         )
       ).toList(),

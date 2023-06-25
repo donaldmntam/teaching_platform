@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart' hide TabBar, Theme, TextButton;
 import 'package:teaching_platform/common/widgets/button/text_button.dart';
 import 'package:teaching_platform/common/widgets/services.dart/services.dart';
-import 'package:teaching_platform/root/widgets/content.dart';
+import 'package:teaching_platform/login/page.dart' as login;
+import 'package:teaching_platform/courses/page.dart' as courses;
 
 import 'widgets/tab_bar.dart';
 
@@ -43,6 +44,7 @@ class _State extends State<Page> {
             ),
             SizedBox(
               width: _tabBarWidth(constraints),
+              height: _tabBarHeight,
               child: TabBar(
                 titles: _titles,
                 selectedIndex: currentTabIndex,
@@ -61,11 +63,10 @@ class _State extends State<Page> {
               flex: 1,
               child: IndexedStack(
                 index: currentTabIndex,
-                children: _titles.map((title) =>
-                  Center(
-                    child: Content()
-                  )
-                ).toList(),
+                children: const [
+                  login.Page(),
+                  courses.Page(),
+                ]
               ),
             )
           ]
@@ -77,3 +78,5 @@ class _State extends State<Page> {
 
 double _tabBarWidth(BoxConstraints constraints) =>
   constraints.maxWidth * 0.9;
+
+const _tabBarHeight = 50.0;
