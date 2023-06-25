@@ -1,28 +1,24 @@
-import 'package:flutter/material.dart' hide State;
-import 'package:flutter/widgets.dart' as widgets show State;
+import 'package:flutter/material.dart';
 
-class VideoBar extends StatefulWidget {
-  const VideoBar({super.key});
+class VideoBar extends StatelessWidget {
+  final Duration duration;
+  final Duration position;
+  final void Function(Duration) onChange;
 
-  @override
-  widgets.State<VideoBar> createState() => _WidgetState();
-}
-
-class _WidgetState extends widgets.State<VideoBar> {
-
+  const VideoBar({
+    super.key,
+    required this.duration,
+    required this.position,
+    required this.onChange,
+  });
 
   @override
   Widget build(BuildContext context) {
-    throw "";
+    return Slider(
+      min: 0,
+      max: duration.inMilliseconds.toDouble(),
+      value: position.inMilliseconds.toDouble(),
+      onChanged: (value) => onChange(Duration(milliseconds: value.toInt())),
+    );
   }
 }
-
-sealed class State {}
-
-final class Paused {
-  final Duration position;
-
-  const Paused(this.position);
-}
-
-// final class 
