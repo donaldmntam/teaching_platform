@@ -16,22 +16,19 @@ class Page extends StatefulWidget {
   widgets.State<Page> createState() => _State();
 }
 
-class _State extends widgets.State<Page> with SingleTickerProviderStateMixin {
+class _State extends widgets.State<Page> {
   late final VideoPlayerController controller;
-  late final Ticker ticker;
-  late final Clock clock;
 
+  Duration position = Duration.zero;
   State state = const Paused();
 
   @override
   void initState() {
     controller = VideoPlayerController.network('https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4');
     controller.dataSource;
-    controller.initialize().then((_) => controller.play());
-
-    ticker = createTicker(onTick);
-
-    clock = Services.of(context).clock;
+    controller.initialize().then((_) {
+      play();
+    });
 
     super.initState();
   }
@@ -39,47 +36,33 @@ class _State extends widgets.State<Page> with SingleTickerProviderStateMixin {
   @override
   void dispose() {
     controller.dispose();
-    ticker.dispose();
     super.dispose();
   }
 
-  void onTick(Duration duration) {
-    final state = this.state;
-    switch (state) {
-      case Playing(reference: final reference):
-        this.state = Playing(
-          reference: reference,
-          now: clock.now(),
-        );
-        setState(() {});
-      case Paused():
-        break;
-    }
-  }
-
   void play() {
+    final now = Services.of(context).clock.now();
     final state = this.state;
     switch (state) {
       case Paused():
-        final now = clock.now();
-        this.state = Playing(
-          reference: now,
-          now: now,
-        );
-        setState(() {});
-        ticker.start();
+        setState(() {
+          this.state = Playing(reference: now);
+        });
+        controller.play();
       case Playing():
         badTransition(state, "play");
     }
   }
 
   void pause() {
+    final now = Services.of(context).clock.now();
     final state = this.state;
     switch (state) {
-      case Playing():
-        this.state = const Paused();
-        setState(() {});
-        ticker.stop();
+      case Playing(reference: final reference):
+        setState(() {
+          position = position + now.difference(reference);
+          this.state = const Paused();
+        });
+        controller.pause();
       case Paused():
         badTransition(state, "pause");
     }
@@ -96,8 +79,17 @@ class _State extends widgets.State<Page> with SingleTickerProviderStateMixin {
           ),
           VideoBar(
             duration: controller.value.duration,
-            position: controller.,
+            position: position,
+            state: state,
             onChange: (_) {},
+            onToggle: () {
+              switch (state) {
+                case Paused():
+                  play();
+                case Playing():
+                  pause();
+              }
+            }
           ),
           TextButton(
             "check duration",
