@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart' hide State;
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart' as widgets show State;
+import 'package:teaching_platform/common/functions/error_functions.dart';
 import 'package:teaching_platform/common/widgets/services.dart/services.dart';
+import 'package:teaching_platform/courses/widgets/video_bar/controller.dart';
 
 class VideoBar extends StatefulWidget {
   final Duration duration;
   final Duration position;
-  final State state;
+  final VideoBarController controller;
   final void Function() onToggle;
   final void Function(Duration) onChange;
 
@@ -14,7 +16,7 @@ class VideoBar extends StatefulWidget {
     super.key,
     required this.duration,
     required this.position,
-    required this.state,
+    required this.controller,
     required this.onToggle,
     required this.onChange,
   });
@@ -24,16 +26,22 @@ class VideoBar extends StatefulWidget {
 }
 
 class _VideoBarState extends widgets.State<VideoBar> 
-  with SingleTickerProviderStateMixin {
+  with SingleTickerProviderStateMixin
+  implements VideoBarControllerListener {
   late Duration currentPosition;
   late final Ticker ticker;
 
+  late State state;
+
   @override
   void initState() {
+    widget.controller.listener = this;
+    state = widget.controller.initialState;
+
     currentPosition = widget.position;
 
     ticker = createTicker(onTick);
-    switch (widget.state) {
+    switch (state) {
       case Paused():
         break;
       case Playing():
@@ -50,33 +58,61 @@ class _VideoBarState extends widgets.State<VideoBar>
     super.dispose();
   }
 
-  @override
-  void didUpdateWidget(VideoBar oldWidget) {
-    currentPosition = widget.position;
+  // @override
+  // void didUpdateWidget(VideoBar oldWidget) {
+  //   currentPosition = widget.position;
 
-    switch (widget.state) {
-      case Paused():
-        ticker.stop();
-      case Playing():
-        ticker.start(); 
-    }
+  //   switch (widget.controller.initialState) {
+  //     case Paused():
+  //       ticker.stop();
+  //     case Playing():
+  //       ticker.start(); 
+  //   }
 
-    super.didUpdateWidget(oldWidget);
-  }
+  //   super.didUpdateWidget(oldWidget);
+  // }
 
   void onTick(Duration duration) {
-    print("tick!");
     final clock = Services.of(context).clock;
-    final state = widget.state;
+    final state = this.state;
     switch (state) {
       case Paused():
         break;
       case Playing(reference: final reference):
-        setState(() {
-          currentPosition = widget.position + clock.now().difference(reference);
-        });
+        currentPosition = widget.position + clock.now().difference(reference);
+        setState(() {});
     }
   }
+
+  @override
+  void shouldPlay() {
+    final now = Services.of(context).clock.now();
+    final state = this.state;
+    switch (state) {
+      case Paused():
+        this.state = Playing(reference: now);
+        ticker.start();
+        setState(() {});
+      case Playing():
+        badTransition(state, "play");
+    }
+  }
+
+  @override
+  void shouldPause() {
+    final now = Services.of(context).clock.now();
+    final state = this.state;
+    switch (state) {
+      case Playing(reference: final reference):
+        currentPosition = currentPosition + now.difference(reference);
+        this.state = const Paused();
+        ticker.stop();
+        setState(() {});
+      case Paused():
+        badTransition(state, "pause");
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
