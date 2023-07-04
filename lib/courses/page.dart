@@ -21,14 +21,22 @@ class _State extends widgets.State<Page> {
   late final VideoPlayerController playerController;
   late final VideoBarController barController;
 
-  Duration position = Duration.zero;
+  Data? data;
+
   bool paused = true;
 
   @override
   void initState() {
     playerController = VideoPlayerController.network('https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4');
     playerController.dataSource;
-    playerController.initialize();
+    playerController.initialize().then((_) =>
+      setState(() => 
+        data = (
+          duration: playerController.value.duration,
+          initialPosition: Duration.zero
+        )
+      )
+    );
 
     barController = VideoBarController();
 
@@ -52,8 +60,7 @@ class _State extends widgets.State<Page> {
             child: VideoPlayer(playerController)
           ),
           VideoBar(
-            duration: playerController.value.duration,
-            position: position,
+            data: data,
             controller: barController,
             onChange: (_) {},
             onToggle: () {

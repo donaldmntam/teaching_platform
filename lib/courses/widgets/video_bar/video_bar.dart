@@ -5,17 +5,20 @@ import 'package:teaching_platform/common/functions/error_functions.dart';
 import 'package:teaching_platform/common/widgets/services.dart/services.dart';
 import 'package:teaching_platform/courses/widgets/video_bar/controller.dart';
 
+typedef Data = ({
+  Duration duration,
+  Duration position,
+});
+
 class VideoBar extends StatefulWidget {
-  final Duration duration;
-  final Duration position;
+  final Data? data;
   final VideoBarController controller;
   final void Function() onToggle;
   final void Function(Duration) onChange;
 
   const VideoBar({
     super.key,
-    required this.duration,
-    required this.position,
+    required this.data,
     required this.controller,
     required this.onToggle,
     required this.onChange,
@@ -28,7 +31,6 @@ class VideoBar extends StatefulWidget {
 class _VideoBarState extends widgets.State<VideoBar> 
   with SingleTickerProviderStateMixin
   implements VideoBarControllerListener {
-  late Duration currentPosition;
   late final Ticker ticker;
 
   late State state;
@@ -38,11 +40,10 @@ class _VideoBarState extends widgets.State<VideoBar>
     widget.controller.listener = this;
     state = widget.controller.initialState;
 
-    currentPosition = widget.position;
-
     ticker = createTicker(onTick);
     switch (state) {
       case Paused():
+      case Uninitialized():
         break;
       case Playing():
         ticker.start(); 
@@ -58,41 +59,51 @@ class _VideoBarState extends widgets.State<VideoBar>
     super.dispose();
   }
 
-  // @override
-  // void didUpdateWidget(VideoBar oldWidget) {
-  //   currentPosition = widget.position;
+  @override
+  void didUpdateWidget(VideoBar oldWidget) {
+    switch (widget.controller.initialState) {
+      case Paused():
+      case Uninitialized():
+        ticker.stop();
+      case Playing():
+        ticker.start();
+    }
 
-  //   switch (widget.controller.initialState) {
-  //     case Paused():
-  //       ticker.stop();
-  //     case Playing():
-  //       ticker.start(); 
-  //   }
-
-  //   super.didUpdateWidget(oldWidget);
-  // }
+    super.didUpdateWidget(oldWidget);
+  }
 
   void onTick(Duration duration) {
     final clock = Services.of(context).clock;
     final state = this.state;
     switch (state) {
       case Paused():
+      case Uninitialized():
         break;
-      case Playing(reference: final reference):
-        currentPosition = widget.position + clock.now().difference(reference);
+      case Playing(lastTick: final lastTick, data: final data):
+        final now = clock.now();
+        this.state = Playing(
+          lastTick: now,
+          data: (
+            duration: data.duration,
+            position: now.difference(lastTick)
+          ),
+        );
         setState(() {});
     }
   }
+
+  // TODO: initialize from widget or controller??? (probably from controller)
 
   @override
   void shouldPlay() {
     final now = Services.of(context).clock.now();
     final state = this.state;
     switch (state) {
-      case Paused():
-        this.state = Playing(reference: now);
+      case Paused(data: final data):
+        this.state = Playing(lastTick: now, data: data);
         ticker.start();
         setState(() {});
+      case Uninitialized():
       case Playing():
         badTransition(state, "play");
     }
@@ -103,11 +114,16 @@ class _VideoBarState extends widgets.State<VideoBar>
     final now = Services.of(context).clock.now();
     final state = this.state;
     switch (state) {
-      case Playing(reference: final reference):
-        currentPosition = currentPosition + now.difference(reference);
-        this.state = const Paused();
+      case Playing(lastTick: final lastTick, data: final data):
+        this.state = Paused(
+          data: (
+            duration: data.duration,
+            position: data.position + now.difference(lastTick)
+          )
+        );
         ticker.stop();
         setState(() {});
+      case Uninitialized():
       case Paused():
         badTransition(state, "pause");
     }
@@ -125,8 +141,20 @@ class _VideoBarState extends widgets.State<VideoBar>
         Material(
           child: Slider(
             min: 0,
-            max: widget.duration.inMilliseconds.toDouble(),
-            value: currentPosition.inMilliseconds.toDouble(),
+            max: switch (state) {
+              Uninitialized() => 0,
+              Paused(data: final data) => 
+                data.duration.inMilliseconds.toDouble(),
+              Playing(data: final data) =>
+                data.duration.inMilliseconds.toDouble(),
+            },
+            value: switch (state) {
+              Uninitialized() => 0,
+              Paused(data: final data) =>
+                data.position.inMilliseconds.toDouble(),
+              Playing(data: final data) =>
+                data.position.inMilliseconds.toDouble(),
+            },
             onChanged: (value) => widget.onChange(
               Duration(milliseconds: value.toInt())
             ),
@@ -139,12 +167,19 @@ class _VideoBarState extends widgets.State<VideoBar>
 
 sealed class State {}
 
+final class Uninitialized implements State {
+  const Uninitialized();
+}
+
 final class Paused implements State {
-  const Paused();
+  final Data data;
+
+  const Paused({required this.data});
 }
 
 final class Playing implements State {
-  final DateTime reference;
+  final DateTime lastTick;
+  final Data data;
 
-  const Playing({required this.reference});
+  const Playing({required this.lastTick, required this.data});
 }
