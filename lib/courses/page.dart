@@ -31,10 +31,10 @@ class _State extends widgets.State<Page> {
     playerController.dataSource;
     playerController.initialize().then((_) =>
       setState(() => 
-        data = (
+        barController.initialize((
           duration: playerController.value.duration,
-          initialPosition: Duration.zero
-        )
+          position: Duration.zero,
+        ))
       )
     );
 
@@ -60,9 +60,10 @@ class _State extends widgets.State<Page> {
             child: VideoPlayer(playerController)
           ),
           VideoBar(
-            data: data,
             controller: barController,
-            onChange: (_) {},
+            onChange: (position) {
+              playerController.seekTo(position);
+            },
             onToggle: () {
               if (paused) {
                 playerController.play();

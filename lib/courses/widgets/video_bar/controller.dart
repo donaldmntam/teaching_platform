@@ -1,7 +1,7 @@
 import 'package:teaching_platform/courses/widgets/video_bar/video_bar.dart';
 
 abstract interface class VideoBarControllerListener {
-  void shouldInitialize();
+  void shouldInitialize(Data data);
   void shouldPlay();
   void shouldPause();
 }
@@ -9,14 +9,10 @@ abstract interface class VideoBarControllerListener {
 class VideoBarController  {
   late final VideoBarControllerListener listener;
 
-  final State initialState;
-
-  VideoBarController({
-    this.initialState = const Uninitialized(),
-  });
+  VideoBarController();
 
   void initialize(Data data) {
-    listener.shouldInitialize();
+    listener.shouldInitialize(data);
   }
 
   void play() {

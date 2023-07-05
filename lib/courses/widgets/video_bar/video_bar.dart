@@ -11,14 +11,12 @@ typedef Data = ({
 });
 
 class VideoBar extends StatefulWidget {
-  final Data? data;
   final VideoBarController controller;
   final void Function() onToggle;
   final void Function(Duration) onChange;
 
   const VideoBar({
     super.key,
-    required this.data,
     required this.controller,
     required this.onToggle,
     required this.onChange,
@@ -33,21 +31,13 @@ class _VideoBarState extends widgets.State<VideoBar>
   implements VideoBarControllerListener {
   late final Ticker ticker;
 
-  late State state;
+  State state = const Uninitialized();
 
   @override
   void initState() {
     widget.controller.listener = this;
-    state = widget.controller.initialState;
 
     ticker = createTicker(onTick);
-    switch (state) {
-      case Paused():
-      case Uninitialized():
-        break;
-      case Playing():
-        ticker.start(); 
-    }
 
     super.initState();
   }
@@ -59,19 +49,6 @@ class _VideoBarState extends widgets.State<VideoBar>
     super.dispose();
   }
 
-  @override
-  void didUpdateWidget(VideoBar oldWidget) {
-    switch (widget.controller.initialState) {
-      case Paused():
-      case Uninitialized():
-        ticker.stop();
-      case Playing():
-        ticker.start();
-    }
-
-    super.didUpdateWidget(oldWidget);
-  }
-
   void onTick(Duration duration) {
     final clock = Services.of(context).clock;
     final state = this.state;
@@ -81,18 +58,28 @@ class _VideoBarState extends widgets.State<VideoBar>
         break;
       case Playing(lastTick: final lastTick, data: final data):
         final now = clock.now();
-        this.state = Playing(
-          lastTick: now,
-          data: (
-            duration: data.duration,
-            position: now.difference(lastTick)
-          ),
-        );
-        setState(() {});
+        final newPosition = now.difference(lastTick) + data.position;
+        if (newPosition > data.duration) {
+          this.state = Paused(
+            data: (
+              duration: data.duration,
+              position: data.duration,
+            )
+          );
+          setState(() {});
+          ticker.stop();
+        } else {
+          this.state = Playing(
+            lastTick: now,
+            data: (
+              duration: data.duration,
+              position: newPosition
+            ),
+          );
+          setState(() {});
+        }
     }
   }
-
-  // TODO: initialize from widget or controller??? (probably from controller)
 
   @override
   void shouldPlay() {
@@ -135,8 +122,8 @@ class _VideoBarState extends widgets.State<VideoBar>
     return Row(
       children: [
         ElevatedButton(
-          child: Text("toggle"),
           onPressed: widget.onToggle,
+          child: const Text("toggle"),
         ),
         Material(
           child: Slider(
@@ -155,13 +142,22 @@ class _VideoBarState extends widgets.State<VideoBar>
               Playing(data: final data) =>
                 data.position.inMilliseconds.toDouble(),
             },
-            onChanged: (value) => widget.onChange(
-              Duration(milliseconds: value.toInt())
-            ),
+            onChanged: (value) {
+              widget.onChange(
+                Duration(milliseconds: value.toInt())
+              );
+              // TODO: here!
+            },
           ),
         ),
       ],
     );
+  }
+  
+  @override
+  void shouldInitialize(Data data) {
+    state = Paused(data: data);
+    setState(() {});
   }
 }
 
