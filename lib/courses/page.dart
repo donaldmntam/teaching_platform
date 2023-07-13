@@ -55,26 +55,29 @@ class _State extends widgets.State<Page> {
     return Center(
       child: Column(
         children: [
-          SizedBox(
-            height: 400,
+          AspectRatio(
+            aspectRatio: 3.0,
             child: VideoPlayer(playerController)
           ),
-          VideoBar(
-            controller: barController,
-            onChange: (position) {
-              playerController.seekTo(position);
-            },
-            onToggle: () {
-              if (paused) {
-                playerController.play();
-                barController.play();
-                paused = false;
-              } else {
-                playerController.pause();
-                barController.pause();
-                paused = true;
+          SizedBox(
+            width: double.infinity,
+            child: VideoBar(
+              controller: barController,
+              onChange: (position) {
+                playerController.seekTo(position);
+              },
+              onToggle: () {
+                if (paused) {
+                  playerController.play();
+                  barController.play();
+                  paused = false;
+                } else {
+                  playerController.pause();
+                  barController.pause();
+                  paused = true;
+                }
               }
-            }
+            ),
           ),
           TextButton(
             "check duration",

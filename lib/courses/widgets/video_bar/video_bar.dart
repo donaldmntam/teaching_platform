@@ -116,38 +116,68 @@ class _VideoBarState extends widgets.State<VideoBar>
     }
   }
 
+  void onChanged(double value) {
+    final state = this.state;
+    switch (state) {
+      case Playing(data: final data):
+        this.state = Paused(
+          data: (
+            duration: data.duration,
+            position: Duration(milliseconds: value.toInt()),
+          )
+        );
+        ticker.stop();
+        setState(() {});
+        widget.onChange(
+          Duration(milliseconds: value.toInt())
+        );
+      case Paused(data: final data):
+        this.state = Paused(
+          data: (
+            duration: data.duration,
+            position: Duration(milliseconds: value.toInt()),
+          )
+        );
+        ticker.stop();
+        setState(() {});
+        widget.onChange(
+          Duration(milliseconds: value.toInt())
+        );
+      case Uninitialized():
+        badTransition(state, "onChange");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Row(
+      mainAxisSize: MainAxisSize.max,
       children: [
         ElevatedButton(
           onPressed: widget.onToggle,
           child: const Text("toggle"),
         ),
-        Material(
-          child: Slider(
-            min: 0,
-            max: switch (state) {
-              Uninitialized() => 0,
-              Paused(data: final data) => 
-                data.duration.inMilliseconds.toDouble(),
-              Playing(data: final data) =>
-                data.duration.inMilliseconds.toDouble(),
-            },
-            value: switch (state) {
-              Uninitialized() => 0,
-              Paused(data: final data) =>
-                data.position.inMilliseconds.toDouble(),
-              Playing(data: final data) =>
-                data.position.inMilliseconds.toDouble(),
-            },
-            onChanged: (value) {
-              widget.onChange(
-                Duration(milliseconds: value.toInt())
-              );
-              // TODO: here!
-            },
+        Flexible(
+          flex: 1,
+          child: Material(
+            child: Slider(
+              min: 0,
+              max: switch (state) {
+                Uninitialized() => 0,
+                Paused(data: final data) => 
+                  data.duration.inMilliseconds.toDouble(),
+                Playing(data: final data) =>
+                  data.duration.inMilliseconds.toDouble(),
+              },
+              value: switch (state) {
+                Uninitialized() => 0,
+                Paused(data: final data) =>
+                  data.position.inMilliseconds.toDouble(),
+                Playing(data: final data) =>
+                  data.position.inMilliseconds.toDouble(),
+              },
+              onChanged: onChanged,
+            ),
           ),
         ),
       ],
