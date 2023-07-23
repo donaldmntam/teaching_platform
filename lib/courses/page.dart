@@ -38,8 +38,8 @@ class _State extends widgets.State<Page> {
               SizedBox(
                 width: constraints.maxWidth * _courseColumnRelativeWidth,
                 height: constraints.maxHeight,
-                child: const CourseColumn(                  
-                  [["Course 1", "Course 2"], ["Course A", "Course B"]]
+                child: CourseColumn(                  
+                  List.generate(10, (_) => List.generate(5, (i) => "course $i"))
                 )
               ),
               SizedBox(

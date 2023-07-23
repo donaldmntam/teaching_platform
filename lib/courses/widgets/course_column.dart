@@ -18,21 +18,23 @@ class _CourseColumnState extends State<CourseColumn> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.max,
-      children: widget.courseGroups.mapIndexed((i, group) =>
-        _Group(
-          group,
-          i == expandedIndex,
-          () => setState(() {
-            if (i == expandedIndex) {
-              expandedIndex = null;
-            } else {
-              expandedIndex = i;
-            }
-          }),
-        )
-      ).toList()
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisSize: MainAxisSize.max,
+        children: widget.courseGroups.mapIndexed((i, group) =>
+          _Group(
+            group,
+            i == expandedIndex,
+            () => setState(() {
+              if (i == expandedIndex) {
+                expandedIndex = null;
+              } else {
+                expandedIndex = i;
+              }
+            }),
+          )
+        ).toList()
+      ),
     );
   }
 }
@@ -50,25 +52,21 @@ class _Group extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedSize(
-      alignment: Alignment.topCenter,
-      duration: const Duration(seconds: 1),
-      child: Column(
-        children: [
-          GestureDetector(
-            onTap: onToggleExpand,
-            child: const Text("Expand")
+    return Column(
+      children: [
+        GestureDetector(
+          onTap: onToggleExpand,
+          child: const Text("Expand")
+        ),
+        SizedBox(
+          height: expanded ? null : 0,
+          child: Column(
+            children: courses.map(
+              (course) => Text(course),
+            ).toList()
           ),
-          SizedBox(
-            height: expanded ? 400 : 0,
-            child: Column(
-              children: courses.map(
-                (course) => Text(course),
-              ).toList()
-            ),
-          ),
-        ]
-      ),
+        ),
+      ]
     );
   }
 }
