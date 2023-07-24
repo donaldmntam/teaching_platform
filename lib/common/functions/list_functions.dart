@@ -10,3 +10,11 @@ extension ExtendedList<T> on List<T> {
     return list;
   }
 }
+
+List<T> repeat<T>(List<T> list, int count) {
+  final newList = List<T>.empty(growable: true);
+  for (var i = 0; i < count; i++) {
+    newList.addAll(list);
+  }
+  return newList;
+}

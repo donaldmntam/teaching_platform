@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart' hide TextButton, State, Theme;
 import 'package:flutter/widgets.dart' as widgets show State;
+import 'package:teaching_platform/common/functions/iterable_functions.dart';
+import 'package:teaching_platform/common/functions/list_functions.dart';
 import 'package:teaching_platform/courses/widgets/content.dart';
 import 'package:teaching_platform/courses/widgets/course_column.dart';
 import 'package:teaching_platform/courses/widgets/video_bar/video_bar.dart';
@@ -39,7 +41,12 @@ class _State extends widgets.State<Page> {
                 width: constraints.maxWidth * _courseColumnRelativeWidth,
                 height: constraints.maxHeight,
                 child: CourseColumn(                  
-                  List.generate(10, (_) => List.generate(5, (i) => "course $i"))
+                  repeat(["Design Thinking", "Leadership", "Marketing"], 10)
+                    .mapIndexed((i, title) => (
+                      title: title,
+                      courses: List.generate(5, (i) => (title: "course $i"))
+                    ))
+                    .toList()
                 )
               ),
               SizedBox(
