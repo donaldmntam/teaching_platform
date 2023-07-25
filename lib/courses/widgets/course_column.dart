@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart' hide Theme;
+import 'package:flutter/scheduler.dart';
 import 'package:teaching_platform/common/functions/iterable_functions.dart';
 import 'package:teaching_platform/common/theme/theme.dart';
+import 'package:teaching_platform/common/widgets/proportion_box/proportion_box.dart';
 import 'package:teaching_platform/common/widgets/services.dart/services.dart';
 import 'package:teaching_platform/courses/models/course_group.dart';
 
 const _height = 40.0;
+const _curve = Curves.easeInOutQuad;
 
 class CourseColumn extends StatefulWidget {
   final List<CourseGroup> courseGroups;
@@ -83,14 +86,7 @@ class _Group extends StatelessWidget {
             ]
           ),
         ),
-        SizedBox(
-          height: expanded ? null : 0,
-          child: Column(
-            children: group.courses.map(
-              (course) => _Text(course.title),
-            ).toList()
-          ),
-        ),
+        _CourseList(group: group, expanded: expanded),
       ]
     );
   }
@@ -119,6 +115,74 @@ class _Text extends StatelessWidget {
           )
         )
       )
+    );
+  }
+}
+
+class _CourseList extends StatefulWidget {
+  final CourseGroup group;
+  final bool expanded;
+
+  const _CourseList({
+    required this.group,
+    required this.expanded,
+  });
+
+  @override
+  State<_CourseList> createState() => _CourseListState();
+}
+
+class _CourseListState extends State<_CourseList> 
+  with SingleTickerProviderStateMixin
+{
+  late double animationValue;
+  late final AnimationController controller;
+
+  @override
+  void initState() {
+    final animationValue = widget.expanded ? 1.0 : 0.0;
+    this.animationValue = animationValue;
+
+    controller = AnimationController(
+      value: animationValue,
+      duration: const Duration(milliseconds: 300),
+      reverseDuration: const Duration(milliseconds: 200),
+      vsync: this
+    );
+    controller.addListener(() {
+      setState(() => this.animationValue = _curve.transform(controller.value));
+    });
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  void didUpdateWidget(_CourseList oldWidget) {
+    if (widget.expanded == oldWidget.expanded) return;
+    if (widget.expanded) {
+      controller.forward();
+    } else {
+      controller.reverse();
+    }
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    print("animationValue $animationValue");
+    return ProportionBox(
+      proportion: animationValue,
+      child: Column(
+        children: widget.group.courses.map(
+          (course) => _Text(course.title),
+        ).toList()
+      ),
     );
   }
 }
