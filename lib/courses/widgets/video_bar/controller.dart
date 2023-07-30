@@ -4,6 +4,7 @@ abstract interface class VideoBarControllerListener {
   void shouldInitialize(Data data);
   void shouldPlay();
   void shouldPause();
+  void shouldSeek(Duration position);
 }
 
 class VideoBarController  {
@@ -21,5 +22,9 @@ class VideoBarController  {
 
   void pause() {
     listener.shouldPause();
+  }
+
+  void seek(Duration position) {
+    listener.shouldSeek(position);
   }
 }

@@ -11,22 +11,24 @@ const _durationMillis = 300;
 const _opacityRate = (_maxOpacity - _minOpacity) / _durationMillis;
 
 class Tappable extends StatefulWidget {
-  final void Function() onPressed;
+  final void Function() onTap;
   final Widget child;
 
   const Tappable({
     super.key,
-    required this.onPressed,
+    required this.onTap,
     required this.child,
   });
 
   @override
-  widgets.State<StatefulWidget> createState() => _State();
+  widgets.State<StatefulWidget> createState() => _WidgetState();
 }
 
-class _State extends widgets.State<Tappable> with SingleTickerProviderStateMixin {
+class _WidgetState extends widgets.State<Tappable> 
+  with SingleTickerProviderStateMixin
+{
   late final Ticker ticker;
-  State state = const Up();
+  _State state = const _Up();
   double opacity = _maxOpacity;
 
   @override
@@ -45,13 +47,13 @@ class _State extends widgets.State<Tappable> with SingleTickerProviderStateMixin
   void onTick(Duration duration) {
     final now = Services.of(context).clock.now();
     switch (state) {
-      case GoingUp(reference: final reference):
+      case _GoingUp(reference: final reference):
         final currentDurationMillis = now.millisecondsSinceEpoch - 
           reference.millisecondsSinceEpoch;
         final isUp = currentDurationMillis >= _durationMillis;
         if (isUp) {
           setState(() => opacity = _maxOpacity);
-          state = const Up();
+          state = const _Up();
           ticker.stop();
         } else {
           setState(() => opacity = calcOpacity(reference, now));
@@ -67,11 +69,11 @@ class _State extends widgets.State<Tappable> with SingleTickerProviderStateMixin
 
   void onTapDown() {
     switch (state) {
-      case Up():
-      case GoingUp():
+      case _Up():
+      case _GoingUp():
         ticker.stop();
         setState(() => opacity = _minOpacity);
-        state = const Down();
+        state = const _Down();
       default:
         break;
     }
@@ -80,9 +82,9 @@ class _State extends widgets.State<Tappable> with SingleTickerProviderStateMixin
   void onTapUp() {
     final now = Services.of(context).clock.now();
     switch (state) {
-      case Down():
-        state = GoingUp(now);
-        widget.onPressed();
+      case _Down():
+        state = _GoingUp(now);
+        widget.onTap();
         ticker.start();
       default:
         break;
@@ -92,8 +94,8 @@ class _State extends widgets.State<Tappable> with SingleTickerProviderStateMixin
   void onTapCancel() {
     final now = Services.of(context).clock.now();
     switch (state) {
-      case Down():
-        state = GoingUp(now);
+      case _Down():
+        state = _GoingUp(now);
         ticker.start();
       default:
         break;
@@ -104,11 +106,12 @@ class _State extends widgets.State<Tappable> with SingleTickerProviderStateMixin
   Widget build(BuildContext context) {
     return Opacity(
       opacity: switch (state) {
-        Down() => _minOpacity,
-        GoingUp() => opacity,
-        Up() => 1.0,
+        _Down() => _minOpacity,
+        _GoingUp() => opacity,
+        _Up() => 1.0,
       },
       child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
         onTapDown: (_) => onTapDown(),
         onTapUp: (_) => onTapUp(),
         onTapCancel: () => onTapCancel(),
@@ -118,22 +121,22 @@ class _State extends widgets.State<Tappable> with SingleTickerProviderStateMixin
   }
 }
 
-sealed class State {
-  const State();
+sealed class _State {
+  const _State();
 }
 
-class Down implements State {
-  const Down();
+class _Down implements _State {
+  const _Down();
 }
 
-class GoingUp implements State {
+class _GoingUp implements _State {
   final DateTime reference;
 
-  const GoingUp(this.reference);
+  const _GoingUp(this.reference);
 }
 
-class Up implements State {
-  const Up();
+class _Up implements _State {
+  const _Up();
 }
 
 double calcOpacity(DateTime reference, DateTime now) {

@@ -3,7 +3,13 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart' as widgets show State;
 import 'package:teaching_platform/common/functions/error_functions.dart';
 import 'package:teaching_platform/common/widgets/services.dart/services.dart';
+import 'package:teaching_platform/common/widgets/tappable/tappable.dart';
 import 'package:teaching_platform/courses/widgets/video_bar/controller.dart';
+
+const _barHeight = 24.0;
+const _thumbSize = (_playButtonSize / 2) * 0.5;
+const _thumbOverlaySize = (_playButtonSize / 2) * 0.7;
+const _playButtonSize = 36.0;
 
 typedef Data = ({
   Duration duration,
@@ -92,7 +98,7 @@ class _VideoBarState extends widgets.State<VideoBar>
         setState(() {});
       case Uninitialized():
       case Playing():
-        badTransition(state, "play");
+        badTransition(state, "shouldPlay");
     }
   }
 
@@ -112,7 +118,24 @@ class _VideoBarState extends widgets.State<VideoBar>
         setState(() {});
       case Uninitialized():
       case Paused():
-        badTransition(state, "pause");
+        badTransition(state, "shouldPause");
+    }
+  }
+
+  @override
+  void shouldSeek(Duration position) {
+    final state = this.state;
+    switch (state) {
+      case Playing(data: final data):
+      case Paused(data: final data):
+        this.state = Paused(
+          data: (
+            duration: data.duration,
+            position: position,
+          )
+        );
+      case Uninitialized():
+        badTransition(state, "shouldSeek");
     }
   }
 
@@ -149,45 +172,75 @@ class _VideoBarState extends widgets.State<VideoBar>
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.max,
-      children: [
-        ElevatedButton(
-          onPressed: widget.onToggle,
-          child: const Text("toggle"),
-        ),
-        Flexible(
-          flex: 1,
-          child: Material(
-            child: Slider(
-              min: 0,
-              max: switch (state) {
-                Uninitialized() => 0,
-                Paused(data: final data) => 
-                  data.duration.inMilliseconds.toDouble(),
-                Playing(data: final data) =>
-                  data.duration.inMilliseconds.toDouble(),
-              },
-              value: switch (state) {
-                Uninitialized() => 0,
-                Paused(data: final data) =>
-                  data.position.inMilliseconds.toDouble(),
-                Playing(data: final data) =>
-                  data.position.inMilliseconds.toDouble(),
-              },
-              onChanged: onChanged,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-  
-  @override
   void shouldInitialize(Data data) {
     state = Paused(data: data);
     setState(() {});
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Services.of(context).theme;
+
+    return Container(
+      color: theme.colors.background,
+      child: Row(
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          const SizedBox(width: 12),
+          Tappable( 
+            onTap: widget.onToggle,
+            child: Icon(
+              size: _playButtonSize,
+              switch (state) {
+                Uninitialized() => Icons.play_arrow,
+                Paused() => Icons.play_arrow,
+                Playing() => Icons.pause,
+              },
+            )
+          ),
+          Flexible(
+            flex: 1,
+            child: Material(
+              color: Colors.transparent,
+              child: SizedBox(
+                height: _barHeight,
+                child: SliderTheme(
+                  data: SliderThemeData(
+                    thumbColor: theme.colors.primary,
+                    thumbShape: const RoundSliderThumbShape(
+                      enabledThumbRadius: _thumbSize,
+                    ),
+                    overlayShape: const RoundSliderOverlayShape(
+                      overlayRadius: _thumbOverlaySize,
+                    ),
+                  ),
+                  child: Slider(
+                    activeColor: theme.colors.primary,
+                    min: 0,
+                    max: switch (state) {
+                      Uninitialized() => 0,
+                      Paused(data: final data) => 
+                        data.duration.inMilliseconds.toDouble(),
+                      Playing(data: final data) =>
+                        data.duration.inMilliseconds.toDouble(),
+                    },
+                    value: switch (state) {
+                      Uninitialized() => 0,
+                      Paused(data: final data) =>
+                        data.position.inMilliseconds.toDouble(),
+                      Playing(data: final data) =>
+                        data.position.inMilliseconds.toDouble(),
+                    },
+                    onChanged: onChanged,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(width: 12),
+        ],
+      ),
+    );
   }
 }
 

@@ -32,7 +32,7 @@ const Theme defaultTheme = (
     onSecondary: Color.fromARGB(255, 255, 255, 255),
     surface: Color.fromARGB(255, 255, 255, 255),
     onSurface: Color.fromARGB(255, 0, 0, 0),
-    background: Color(0xFFFFFFFF),
+    background: Color.fromARGB(255, 240, 240, 240),
     onBackground: Color.fromARGB(255, 95, 95, 95),
   ),
   baseTextStyle: (

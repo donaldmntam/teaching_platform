@@ -1,0 +1,1 @@
+typedef OnCoursePressed = void Function(int groupIndex, int courseIndex);

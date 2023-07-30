@@ -16,7 +16,7 @@ class Button extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Tappable(
-      onPressed: onPressed,
+      onTap: onPressed,
       child: Container(
         decoration: ShapeDecoration(
           shape: const StadiumBorder(),

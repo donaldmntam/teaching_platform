@@ -3,8 +3,8 @@ import 'package:teaching_platform/common/functions/iterable_functions.dart';
 import 'package:teaching_platform/common/functions/list_functions.dart';
 import 'package:teaching_platform/common/theme/theme.dart';
 import 'package:teaching_platform/common/widgets/button/selectable_text_button.dart';
-import 'package:teaching_platform/common/widgets/button/text_button.dart';
 import 'package:teaching_platform/common/widgets/services.dart/services.dart';
+import 'package:teaching_platform/courses/models/course.dart';
 import 'package:video_player/video_player.dart';
 
 import 'video_bar/controller.dart';
@@ -12,23 +12,32 @@ import 'video_bar/video_bar.dart' hide State;
 
 const _verticalSpacing = 16.0;
 
+// TODO: video player flickering
+
 class Content extends StatefulWidget {
-  const Content({super.key});
+  final Course course;
+
+  const Content({
+    super.key,
+    required this.course,
+  });
 
   @override
   State<Content> createState() => _ContentState();
 }
 
 class _ContentState extends State<Content> {
-  late final VideoPlayerController playerController;
+  late VideoPlayerController playerController;
   late final VideoBarController barController;
 
   bool paused = true;
+  int lessonIndex = 0;
 
   @override
   void initState() {
-    playerController = VideoPlayerController.network('https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4');
-    playerController.dataSource;
+    final playerController = VideoPlayerController.network(
+      widget.course.lessons[lessonIndex].videoUrl
+    );
     playerController.initialize().then((_) =>
       setState(() => 
         barController.initialize((
@@ -37,6 +46,7 @@ class _ContentState extends State<Content> {
         ))
       )
     );
+    this.playerController = playerController;
 
     barController = VideoBarController();
 
@@ -49,6 +59,40 @@ class _ContentState extends State<Content> {
     super.dispose();
   }
 
+  @override
+  void didUpdateWidget(Content oldWidget) {
+    const newLessonIndex = 0;
+
+    this.playerController.dispose();
+    final playerController = VideoPlayerController.network(
+      widget.course.lessons[newLessonIndex].videoUrl,
+    );
+    playerController.initialize().then((_) =>
+      setState(() => 
+        barController.initialize((
+          duration: playerController.value.duration,
+          position: Duration.zero,
+        ))
+      )
+    );
+    this.playerController = playerController;
+
+    barController.seek(Duration.zero);
+
+    super.didUpdateWidget(oldWidget);
+  }
+
+  void toggleVideoPlayer() {
+    if (paused) {
+      playerController.play();
+      barController.play();
+      paused = false;
+    } else {
+      playerController.pause();
+      barController.pause();
+      paused = true;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -63,38 +107,37 @@ class _ContentState extends State<Content> {
           onSelect: (_) {},
         ),
         const SizedBox(height: _verticalSpacing),
-        AspectRatio(
-          aspectRatio: 3.0,
-          child: VideoPlayer(playerController)
-        ),
-        const SizedBox(height: _verticalSpacing),
-        SizedBox(
-          width: double.infinity,
-          child: VideoBar(
-            controller: barController,
-            onChange: (position) {
-              playerController.seekTo(position);
-            },
-            onToggle: () {
-              if (paused) {
-                playerController.play();
-                barController.play();
-                paused = false;
-              } else {
-                playerController.pause();
-                barController.pause();
-                paused = true;
-              }
-            }
+        Container(
+          decoration: const BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(6))
+          ),
+          clipBehavior: Clip.antiAlias,
+          child: Column(
+            children: [
+              AspectRatio(
+                aspectRatio: 16 / 9,
+                child: GestureDetector(
+                  onTap:toggleVideoPlayer,
+                  child: Container(
+                    color: Colors.black,
+                    child: IgnorePointer(child: VideoPlayer(playerController)),
+                  ),
+                ),
+              ),
+              SizedBox(
+                width: double.infinity,
+                child: VideoBar(
+                  controller: barController,
+                  onChange: (position) {
+                    playerController.seekTo(position);
+                  },
+                  onToggle: toggleVideoPlayer,
+                ),
+              ),
+            ]
           ),
         ),
         const SizedBox(height: _verticalSpacing),
-        TextButton(
-          "check duration",
-          onPressed: () async {
-            print("duration: ${playerController.value.duration}");
-          }
-        )
       ],
     );
   }
