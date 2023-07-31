@@ -5,6 +5,7 @@ import 'package:teaching_platform/common/theme/theme.dart';
 import 'package:teaching_platform/common/widgets/button/selectable_text_button.dart';
 import 'package:teaching_platform/common/widgets/services.dart/services.dart';
 import 'package:teaching_platform/courses/models/course.dart';
+import 'package:teaching_platform/courses/models/lesson.dart';
 import 'package:video_player/video_player.dart';
 
 import 'video_bar/controller.dart';
@@ -62,23 +63,8 @@ class _ContentState extends State<Content> {
   @override
   void didUpdateWidget(Content oldWidget) {
     const newLessonIndex = 0;
-
-    this.playerController.dispose();
-    final playerController = VideoPlayerController.network(
-      widget.course.lessons[newLessonIndex].videoUrl,
-    );
-    playerController.initialize().then((_) =>
-      setState(() => 
-        barController.initialize((
-          duration: playerController.value.duration,
-          position: Duration.zero,
-        ))
-      )
-    );
-    this.playerController = playerController;
-
-    barController.seek(Duration.zero);
-
+    changeVideoUrl(widget.course.lessons[newLessonIndex].videoUrl);
+    
     super.didUpdateWidget(oldWidget);
   }
 
@@ -94,17 +80,23 @@ class _ContentState extends State<Content> {
     }
   }
 
+  void didSelectLesson(int index) {
+    if (lessonIndex == index) return;
+    changeVideoUrl(widget.course.lessons[index].videoUrl);
+    setState(() => lessonIndex = index);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const _Title("Leadership"),
+        _Title(widget.course.title),
         const SizedBox(height: _verticalSpacing),
         _LessonSelection(
-          const ["Lesson 1", "Lesson 2", "Lesson 3"],
-          selectedIndex: 0,
-          onSelect: (_) {},
+          widget.course.lessons,
+          selectedIndex: lessonIndex,
+          onSelect: didSelectLesson,
         ),
         const SizedBox(height: _verticalSpacing),
         Container(
@@ -141,6 +133,22 @@ class _ContentState extends State<Content> {
       ],
     );
   }
+
+  void changeVideoUrl(String url) {
+    this.playerController.dispose();
+    final playerController = VideoPlayerController.network(url);
+    playerController.initialize().then((_) =>
+      setState(() => 
+        barController.initialize((
+          duration: playerController.value.duration,
+          position: Duration.zero,
+        ))
+      )
+    );
+    this.playerController = playerController;
+
+    barController.seek(Duration.zero);
+  }
 }
 
 class _Title extends StatelessWidget {
@@ -163,7 +171,7 @@ class _Title extends StatelessWidget {
 }
 
 class _LessonSelection extends StatelessWidget {
-  final List<String> lessons;
+  final List<Lesson> lessons;
   final int selectedIndex;
   final void Function(int) onSelect;
 
@@ -175,10 +183,11 @@ class _LessonSelection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return Wrap(
+      runSpacing: 12,
       children: lessons.mapIndexed<Widget>((i, lesson) =>
         SelectableTextButton(
-          lesson,
+          lesson.title,
           selected: selectedIndex == i,
           onPressed: () => onSelect(i), 
         )
