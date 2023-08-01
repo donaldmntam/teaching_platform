@@ -3,7 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:teaching_platform/common/functions/iterable_functions.dart';
 import 'package:teaching_platform/common/widgets/proportion_box/proportion_box.dart';
 import 'package:teaching_platform/common/widgets/tappable/tappable.dart';
-import 'package:teaching_platform/courses/models/course.dart';
+import 'package:teaching_platform/common/models/course/course.dart';
 import 'package:teaching_platform/courses/widgets/course_column/course_text.dart';
 import 'package:teaching_platform/courses/widgets/course_column/typedefs.dart';
 

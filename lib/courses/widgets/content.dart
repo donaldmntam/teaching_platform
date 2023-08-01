@@ -4,8 +4,8 @@ import 'package:teaching_platform/common/functions/list_functions.dart';
 import 'package:teaching_platform/common/theme/theme.dart';
 import 'package:teaching_platform/common/widgets/button/selectable_text_button.dart';
 import 'package:teaching_platform/common/widgets/services.dart/services.dart';
-import 'package:teaching_platform/courses/models/course.dart';
-import 'package:teaching_platform/courses/models/lesson.dart';
+import 'package:teaching_platform/common/models/course/course.dart';
+import 'package:teaching_platform/common/models/course/lesson.dart';
 import 'package:video_player/video_player.dart';
 
 import 'video_bar/controller.dart';
@@ -16,11 +16,15 @@ const _verticalSpacing = 16.0;
 // TODO: video player flickering
 
 class Content extends StatefulWidget {
+  final int lessonIndex;
   final Course course;
+  final void Function(int lessonIndex) didSelectLesson;
 
   const Content({
     super.key,
+    required this.lessonIndex,
     required this.course,
+    required this.didSelectLesson,
   });
 
   @override
@@ -32,12 +36,11 @@ class _ContentState extends State<Content> {
   late final VideoBarController barController;
 
   bool paused = true;
-  int lessonIndex = 0;
 
   @override
   void initState() {
     final playerController = VideoPlayerController.network(
-      widget.course.lessons[lessonIndex].videoUrl
+      widget.course.lessons[widget.lessonIndex].videoUrl
     );
     playerController.initialize().then((_) =>
       setState(() => 
@@ -80,11 +83,11 @@ class _ContentState extends State<Content> {
     }
   }
 
-  void didSelectLesson(int index) {
-    if (lessonIndex == index) return;
-    changeVideoUrl(widget.course.lessons[index].videoUrl);
-    setState(() => lessonIndex = index);
-  }
+  // void didSelectLesson(int index) {
+  //   if (lessonIndex == index) return;
+  //   changeVideoUrl(widget.course.lessons[index].videoUrl);
+  //   setState(() => lessonIndex = index);
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -95,8 +98,8 @@ class _ContentState extends State<Content> {
         const SizedBox(height: _verticalSpacing),
         _LessonSelection(
           widget.course.lessons,
-          selectedIndex: lessonIndex,
-          onSelect: didSelectLesson,
+          selectedIndex: widget.lessonIndex,
+          onSelect: widget.didSelectLesson,
         ),
         const SizedBox(height: _verticalSpacing),
         Container(
