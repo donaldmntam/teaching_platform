@@ -1,13 +1,11 @@
 extension ExtendedList<T> on List<T> {
-  List<T> insertInBetween(T Function(int i) elementBuilder) {
-    final list = List<T>.empty(growable: true);
-    for (var i = 0; i < length; i++) {
-      list.add(this[i]);
-      if (i != length - 1) {
-        list.add(elementBuilder(i));
-      }
+  void insertInBetween(T Function(int i) elementBuilder) {
+    final length = this.length;
+    var i = 0;
+    while (i < length) {
+      insert((i * 2) + 1, elementBuilder(i));
+      i++;
     }
-    return list;
   }
 }
 

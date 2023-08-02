@@ -194,7 +194,8 @@ class _LessonSelection extends StatelessWidget {
           selected: selectedIndex == i,
           onPressed: () => onSelect(i), 
         )
-      ).toList().insertInBetween((_) => const SizedBox(width: 16)),
+      ).toList()
+        ..insertInBetween((_) => const SizedBox(width: 16)),
     );
   }
 }

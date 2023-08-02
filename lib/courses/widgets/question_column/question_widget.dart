@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:teaching_platform/common/functions/duration_functions.dart';
 import 'package:teaching_platform/common/models/course/question.dart';
 import 'package:teaching_platform/common/theme/theme.dart';
 import 'package:teaching_platform/common/widgets/services.dart/services.dart';
@@ -18,17 +19,17 @@ class QuestionWidget extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         border: Border.all(
-          color: theme.colors.onSurface.withAlpha(30),
-          width: 2,
+          color: theme.colors.onSurface.withAlpha(20),
+          width: 1.5,
         ),
         borderRadius: BorderRadius.circular(4),
       ),
       child: Column(
         children: [
           Text(
-            question.location.toString(),
+            question.timeStamp.toTimeString(),
             style: theme.textStyle(
-              size: 12,
+              size: 11,
               color: theme.colors.onSurface.withAlpha(125),
               weight: FontWeight.normal,
             ),
@@ -39,7 +40,7 @@ class QuestionWidget extends StatelessWidget {
               Text(
                 question.title,
                 style: theme.textStyle(
-                  size: 14,
+                  size: 13,
                   color: theme.colors.onSurface,
                   weight: FontWeight.normal,
                 )

@@ -29,10 +29,25 @@ class _State extends widgets.State<Page> {
             title: "lesson $i",
             videoUrl: "https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4",
             questions: [
-              const TextQuestion(location: const Duration(seconds: 1), description: ""),
-              const TextQuestion(location: const Duration(seconds: 1), description: ""),
-              const TextQuestion(location: const Duration(seconds: 1), description: ""),
-              const TextQuestion(location: const Duration(seconds: 1), description: ""),
+              const TextQuestion(timeStamp: const Duration(seconds: 1), description: ""),
+              const TextQuestion(timeStamp: const Duration(hours: 1, minutes: 69, seconds: 1), description: ""),
+              const TextQuestion(timeStamp: const Duration(minutes: 23), description: ""),
+              const TextQuestion(timeStamp: const Duration(hours: 1), description: ""),
+              const TextQuestion(timeStamp: const Duration(seconds: 1), description: ""),
+              const TextQuestion(timeStamp: const Duration(seconds: 1), description: ""),
+              const TextQuestion(timeStamp: const Duration(seconds: 1), description: ""),
+              const TextQuestion(timeStamp: const Duration(seconds: 1), description: ""),
+
+              const TextQuestion(timeStamp: const Duration(seconds: 1), description: ""),
+              const TextQuestion(timeStamp: const Duration(seconds: 1), description: ""),
+              const TextQuestion(timeStamp: const Duration(seconds: 1), description: ""),
+              const TextQuestion(timeStamp: const Duration(seconds: 1), description: ""),
+
+              const TextQuestion(timeStamp: const Duration(seconds: 1), description: ""),
+              const TextQuestion(timeStamp: const Duration(seconds: 1), description: ""),
+              const TextQuestion(timeStamp: const Duration(seconds: 1), description: ""),
+              const TextQuestion(timeStamp: const Duration(seconds: 1), description: ""),
+
             ]
           )
         ))
