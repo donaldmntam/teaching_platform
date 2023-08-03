@@ -28,6 +28,7 @@ class _State extends widgets.State<Page> {
           (i) => (
             title: "lesson $i",
             videoUrl: "https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4",
+            lastCompletedQuestionIndex: -1,
             questions: [
               const TextQuestion(timeStamp: const Duration(seconds: 1), description: ""),
               const TextQuestion(timeStamp: const Duration(hours: 1, minutes: 69, seconds: 1), description: ""),
@@ -86,7 +87,6 @@ class _State extends widgets.State<Page> {
                 ),
               ),
               Container(
-                color: Colors.red,
                 padding: const EdgeInsets.all(32),
                 width: constraints.maxWidth * _contentRelativeWidth,
                 height: constraints.maxHeight,

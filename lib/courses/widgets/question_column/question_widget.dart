@@ -4,6 +4,9 @@ import 'package:teaching_platform/common/models/course/question.dart';
 import 'package:teaching_platform/common/theme/theme.dart';
 import 'package:teaching_platform/common/widgets/services.dart/services.dart';
 
+const _iconContainerSize = 24.0;
+const _iconSize = 20.0;
+
 class QuestionWidget extends StatelessWidget {
   final Question question;
 
@@ -17,6 +20,7 @@ class QuestionWidget extends StatelessWidget {
     final theme = Services.of(context).theme;
 
     return Container(
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         border: Border.all(
           color: theme.colors.onSurface.withAlpha(20),
@@ -25,6 +29,7 @@ class QuestionWidget extends StatelessWidget {
         borderRadius: BorderRadius.circular(4),
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             question.timeStamp.toTimeString(),
@@ -34,9 +39,26 @@ class QuestionWidget extends StatelessWidget {
               weight: FontWeight.normal,
             ),
           ),
+          const SizedBox(height: 8),
           Row(
             children: [
-              Container(color: Colors.blue, width: 64, height: 64),
+              Container(
+                width: _iconContainerSize,
+                height: _iconContainerSize,
+                decoration: BoxDecoration(
+                  color: theme.colors.primary,
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: Icon(
+                  switch (question) {
+                    McQuestion() => Icons.format_list_bulleted,
+                    TextQuestion() => Icons.article_outlined,
+                  },
+                  color: theme.colors.onPrimary,
+                  size: _iconSize,
+                ),
+              ),
+              const SizedBox(width: 6),
               Text(
                 question.title,
                 style: theme.textStyle(
