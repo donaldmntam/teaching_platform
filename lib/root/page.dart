@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart' hide TabBar, Theme, TextButton;
-import 'package:teaching_platform/common/widgets/button/text_button.dart';
 import 'package:teaching_platform/common/widgets/services.dart/services.dart';
 import 'package:teaching_platform/login/page.dart' as login;
 import 'package:teaching_platform/courses/page.dart' as courses;
+import 'package:teaching_platform/social_media/page.dart' as social_media;
 
 import 'widgets/tab_bar.dart';
 
@@ -10,9 +10,9 @@ const _titles = [
   "HOME",
   "COURSES",
   "MISSION",
-  "MY STUDIO",
+  // "MY STUDIO",
   "SOCIAL MEDIA",
-  "CHAT ROOM",
+  // "CHAT ROOM",
 ];
 
 // TODO: breakpoints
@@ -66,6 +66,8 @@ class _State extends State<Page> {
                 children: const [
                   login.Page(),
                   courses.Page(),
+                  courses.Page(),
+                  social_media.Page(),
                 ]
               ),
             )
