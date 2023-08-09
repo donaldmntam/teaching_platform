@@ -4,11 +4,10 @@ import 'package:teaching_platform/common/theme/theme.dart';
 import 'package:teaching_platform/common/widgets/services.dart/services.dart';
 
 Color _buttonColor(Theme theme) => theme.colors.onSurface.withAlpha(125);
-double _spacing(double height) => height * 0.3;
+const _spacing = 12.0;
+const _iconSize = 32.0;
 
 class ButtonRow extends StatelessWidget {
-  final double width;
-  final double height; 
   final bool liked;
   final bool bookmarked;
   final void Function() onLikePressed;
@@ -18,8 +17,6 @@ class ButtonRow extends StatelessWidget {
 
   const ButtonRow({
     super.key,
-    required this.width,
-    required this.height,
     required this.liked,
     required this.bookmarked,
     required this.onLikePressed,
@@ -32,36 +29,32 @@ class ButtonRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Services.of(context).theme;
 
-    return SizedBox(
-      width: width,
-      height: height,
-      child: Row(
-        children: [
-          Icon(
-            liked ? Icons.favorite : Icons.favorite_outline,
-            color: liked ? Colors.red : _buttonColor(theme),
-            size: height,
-          ),
-          SizedBox(width: _spacing(height)),
-          Icon(
-            Icons.comment_outlined,
-            color: _buttonColor(theme),
-            size: height,
-          ),
-          SizedBox(width: _spacing(height)),
-          Icon(
-            Icons.send_outlined,
-            color: _buttonColor(theme),
-            size: height,
-          ),
-          const Spacer(),
-          Icon(
-            Icons.bookmark_outline,
-            color: _buttonColor(theme),
-            size: height,
-          )
-        ]
-      ),
+    return Row(
+      children: [
+        Icon(
+          liked ? Icons.favorite : Icons.favorite_outline,
+          color: liked ? Colors.red : _buttonColor(theme),
+          size: _iconSize,
+        ),
+        const SizedBox(width: _spacing),
+        Icon(
+          Icons.comment_outlined,
+          color: _buttonColor(theme),
+          size: _iconSize,
+        ),
+        const SizedBox(width: _spacing),
+        Icon(
+          Icons.send_outlined,
+          color: _buttonColor(theme),
+          size: _iconSize,
+        ),
+        const Spacer(),
+        Icon(
+          Icons.bookmark_outline,
+          color: _buttonColor(theme),
+          size: _iconSize,
+        )
+      ]
     );
   }
 }

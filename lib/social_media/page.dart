@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart' hide State;
 import 'package:flutter/widgets.dart' as widgets show State;
+import 'package:teaching_platform/common/models/social_media/content.dart';
 import 'package:teaching_platform/social_media/widgets/post_card/post_card.dart';
 
 class Page extends StatefulWidget {
@@ -19,8 +20,11 @@ class _State extends widgets.State<Page> {
         children: [
           SizedBox(
             width: 500,
-            height: 400,
-            child: PostCard()
+            child: PostCard((
+              content: ImageContent(
+                image: NetworkImage("https://picsum.photos/200/300")
+              )
+            ))
           )
         ]
       )

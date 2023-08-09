@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:teaching_platform/common/models/social_media/post.dart';
 import 'package:teaching_platform/common/widgets/services.dart/services.dart';
 import 'package:teaching_platform/social_media/widgets/post_card/button_row.dart';
 import 'package:teaching_platform/social_media/widgets/post_card/content.dart';
@@ -10,20 +11,16 @@ const _shadow = BoxShadow(
   offset: Offset(0, 1),
 );
 
-double _contentWidth(BoxConstraints constraints) =>
-  constraints.maxWidth * 0.9;
-double _contentHeight(BoxConstraints constraints) =>
-  constraints.maxHeight * 0.8;
-
-double _buttonRowWidth(BoxConstraints constraints) =>
-  constraints.maxWidth * 0.9;
-double _buttonRowHeight(BoxConstraints constraints) =>
-  constraints.maxHeight * 0.1;
+const _contentPadding = 12.0;
+const _spacing = 12.0;
 
 class PostCard extends StatelessWidget {
-  const PostCard({
-    super.key,
-  });
+  final Post post;
+
+  const PostCard(
+    this.post,
+    {super.key}
+  );
 
   // TODO: use constants (not relative for padding?)
 
@@ -31,34 +28,26 @@ class PostCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Services.of(context).theme;
     return Container(
+      padding: const EdgeInsets.all(_contentPadding),
       decoration: BoxDecoration(
         color: theme.colors.surface,
         boxShadow: const [_shadow],
       ),
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          return Column(
-            children: [
-              const Spacer(),
-              Content(
-                width: _contentWidth(constraints),
-                height: _contentHeight(constraints),
-              ),
-              const Spacer(),
-              ButtonRow(
-                width: _buttonRowWidth(constraints), 
-                height: _buttonRowHeight(constraints),
-                liked: true,
-                bookmarked: false,
-                onLikePressed: () {}, 
-                onCommentPressed: () {},
-                onSharePressed: () {},
-                onBookmarkPressed: () {}
-              ),
-              const Spacer(),
-            ]
-          );
-        }
+      child: Column(
+        children: [
+          const SizedBox(height: _spacing),
+          ContentWidget(post.content),
+          const SizedBox(height: _spacing),
+          ButtonRow(
+            liked: true,
+            bookmarked: false,
+            onLikePressed: () {}, 
+            onCommentPressed: () {},
+            onSharePressed: () {},
+            onBookmarkPressed: () {}
+          ),
+          const SizedBox(height: _spacing),
+        ]
       )
     );
   }
