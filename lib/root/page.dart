@@ -1,4 +1,6 @@
+import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:flutter/material.dart' hide TabBar, Theme, TextButton;
+import 'package:teaching_platform/common/models/social_media/content.dart';
 import 'package:teaching_platform/common/widgets/services.dart/services.dart';
 import 'package:teaching_platform/login/page.dart' as login;
 import 'package:teaching_platform/courses/page.dart' as courses;
@@ -63,11 +65,22 @@ class _State extends State<Page> {
               flex: 1,
               child: IndexedStack(
                 index: currentTabIndex,
-                children: const [
+                children: [
                   login.Page(),
                   courses.Page(),
                   courses.Page(),
-                  social_media.Page(),
+                  social_media.Page(
+                    posts: [
+                      const (
+                        creator: (userName: "donaldtam", picture: NetworkImage("https://picsum.photos/100")),
+                        content: TextContent("This is my first post ever!"),
+                      ),
+                      const (
+                        creator: (userName: "jackson123", picture: NetworkImage("https://picsum.photos/100")),
+                        content: ImageContent(NetworkImage("https://picsum.photos/200")),
+                      ),
+                    ].lock
+                  ),
                 ]
               ),
             )

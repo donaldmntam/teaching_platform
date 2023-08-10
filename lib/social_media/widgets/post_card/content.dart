@@ -18,14 +18,23 @@ class ContentWidget extends StatelessWidget {
     return SizedBox(
       width: double.infinity,
       child: switch (content) {
-        TextContent(text: final text) => Text(
-          text,
-          style: theme.textStyle(
-            size: 16,
-            weight: FontWeight.normal,
-            color: theme.colors.onSurface,
+        TextContent(text: final text) => Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: theme.colors.background,
+            borderRadius: BorderRadius.circular(4),
+          ),
+          child: Text(
+            text,
+            style: theme.textStyle(
+              size: 16,
+              weight: FontWeight.normal,
+              color: theme.colors.onSurface,
+            )
           )
         ),
+        // TODO: use image aspect ratio instead
         ImageContent(image: final image) => AspectRatio(
           aspectRatio: 4 / 3,
           child: Image(

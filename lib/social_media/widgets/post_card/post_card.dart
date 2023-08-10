@@ -3,6 +3,7 @@ import 'package:teaching_platform/common/models/social_media/post.dart';
 import 'package:teaching_platform/common/widgets/services.dart/services.dart';
 import 'package:teaching_platform/social_media/widgets/post_card/button_row.dart';
 import 'package:teaching_platform/social_media/widgets/post_card/content.dart';
+import 'package:teaching_platform/social_media/widgets/post_card/creator_row.dart';
 
 const _shadow = BoxShadow(
   color: Color(0x11000000),
@@ -35,6 +36,7 @@ class PostCard extends StatelessWidget {
       ),
       child: Column(
         children: [
+          CreatorRow(post.creator),
           const SizedBox(height: _spacing),
           ContentWidget(post.content),
           const SizedBox(height: _spacing),
@@ -46,7 +48,6 @@ class PostCard extends StatelessWidget {
             onSharePressed: () {},
             onBookmarkPressed: () {}
           ),
-          const SizedBox(height: _spacing),
         ]
       )
     );
