@@ -5,4 +5,5 @@ import 'content.dart';
 typedef Post = ({
   User creator,
   Content content,
+  bool liked,
 });

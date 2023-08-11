@@ -90,11 +90,13 @@ class _State extends widgets.State<Page> {
                 padding: const EdgeInsets.all(32),
                 width: constraints.maxWidth * _contentRelativeWidth,
                 height: constraints.maxHeight,
-                child: Content(
-                  lessonIndex: lessonIndex,
-                  course: testCoursesGroups[groupIndex].courses[courseIndex],
-                  didSelectLesson: (index) => setState(() => 
-                    lessonIndex = index
+                child: SingleChildScrollView(
+                  child: Content(
+                    lessonIndex: lessonIndex,
+                    course: testCoursesGroups[groupIndex].courses[courseIndex],
+                    didSelectLesson: (index) => setState(() => 
+                      lessonIndex = index
+                    ),
                   ),
                 ),
               ),

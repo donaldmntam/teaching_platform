@@ -41,7 +41,7 @@ class PostCard extends StatelessWidget {
           ContentWidget(post.content),
           const SizedBox(height: _spacing),
           ButtonRow(
-            liked: true,
+            liked: post.liked,
             bookmarked: false,
             onLikePressed: () {}, 
             onCommentPressed: () {},

@@ -16,16 +16,14 @@ class CourseText extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
       width: double.infinity,
       height: height,
-      child: FittedBox(
-        alignment: Alignment.centerLeft,
-        child: Text(
-          text,
-          style: theme.textStyle(
-            size: 18,
-            weight: FontWeight.bold,
-            color: theme.colors.primary,
-          )
-        )
+      child: Text(
+        text,
+        style: theme.textStyle(
+          size: 18,
+          weight: FontWeight.bold,
+          color: theme.colors.primary,
+        ),
+        overflow: TextOverflow.ellipsis,
       )
     );
   }
