@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart' hide Theme;
 import 'package:teaching_platform/common/functions/iterable_functions.dart';
 import 'package:teaching_platform/common/theme/theme.dart';
-import 'package:teaching_platform/common/widgets/services.dart/services.dart';
+import 'package:teaching_platform/common/widgets/services/services.dart';
 
 class TabBar extends StatelessWidget {
   final List<String> titles;

@@ -3,7 +3,7 @@ import 'package:teaching_platform/common/functions/iterable_functions.dart';
 import 'package:teaching_platform/common/functions/list_functions.dart';
 import 'package:teaching_platform/common/theme/theme.dart';
 import 'package:teaching_platform/common/widgets/button/selectable_text_button.dart';
-import 'package:teaching_platform/common/widgets/services.dart/services.dart';
+import 'package:teaching_platform/common/widgets/services/services.dart';
 import 'package:teaching_platform/common/models/course/course.dart';
 import 'package:teaching_platform/common/models/course/lesson.dart';
 import 'package:video_player/video_player.dart';

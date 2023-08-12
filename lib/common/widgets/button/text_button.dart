@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart' hide ButtonStyle;
 import 'package:teaching_platform/common/theme/theme.dart';
 import 'package:teaching_platform/common/widgets/button/button.dart';
-import 'package:teaching_platform/common/widgets/services.dart/services.dart';
+import 'package:teaching_platform/common/widgets/services/services.dart';
 
 import 'button_style.dart';
 

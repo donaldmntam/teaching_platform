@@ -2,7 +2,7 @@ import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:flutter/material.dart' hide TabBar, Theme, TextButton;
 import 'package:teaching_platform/common/models/social_media/content.dart';
 import 'package:teaching_platform/common/models/social_media/post.dart';
-import 'package:teaching_platform/common/widgets/services.dart/services.dart';
+import 'package:teaching_platform/common/widgets/services/services.dart';
 import 'package:teaching_platform/login/page.dart' as login;
 import 'package:teaching_platform/courses/page.dart' as courses;
 import 'package:teaching_platform/tasks/page.dart' as tasks;

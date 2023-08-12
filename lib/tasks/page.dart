@@ -25,12 +25,22 @@ class _PageState extends State<Page> {
   Widget build(BuildContext context) {
     return Center(
       child: QuestionColumn(
-        [
+        questions: [
           TextQuestion(
             title: "title",
             answer: "answer",
           ),
+          McQuestion(
+            title: "title",
+            options: [
+              "option 1",
+              "option 2",
+              "option 3",
+            ].lock,
+            selectedIndex: 1,
+          ),
         ].lock,
+        onAnswerChange: (_, __) => {},
       ),
     );
   }

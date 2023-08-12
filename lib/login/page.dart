@@ -2,7 +2,7 @@ import 'package:flutter/material.dart' hide TextField, TextButton;
 import 'package:teaching_platform/common/models/account/type.dart';
 import 'package:teaching_platform/common/theme/theme.dart';
 import 'package:teaching_platform/common/widgets/button/text_button.dart';
-import 'package:teaching_platform/common/widgets/services.dart/services.dart';
+import 'package:teaching_platform/common/widgets/services/services.dart';
 import 'package:teaching_platform/common/widgets/text_field/text_field.dart';
 import 'package:teaching_platform/login/widgets/selector.dart';
 

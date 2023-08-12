@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart' hide Theme;
 import 'package:flutter/widgets.dart';
 import 'package:teaching_platform/common/theme/theme.dart';
-import 'package:teaching_platform/common/widgets/services.dart/services.dart';
+import 'package:teaching_platform/common/widgets/services/services.dart';
 
 Color _buttonColor(Theme theme) => theme.colors.onSurface.withAlpha(125);
 const _spacing = 12.0;

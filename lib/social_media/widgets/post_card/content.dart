@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:teaching_platform/common/models/social_media/content.dart';
 import 'package:teaching_platform/common/theme/theme.dart';
 import 'package:teaching_platform/common/widgets/loading_indicator/loading_indicator.dart';
-import 'package:teaching_platform/common/widgets/services.dart/services.dart';
+import 'package:teaching_platform/common/widgets/services/services.dart';
 
 class ContentWidget extends StatelessWidget {
   final Content content;
@@ -30,7 +30,7 @@ class ContentWidget extends StatelessWidget {
             style: theme.textStyle(
               size: 16,
               weight: FontWeight.normal,
-              color: theme.colors.onSurface,
+              color: theme.colors.onBackground,
             )
           )
         ),

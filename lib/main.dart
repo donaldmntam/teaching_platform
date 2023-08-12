@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart' hide Theme;
 import 'package:teaching_platform/common/theme/theme.dart';
-import 'package:teaching_platform/common/widgets/services.dart/services.dart';
+import 'package:teaching_platform/common/widgets/services/services.dart';
 import 'package:teaching_platform/root/page.dart' as root;
 
 void main() {

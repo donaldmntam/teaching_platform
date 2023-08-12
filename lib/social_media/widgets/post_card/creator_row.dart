@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:teaching_platform/common/models/social_media/user.dart';
 import 'package:teaching_platform/common/theme/theme.dart';
-import 'package:teaching_platform/common/widgets/services.dart/services.dart';
+import 'package:teaching_platform/common/widgets/services/services.dart';
 
 const _pictureSize = 42.0;
 

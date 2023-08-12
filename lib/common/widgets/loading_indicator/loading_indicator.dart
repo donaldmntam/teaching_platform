@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:teaching_platform/common/widgets/services.dart/services.dart';
+import 'package:teaching_platform/common/widgets/services/services.dart';
 
 class LoadingIndicator extends StatelessWidget {
   const LoadingIndicator({super.key});

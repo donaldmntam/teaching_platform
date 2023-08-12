@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:teaching_platform/common/functions/duration_functions.dart';
 import 'package:teaching_platform/common/models/course/question.dart';
 import 'package:teaching_platform/common/theme/theme.dart';
-import 'package:teaching_platform/common/widgets/services.dart/services.dart';
+import 'package:teaching_platform/common/widgets/services/services.dart';
 
 const _iconContainerSize = 24.0;
 const _iconSize = 20.0;

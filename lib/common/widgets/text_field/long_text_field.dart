@@ -3,21 +3,27 @@ import 'package:flutter/material.dart' as material show TextField;
 import 'package:teaching_platform/common/theme/theme.dart';
 import 'package:teaching_platform/common/widgets/services/services.dart';
 
-class TextField extends StatelessWidget {
-  const TextField({super.key});
+class LongTextField extends StatelessWidget {
+  final void Function(String text)? onTextChange;
+
+  const LongTextField({
+    super.key,
+    this.onTextChange,
+  });
 
   @override
   Widget build(BuildContext context) {
     final theme = Services.of(context).theme;
     return Container(
       clipBehavior: Clip.antiAlias,
-      decoration: ShapeDecoration(
-        shape: const StadiumBorder(),
-        color: theme.colors.primary.withAlpha(50),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(6),
+        color: theme.colors.background,
       ),
       child: Material(
         color: const Color(0x00000000),
         child: material.TextField(
+          onChanged: onTextChange,
           decoration: const InputDecoration(
             contentPadding: EdgeInsets.symmetric(
               horizontal: 16,
@@ -28,12 +34,13 @@ class TextField extends StatelessWidget {
             filled: true,
             border: OutlineInputBorder(
               borderSide: BorderSide.none
-            )
+            ),
           ),
+          cursorColor: theme.colors.onBackground,
           style: theme.textStyle(
             size: 16,
             weight: FontWeight.normal,
-            color: theme.colors.primary,
+            color: theme.colors.onBackground,
           )
         ),
       ),

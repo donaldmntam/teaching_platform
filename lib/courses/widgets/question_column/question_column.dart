@@ -4,7 +4,7 @@ import 'package:flutter/material.dart' hide Theme;
 import 'package:teaching_platform/common/functions/iterable_functions.dart';
 import 'package:teaching_platform/common/functions/list_functions.dart';
 import 'package:teaching_platform/common/models/course/question.dart';
-import 'package:teaching_platform/common/widgets/services.dart/services.dart';
+import 'package:teaching_platform/common/widgets/services/services.dart';
 import 'package:teaching_platform/courses/widgets/course_column/typedefs.dart';
 import 'package:teaching_platform/courses/widgets/question_column/question_widget.dart';
 

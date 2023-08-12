@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:teaching_platform/common/models/social_media/post.dart';
-import 'package:teaching_platform/common/widgets/services.dart/services.dart';
+import 'package:teaching_platform/common/widgets/services/services.dart';
 import 'package:teaching_platform/social_media/widgets/post_card/button_row.dart';
 import 'package:teaching_platform/social_media/widgets/post_card/content.dart';
 import 'package:teaching_platform/social_media/widgets/post_card/creator_row.dart';

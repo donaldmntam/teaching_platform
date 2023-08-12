@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart' hide Theme;
 import 'package:teaching_platform/common/functions/iterable_functions.dart';
-import 'package:teaching_platform/common/widgets/services.dart/services.dart';
+import 'package:teaching_platform/common/widgets/services/services.dart';
 import 'package:teaching_platform/common/models/course/course_group.dart';
 import 'package:teaching_platform/courses/widgets/course_column/typedefs.dart';
 

@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart' hide State;
 import 'package:flutter/widgets.dart' as widgets show State;
-import 'package:teaching_platform/common/widgets/services.dart/services.dart';
+import 'package:teaching_platform/common/widgets/services/services.dart';
 
 const _minOpacity = 0.12;
 const _maxOpacity = 1.0;

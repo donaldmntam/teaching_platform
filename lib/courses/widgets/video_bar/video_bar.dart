@@ -2,7 +2,7 @@ import 'package:flutter/material.dart' hide State;
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart' as widgets show State;
 import 'package:teaching_platform/common/functions/error_functions.dart';
-import 'package:teaching_platform/common/widgets/services.dart/services.dart';
+import 'package:teaching_platform/common/widgets/services/services.dart';
 import 'package:teaching_platform/common/widgets/tappable/tappable.dart';
 import 'package:teaching_platform/courses/widgets/video_bar/controller.dart';
 
