@@ -2,6 +2,9 @@ import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:flutter/material.dart' hide TabBar, Theme, TextButton;
 import 'package:teaching_platform/common/models/social_media/content.dart';
 import 'package:teaching_platform/common/models/social_media/post.dart';
+import 'package:teaching_platform/common/models/task/input.dart';
+import 'package:teaching_platform/common/models/task/question.dart';
+import 'package:teaching_platform/common/models/task/task.dart';
 import 'package:teaching_platform/common/widgets/services/services.dart';
 import 'package:teaching_platform/login/page.dart' as login;
 import 'package:teaching_platform/courses/page.dart' as courses;
@@ -70,7 +73,35 @@ class _State extends State<Page> {
                 children: [
                   login.Page(),
                   courses.Page(),
-                  tasks.Page(),
+                  tasks.Page(
+                    tasks: <Task>[
+                      (
+                        title: "Task 1",
+                        timeAllowed: const Duration(minutes: 60),
+                        questions: <Question>[
+                          const TextQuestion(
+                            title: "What is design thinking?",
+                            input: TextInput("My answer"),
+                          )
+                        ].lock,
+                      ),
+                      (
+                        title: "Task 2",
+                        timeAllowed: const Duration(seconds: 60),
+                        questions: <Question>[
+                          McQuestion(
+                            title: "Which one is an example of design thinking?",
+                            options: <String>[
+                              "inventing a new chair",
+                              "inventing a new chair based on the design of an old chair",
+                              "inventing a new chair based on the design of an old chair, at the same time aiming to solve elderly people's sitting problem",
+                            ].lock,
+                            input: const McInput(null),
+                          )
+                        ].lock,
+                      )
+                    ].lock,
+                  ),
                   social_media.Page(
                     posts: <Post>[
                       const (

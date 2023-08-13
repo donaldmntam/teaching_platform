@@ -86,16 +86,18 @@ class _State extends widgets.State<Page> {
                   }),
                 ),
               ),
-              Container(
-                padding: const EdgeInsets.all(32),
+              SizedBox(
                 width: constraints.maxWidth * _contentRelativeWidth,
                 height: constraints.maxHeight,
                 child: SingleChildScrollView(
-                  child: Content(
-                    lessonIndex: lessonIndex,
-                    course: testCoursesGroups[groupIndex].courses[courseIndex],
-                    didSelectLesson: (index) => setState(() => 
-                      lessonIndex = index
+                  child: Padding(
+                    padding: const EdgeInsets.all(32),
+                    child: Content(
+                      lessonIndex: lessonIndex,
+                      course: testCoursesGroups[groupIndex].courses[courseIndex],
+                      didSelectLesson: (index) => setState(() => 
+                        lessonIndex = index
+                      ),
                     ),
                   ),
                 ),

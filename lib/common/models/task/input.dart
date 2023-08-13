@@ -16,7 +16,7 @@ final class TextInput implements Input {
 }
 
 final class McInput implements Input {
-  final int selectedIndex;
+  final int? selectedIndex;
   
   const McInput(this.selectedIndex);
 

@@ -22,7 +22,7 @@ class McQuestionWidget extends StatefulWidget {
 }
 
 class _McQuestionWidgetState extends State<McQuestionWidget> {
-  late int selectedIndex;
+  late int? selectedIndex;
 
   @override
   void initState() {

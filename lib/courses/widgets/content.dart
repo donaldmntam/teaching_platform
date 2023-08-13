@@ -187,7 +187,8 @@ class _LessonSelection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Wrap(
-      runSpacing: 12,
+      spacing: 16,
+      runSpacing: 8,
       children: lessons.mapIndexed<Widget>((i, lesson) =>
         SelectableTextButton(
           lesson.title,
@@ -195,7 +196,6 @@ class _LessonSelection extends StatelessWidget {
           onPressed: () => onSelect(i), 
         )
       ).toList()
-        ..insertInBetween((_) => const SizedBox(width: 16)),
     );
   }
 }
