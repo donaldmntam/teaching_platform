@@ -5,10 +5,12 @@ import 'package:teaching_platform/common/widgets/services/services.dart';
 
 class LongTextField extends StatelessWidget {
   final void Function(String text)? onTextChange;
+  final TextEditingController? controller;
 
   const LongTextField({
     super.key,
     this.onTextChange,
+    this.controller,
   });
 
   @override
@@ -23,6 +25,7 @@ class LongTextField extends StatelessWidget {
       child: Material(
         color: const Color(0x00000000),
         child: material.TextField(
+          controller: controller,
           onChanged: onTextChange,
           decoration: const InputDecoration(
             contentPadding: EdgeInsets.symmetric(
