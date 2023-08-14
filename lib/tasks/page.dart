@@ -79,21 +79,7 @@ class _PageState extends State<Page> with SingleTickerProviderStateMixin {
               width: _mainBodyWidth(constraints),
               height: double.infinity,
               child: QuestionColumn(
-                questions: [
-                  const TextQuestion(
-                    title: "title",
-                    input: TextInput("answer"),
-                  ),
-                  McQuestion(
-                    title: "title",
-                    options: [
-                      "option 1",
-                      "option 2",
-                      "option 3",
-                    ].lock,
-                    input: const McInput(1),
-                  ),
-                ].lock,
+                questions: widget.tasks[selectedTaskIndex].questions,
                 onInputChange: (_, __) => {},
               ),
             ),

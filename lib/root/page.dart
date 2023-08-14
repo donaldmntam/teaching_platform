@@ -82,7 +82,31 @@ class _State extends State<Page> {
                           const TextQuestion(
                             title: "What is design thinking?",
                             input: TextInput("My answer"),
-                          )
+                          ),
+                          const TextQuestion(
+                            title: "What is design thinking?",
+                            input: TextInput("My answer"),
+                          ),
+                          const TextQuestion(
+                            title: "What is design thinking?",
+                            input: TextInput("My answer"),
+                          ),
+                          const TextQuestion(
+                            title: "What is design thinking?",
+                            input: TextInput("My answer"),
+                          ),
+                          const TextQuestion(
+                            title: "What is design thinking?",
+                            input: TextInput("My answer"),
+                          ),
+                          const TextQuestion(
+                            title: "What is design thinking?",
+                            input: TextInput("My answer"),
+                          ),
+                          const TextQuestion(
+                            title: "What is design thinking?",
+                            input: TextInput("My answer"),
+                          ),
                         ].lock,
                       ),
                       (
@@ -97,7 +121,43 @@ class _State extends State<Page> {
                               "inventing a new chair based on the design of an old chair, at the same time aiming to solve elderly people's sitting problem",
                             ].lock,
                             input: const McInput(null),
-                          )
+                          ),
+                          McQuestion(
+                            title: "Which one is an example of design thinking?",
+                            options: <String>[
+                              "inventing a new chair",
+                              "inventing a new chair based on the design of an old chair",
+                              "inventing a new chair based on the design of an old chair, at the same time aiming to solve elderly people's sitting problem",
+                            ].lock,
+                            input: const McInput(null),
+                          ),
+                          McQuestion(
+                            title: "Which one is an example of design thinking?",
+                            options: <String>[
+                              "inventing a new chair",
+                              "inventing a new chair based on the design of an old chair",
+                              "inventing a new chair based on the design of an old chair, at the same time aiming to solve elderly people's sitting problem",
+                            ].lock,
+                            input: const McInput(null),
+                          ),
+                          McQuestion(
+                            title: "Which one is an example of design thinking?",
+                            options: <String>[
+                              "inventing a new chair",
+                              "inventing a new chair based on the design of an old chair",
+                              "inventing a new chair based on the design of an old chair, at the same time aiming to solve elderly people's sitting problem",
+                            ].lock,
+                            input: const McInput(null),
+                          ),
+                          McQuestion(
+                            title: "Which one is an example of design thinking?",
+                            options: <String>[
+                              "inventing a new chair",
+                              "inventing a new chair based on the design of an old chair",
+                              "inventing a new chair based on the design of an old chair, at the same time aiming to solve elderly people's sitting problem",
+                            ].lock,
+                            input: const McInput(null),
+                          ),
                         ].lock,
                       )
                     ].lock,

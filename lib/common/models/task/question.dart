@@ -8,37 +8,32 @@ sealed class Question {
 }
 
 final class TextQuestion extends Question {
-  final TextInput input;
-
   const TextQuestion({
     required super.title,
-    required this.input,
   });
   
   @override
   bool operator ==(Object? other) {
     if (other is! TextQuestion) return false;
-    return input == other.input;
+    return title == other.title;
   }
 
   @override
-  int get hashCode => input.hashCode;
+  int get hashCode => title.hashCode;
 }
 
 final class McQuestion extends Question {
   final IList<String> options;
-  final McInput input;
 
   const McQuestion({
     required super.title,
     required this.options,
-    required this.input
   });
 
   @override
   bool operator ==(Object? other) {
     if (other is! McQuestion) return false;
-    return options == other.options &&
-      input == other.input;
+    return title == other.title &&
+      options == other.options;
   }
 }

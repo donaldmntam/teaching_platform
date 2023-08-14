@@ -8,12 +8,14 @@ import '../title.dart';
 class McQuestionWidget extends StatefulWidget {
   final int index;
   final McQuestion question;
+  final McInput input;
   final void Function(int index, McInput input) onInputChange;
 
   const McQuestionWidget({
     super.key,
     required this.index,
     required this.question,
+    required this.input,
     required this.onInputChange,
   });
 
@@ -26,13 +28,13 @@ class _McQuestionWidgetState extends State<McQuestionWidget> {
 
   @override
   void initState() {
-    selectedIndex = widget.question.input.selectedIndex;
+    selectedIndex = widget.input.selectedIndex;
     super.initState();
   }
 
   @override
   void didUpdateWidget(McQuestionWidget oldWidget) {
-    selectedIndex = widget.question.input.selectedIndex;
+    selectedIndex = widget.input.selectedIndex;
     super.didUpdateWidget(oldWidget);
   }
 

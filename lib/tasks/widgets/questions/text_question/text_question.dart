@@ -10,12 +10,14 @@ import '../title.dart';
 class TextQuestionWidget extends StatefulWidget {
   final int index;
   final TextQuestion question;
+  final TextInput input;
   final void Function(int index, TextInput input) onInputChange;
 
   const TextQuestionWidget({
     super.key,
     required this.index,
     required this.question,
+    required this.input,
     required this.onInputChange,
   });
 
@@ -29,7 +31,7 @@ class _TextQuestionWidgetState extends State<TextQuestionWidget> {
   @override
   void initState() {
     final controller = TextEditingController();
-    controller.text = widget.question.input.text;
+    controller.text = widget.input.text;
     controller.addListener(() => 
       widget.onInputChange(widget.index, TextInput(controller.text))
     );
@@ -45,7 +47,7 @@ class _TextQuestionWidgetState extends State<TextQuestionWidget> {
 
   @override
   void didUpdateWidget(TextQuestionWidget oldWidget) {
-    controller.text = widget.question.input.text;
+    controller.text = widget.input.text;
     super.didUpdateWidget(oldWidget);
   }
 

@@ -98,7 +98,7 @@ class _VideoBarState extends widgets.State<VideoBar>
         setState(() {});
       case Uninitialized():
       case Playing():
-        badTransition(state, "shouldPlay");
+        illegalState(state, "shouldPlay");
     }
   }
 
@@ -118,7 +118,7 @@ class _VideoBarState extends widgets.State<VideoBar>
         setState(() {});
       case Uninitialized():
       case Paused():
-        badTransition(state, "shouldPause");
+        illegalState(state, "shouldPause");
     }
   }
 
@@ -135,7 +135,7 @@ class _VideoBarState extends widgets.State<VideoBar>
           )
         );
       case Uninitialized():
-        badTransition(state, "shouldSeek");
+        illegalState(state, "shouldSeek");
     }
   }
 
@@ -167,7 +167,7 @@ class _VideoBarState extends widgets.State<VideoBar>
           Duration(milliseconds: value.toInt())
         );
       case Uninitialized():
-        badTransition(state, "onChange");
+        illegalState(state, "onChange");
     }
   }
 
