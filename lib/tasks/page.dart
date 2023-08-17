@@ -14,11 +14,8 @@ double _taskColumnWidth(BoxConstraints constraints) =>
   constraints.maxWidth * 0.2;
 
 class Page extends StatefulWidget {
-  final IList<Task> tasks;
-
   const Page({
     super.key,
-    required this.tasks,
   });
 
   @override
@@ -30,6 +27,8 @@ class _PageState extends State<Page> with SingleTickerProviderStateMixin {
 
   final Duration timeAllowed = const Duration(minutes: 60);
   late Duration timeRemaining;
+
+  IList<Task> tasks = _initialTestTasks;
 
   late int selectedTaskIndex;
 
@@ -60,6 +59,20 @@ class _PageState extends State<Page> with SingleTickerProviderStateMixin {
     setState(() => timeRemaining = timeAllowed - duration);
   }
 
+  void onInputChange({
+    required int taskIndex,
+    required int questionIndex,
+    required Input input,
+  }) {
+    setState(() => 
+      tasks = tasks.replaceBy(taskIndex, (task) =>
+        task.copyBy(inputs: (inputs) => 
+          inputs.replace(questionIndex, input)
+        )
+      )
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
@@ -69,7 +82,7 @@ class _PageState extends State<Page> with SingleTickerProviderStateMixin {
             SizedBox(
               width: _taskColumnWidth(constraints),
               child: TaskColumn(
-                tasks: widget.tasks,
+                tasks: tasks,
                 selectedTaskIndex: selectedTaskIndex,
                 onTaskSelected: (index) => 
                   setState(() => selectedTaskIndex = index),
@@ -79,8 +92,10 @@ class _PageState extends State<Page> with SingleTickerProviderStateMixin {
               width: _mainBodyWidth(constraints),
               height: double.infinity,
               child: QuestionColumn(
-                questions: widget.tasks[selectedTaskIndex].questions,
-                onInputChange: (_, __) => {},
+                taskIndex: selectedTaskIndex,
+                questions: tasks[selectedTaskIndex].questions,
+                inputs: tasks[selectedTaskIndex].inputs,
+                onInputChange: onInputChange,
               ),
             ),
           ],
@@ -89,3 +104,95 @@ class _PageState extends State<Page> with SingleTickerProviderStateMixin {
     );
   }
 }
+
+final _initialTestTasks = <Task>[
+  (
+    title: "Task 1",
+    timeAllowed: const Duration(minutes: 60),
+    questions: <Question>[
+      const TextQuestion(
+        title: "What is design thinking?",
+      ),
+      const TextQuestion(
+        title: "What is design thinking?",
+      ),
+      const TextQuestion(
+        title: "What is design thinking?",
+      ),
+      const TextQuestion(
+        title: "What is design thinking?",
+      ),
+      const TextQuestion(
+        title: "What is design thinking?",
+      ),
+      const TextQuestion(
+        title: "What is design thinking?",
+      ),
+      const TextQuestion(
+        title: "What is design thinking?",
+      ),
+    ].lock,
+    inputs: [
+      const TextInput("My answer"),
+      const TextInput("My answer"),
+      const TextInput("My answer"),
+      const TextInput("My answer"),
+      const TextInput("My answer"),
+      const TextInput("My answer"),
+      const TextInput("My answer"),
+    ].lock
+  ),
+  (
+    title: "Task 2",
+    timeAllowed: const Duration(seconds: 60),
+    questions: <Question>[
+      McQuestion(
+        title: "Which one is an example of design thinking?",
+        options: <String>[
+          "inventing a new chair",
+          "inventing a new chair based on the design of an old chair",
+          "inventing a new chair based on the design of an old chair, at the same time aiming to solve elderly people's sitting problem",
+        ].lock,
+      ),
+      McQuestion(
+        title: "Which one is an example of design thinking?",
+        options: <String>[
+          "inventing a new chair",
+          "inventing a new chair based on the design of an old chair",
+          "inventing a new chair based on the design of an old chair, at the same time aiming to solve elderly people's sitting problem",
+        ].lock,
+      ),
+      McQuestion(
+        title: "Which one is an example of design thinking?",
+        options: <String>[
+          "inventing a new chair",
+          "inventing a new chair based on the design of an old chair",
+          "inventing a new chair based on the design of an old chair, at the same time aiming to solve elderly people's sitting problem",
+        ].lock,
+      ),
+      McQuestion(
+        title: "Which one is an example of design thinking?",
+        options: <String>[
+          "inventing a new chair",
+          "inventing a new chair based on the design of an old chair",
+          "inventing a new chair based on the design of an old chair, at the same time aiming to solve elderly people's sitting problem",
+        ].lock,
+      ),
+      McQuestion(
+        title: "Which one is an example of design thinking?",
+        options: <String>[
+          "inventing a new chair",
+          "inventing a new chair based on the design of an old chair",
+          "inventing a new chair based on the design of an old chair, at the same time aiming to solve elderly people's sitting problem",
+        ].lock,
+      ),
+    ].lock,
+    inputs: [
+      const McInput(null),
+      const McInput(null),
+      const McInput(null),
+      const McInput(null),
+      const McInput(null),
+    ].lock
+  ),
+].lock;

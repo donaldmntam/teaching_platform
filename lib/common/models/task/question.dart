@@ -36,4 +36,8 @@ final class McQuestion extends Question {
     return title == other.title &&
       options == other.options;
   }
+
+  @override
+  int get hashCode => title.hashCode ^
+    options.hashCode;
 }

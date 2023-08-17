@@ -13,6 +13,9 @@ final class TextInput implements Input {
 
   @override 
   int get hashCode => text.hashCode;
+
+  @override
+  String toString() => "TextInput { text: $text }";
 }
 
 final class McInput implements Input {
@@ -28,4 +31,7 @@ final class McInput implements Input {
 
   @override 
   int get hashCode => selectedIndex.hashCode;
+
+  @override
+  String toString() => "McInput { selectedIndex: $selectedIndex }";
 }

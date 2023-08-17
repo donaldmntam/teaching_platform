@@ -10,12 +10,18 @@ import 'package:teaching_platform/tasks/widgets/questions/text_question/text_que
 const _padding = 12.0;
 
 class QuestionColumn extends StatelessWidget {
+  final int taskIndex;
   final IList<Question> questions;
   final IList<Input> inputs;
-  final void Function(int index, Input input) onInputChange;
+  final void Function({
+    required int taskIndex,
+    required int questionIndex, 
+    required Input input,
+  }) onInputChange;
 
   const QuestionColumn({
     super.key,
+    required this.taskIndex,
     required this.questions,
     required this.inputs,
     required this.onInputChange,
@@ -24,6 +30,7 @@ class QuestionColumn extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final widgets = _widgets(
+      taskIndex: taskIndex,
       questions: questions,
       inputs: inputs,
       onInputChange: onInputChange,
@@ -40,9 +47,14 @@ class QuestionColumn extends StatelessWidget {
 }
 
 List<Widget> _widgets({
+  required int taskIndex,
   required IList<Question> questions,
   required IList<Input> inputs,
-  required void Function(int index, Input input) onInputChange,
+  required void Function({
+    required int taskIndex,
+    required int questionIndex,
+    required Input input
+  }) onInputChange,
 }) {
   final list = List<Widget>.empty(growable: true);
   
@@ -59,16 +71,24 @@ List<Widget> _widgets({
             return TextQuestionWidget(
               index: i,
               question: question,
-              input: input,
-              onInputChange: onInputChange,
+              initialInput: input,
+              onInputChange: (questionIndex, input) => onInputChange(
+                taskIndex: taskIndex,
+                questionIndex: questionIndex,
+                input: input,
+              ),
             );
           case McQuestion():
             if (input is! McInput) badType(input, McInput);
             return McQuestionWidget(
               index: i,
               question: question,
-              input: input,
-              onInputChange: onInputChange,
+              initialInput: input,
+              onInputChange: (questionIndex, input) => onInputChange(
+                taskIndex: taskIndex,
+                questionIndex: questionIndex,
+                input: input,
+              ),
             );
         }
       }),

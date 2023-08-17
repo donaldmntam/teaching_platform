@@ -10,14 +10,14 @@ import '../title.dart';
 class TextQuestionWidget extends StatefulWidget {
   final int index;
   final TextQuestion question;
-  final TextInput input;
+  final TextInput initialInput;
   final void Function(int index, TextInput input) onInputChange;
 
   const TextQuestionWidget({
     super.key,
     required this.index,
     required this.question,
-    required this.input,
+    required this.initialInput,
     required this.onInputChange,
   });
 
@@ -28,14 +28,13 @@ class TextQuestionWidget extends StatefulWidget {
 class _TextQuestionWidgetState extends State<TextQuestionWidget> {
   late final TextEditingController controller;
 
+
   @override
   void initState() {
     final controller = TextEditingController();
-    controller.text = widget.input.text;
-    controller.addListener(() => 
-      widget.onInputChange(widget.index, TextInput(controller.text))
-    );
+    controller.text = widget.initialInput.text;
     this.controller = controller;
+
     super.initState();
   }
 
@@ -47,7 +46,6 @@ class _TextQuestionWidgetState extends State<TextQuestionWidget> {
 
   @override
   void didUpdateWidget(TextQuestionWidget oldWidget) {
-    controller.text = widget.input.text;
     super.didUpdateWidget(oldWidget);
   }
 
@@ -61,10 +59,9 @@ class _TextQuestionWidgetState extends State<TextQuestionWidget> {
         Title(widget.question.title),
         const SizedBox(height: spacing),
         LongTextField(
-          onTextChange: (text) => widget.onInputChange(
-            widget.index,
-            TextInput(text),
-          ),
+          controller: controller,
+          onTextChange: (text) => 
+            widget.onInputChange(widget.index, TextInput(text)),
         )
       ]
     );

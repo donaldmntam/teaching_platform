@@ -1,9 +1,12 @@
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:teaching_platform/common/models/task/task.dart';
 import 'package:teaching_platform/common/theme/theme.dart';
 import 'package:teaching_platform/common/widgets/button/selectable_text_button.dart';
 import 'package:teaching_platform/common/widgets/services/services.dart';
+
+const _listSpacing = 16.0;
 
 class TaskColumn extends StatelessWidget {
   final IList<Task> tasks;
@@ -24,10 +27,12 @@ class TaskColumn extends StatelessWidget {
       selectedTaskIndex: selectedTaskIndex,
       onTaskSelected: onTaskSelected,
     );
-    return ListView.separated(
-      itemCount: widgets.length,
-      itemBuilder: (_, index) => widgets[index],
-      separatorBuilder: (_, __) => const SizedBox(height: 16),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: _listSpacing),
+      child: ListView.builder(
+        itemCount: widgets.length,
+        itemBuilder: (_, index) => widgets[index],
+      ),
     );
   }
 }
@@ -39,10 +44,16 @@ List<Widget> _widgets({
 }) {
   final list = List<Widget>.empty(growable: true);
 
+  list.add(const SizedBox(height: _listSpacing));
+
   list.add(const _Text("Tasks"));
+  list.add(const SizedBox(height: _listSpacing));
 
   for (var i = 0; i < tasks.length; i++) {
     final task = tasks[i];
+    if (i != 0) {
+      list.add(const SizedBox(height: _listSpacing));
+    }
     list.add(
       SelectableTextButton(
         task.title,
@@ -51,6 +62,8 @@ List<Widget> _widgets({
       ),
     );
   }
+
+  list.add(const SizedBox(height: _listSpacing));
 
   return list;
 }
