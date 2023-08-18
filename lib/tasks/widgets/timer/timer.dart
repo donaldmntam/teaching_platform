@@ -15,11 +15,12 @@ class Timer extends StatelessWidget {
     return IntrinsicHeight(
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
         children: [
           Text(
             "Time Remaining: ",
             style: theme.textStyle(
-              size: 14,
+              size: 22,
               color: theme.colors.primary,
               weight: FontWeight.normal,
             )
@@ -38,7 +39,7 @@ class Timer extends StatelessWidget {
                 child: Text(
                   timeRemaining.toTimeString(),
                   style: theme.textStyle(
-                    size: 14,
+                    size: 22,
                     color: theme.colors.primary,
                     weight: FontWeight.normal,
                   ),

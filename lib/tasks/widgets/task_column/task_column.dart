@@ -6,7 +6,7 @@ import 'package:teaching_platform/common/theme/theme.dart';
 import 'package:teaching_platform/common/widgets/button/selectable_text_button.dart';
 import 'package:teaching_platform/common/widgets/services/services.dart';
 
-const _listSpacing = 16.0;
+const listSpacing = 16.0;
 
 class TaskColumn extends StatelessWidget {
   final IList<Task> tasks;
@@ -22,16 +22,20 @@ class TaskColumn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Services.of(context).theme;
     final widgets = _widgets(
       tasks: tasks,
       selectedTaskIndex: selectedTaskIndex,
       onTaskSelected: onTaskSelected,
     );
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: _listSpacing),
-      child: ListView.builder(
-        itemCount: widgets.length,
-        itemBuilder: (_, index) => widgets[index],
+    return Container(
+      color: theme.colors.background,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: listSpacing),
+        child: ListView.builder(
+          itemCount: widgets.length,
+          itemBuilder: (_, index) => widgets[index],
+        ),
       ),
     );
   }
@@ -44,15 +48,15 @@ List<Widget> _widgets({
 }) {
   final list = List<Widget>.empty(growable: true);
 
-  list.add(const SizedBox(height: _listSpacing));
+  list.add(const SizedBox(height: listSpacing));
 
   list.add(const _Text("Tasks"));
-  list.add(const SizedBox(height: _listSpacing));
+  list.add(const SizedBox(height: listSpacing));
 
   for (var i = 0; i < tasks.length; i++) {
     final task = tasks[i];
     if (i != 0) {
-      list.add(const SizedBox(height: _listSpacing));
+      list.add(const SizedBox(height: listSpacing));
     }
     list.add(
       SelectableTextButton(
@@ -63,7 +67,7 @@ List<Widget> _widgets({
     );
   }
 
-  list.add(const SizedBox(height: _listSpacing));
+  list.add(const SizedBox(height: listSpacing));
 
   return list;
 }
