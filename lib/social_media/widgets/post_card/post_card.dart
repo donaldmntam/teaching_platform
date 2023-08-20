@@ -4,16 +4,7 @@ import 'package:teaching_platform/common/widgets/services/services.dart';
 import 'package:teaching_platform/social_media/widgets/post_card/button_row.dart';
 import 'package:teaching_platform/social_media/widgets/post_card/content.dart';
 import 'package:teaching_platform/social_media/widgets/post_card/creator_row.dart';
-
-const _shadow = BoxShadow(
-  color: Color(0x11000000),
-  blurRadius: 2,
-  spreadRadius: 2,
-  offset: Offset(0, 1),
-);
-
-const _contentPadding = 12.0;
-const _spacing = 12.0;
+import 'package:teaching_platform/social_media/widgets/values.dart';
 
 class PostCard extends StatelessWidget {
   final Post post;
@@ -29,17 +20,14 @@ class PostCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Services.of(context).theme;
     return Container(
-      padding: const EdgeInsets.all(_contentPadding),
-      decoration: BoxDecoration(
-        color: theme.colors.surface,
-        boxShadow: const [_shadow],
-      ),
+      padding: const EdgeInsets.all(cardPadding),
+      decoration: cardDecoration(theme),
       child: Column(
         children: [
           CreatorRow(post.creator),
-          const SizedBox(height: _spacing),
+          const SizedBox(height: cardSpacing),
           ContentWidget(post.content),
-          const SizedBox(height: _spacing),
+          const SizedBox(height: cardSpacing),
           ButtonRow(
             liked: post.liked,
             bookmarked: false,

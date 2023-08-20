@@ -2,10 +2,9 @@ import 'package:flutter/material.dart' hide Theme;
 import 'package:flutter/widgets.dart';
 import 'package:teaching_platform/common/theme/theme.dart';
 import 'package:teaching_platform/common/widgets/services/services.dart';
+import 'package:teaching_platform/social_media/widgets/values.dart';
 
 Color _buttonColor(Theme theme) => theme.colors.onSurface.withAlpha(125);
-const _spacing = 12.0;
-const _iconSize = 32.0;
 
 class ButtonRow extends StatelessWidget {
   final bool liked;
@@ -34,25 +33,25 @@ class ButtonRow extends StatelessWidget {
         Icon(
           liked ? Icons.favorite : Icons.favorite_outline,
           color: liked ? Colors.red : _buttonColor(theme),
-          size: _iconSize,
+          size: buttonRowHeight,
         ),
-        const SizedBox(width: _spacing),
+        const SizedBox(width: buttonRowSpacing),
         Icon(
           Icons.comment_outlined,
           color: _buttonColor(theme),
-          size: _iconSize,
+          size: buttonRowHeight,
         ),
-        const SizedBox(width: _spacing),
+        const SizedBox(width: buttonRowSpacing),
         Icon(
           Icons.send_outlined,
           color: _buttonColor(theme),
-          size: _iconSize,
+          size: buttonRowHeight,
         ),
         const Spacer(),
         Icon(
           Icons.bookmark_outline,
           color: _buttonColor(theme),
-          size: _iconSize,
+          size: buttonRowHeight,
         )
       ]
     );
