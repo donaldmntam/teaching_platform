@@ -14,4 +14,6 @@ extension ExtendedDuration on Duration {
       _ => "${hours.toString()}:$m:$s",
     };
   }
+
+  Duration roundedToSeconds() => Duration(seconds: inSeconds);
 }

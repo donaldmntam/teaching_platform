@@ -8,28 +8,26 @@ final class AwaitingStart implements State {
 }
 
 final class Ready implements State {
-  final IList<Task> tasks;
+  final Task task;
   final Duration? startTime;
-  final Duration timeAllowed;
-  final Duration timeRemaining;
+  final Duration initialTimeRemaining;
 
   const Ready({
-    required this.tasks,
+    required this.task,
     this.startTime,
-    required this.timeAllowed,
-    required this.timeRemaining,
+    required this.initialTimeRemaining,
   });
 
   Ready copyBy({
-    IList<Task> Function(IList<Task>)? tasks,
+    Task Function(Task)? task,
     Duration? Function(Duration?)? startTime,
     Duration Function(Duration)? timeAllowed,
     Duration Function(Duration)? timeRemaining,
+    Duration Function(Duration)? initialTimeRemaining,
   }) => Ready(
-    tasks: tasks?.call(this.tasks) ?? this.tasks,
+    task: task?.call(this.task) ?? this.task,
     startTime: startTime?.call(this.startTime) ?? this.startTime,
-    timeAllowed: timeAllowed?.call(this.timeAllowed) ?? this.timeAllowed,
-    timeRemaining: timeRemaining?.call(this.timeRemaining) ?? this.timeRemaining,
+    initialTimeRemaining: initialTimeRemaining?.call(this.initialTimeRemaining) ?? this.initialTimeRemaining,
   );
 }
 

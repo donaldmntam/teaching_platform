@@ -1,18 +1,22 @@
 import 'package:flutter/material.dart' hide TextButton;
 import 'package:teaching_platform/common/models/task/input.dart';
+import 'package:teaching_platform/common/util_classes/channel.dart';
 import 'package:teaching_platform/common/widgets/button/text_button.dart';
 import 'package:teaching_platform/common/widgets/line_shadow/line_shadow.dart';
 import 'package:teaching_platform/common/widgets/services/services.dart';
-import 'package:teaching_platform/tasks/models/state.dart';
+import 'package:teaching_platform/tasks/models/task_state.dart';
 import 'package:teaching_platform/tasks/widgets/question_column/question_column.dart';
 import 'package:teaching_platform/tasks/widgets/task_column/task_column.dart';
+import 'package:teaching_platform/tasks/widgets/timer/event.dart';
 import 'package:teaching_platform/tasks/widgets/timer/timer.dart';
 
-const _overlayVerticalPadding = 6.0;
+const _overlayVerticalPadding = 12.0;
+const _overlayHeight = 64.0;
 
 class ReadyContent extends StatelessWidget {
   final int taskIndex;
   final Ready state;
+  final Channel<TimerControllerEvent> timerChannel;
   final void Function({
     required int taskIndex,
     required int questionIndex,
@@ -24,6 +28,7 @@ class ReadyContent extends StatelessWidget {
     super.key,
     required this.taskIndex,
     required this.state,
+    required this.timerChannel,
     required this.onInputChange,
     required this.onFinish,
   });
@@ -35,6 +40,7 @@ class ReadyContent extends StatelessWidget {
     return Column(
       children: [
         Container(
+          height: _overlayHeight,
           padding: const EdgeInsets.only(
             right: listSpacing,
             top: _overlayVerticalPadding,
@@ -44,7 +50,12 @@ class ReadyContent extends StatelessWidget {
           decoration: BoxDecoration(
             color: theme.colors.surface,
           ),
-          child: Timer(state.timeRemaining),
+          child: Timer(
+            taskIndex: taskIndex,
+            timeAllowed: state.task.timeAllowed,
+            channel: timerChannel,
+            onFinish: onFinish,
+          ),
         ),
         Flexible(
           flex: 1,
@@ -52,8 +63,8 @@ class ReadyContent extends StatelessWidget {
             children: [
               QuestionColumn(
                 taskIndex: taskIndex,
-                questions: state.tasks[taskIndex].questions,
-                inputs: state.tasks[taskIndex].inputs,
+                questions: state.task.questions,
+                inputs: state.task.inputs,
                 onInputChange: onInputChange,
               ),
               const Align(
@@ -79,15 +90,18 @@ class ReadyContent extends StatelessWidget {
           ),
         ),
         Container(
+          height: _overlayHeight,
           color: theme.colors.surface,
           alignment: Alignment.center,
           padding: const EdgeInsets.only(
             top: _overlayVerticalPadding,
             bottom: _overlayVerticalPadding,
           ),
-          child: TextButton(
-            "Finish",
-            onPressed: () => onFinish(taskIndex),
+          child: FittedBox(
+            child: TextButton(
+              "Finish",
+              onPressed: () => onFinish(taskIndex),
+            ),
           )
         )
       ],

@@ -1,7 +1,7 @@
 Never illegalState(
   Object? state,
   String function,
-) => throw "ILlegal state! State: $state; Function: $function.";
+) => throw "Illegal state! State: $state; Function: $function.";
 
 Never badType(
   Object? object,

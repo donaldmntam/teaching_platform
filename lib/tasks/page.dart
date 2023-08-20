@@ -1,16 +1,16 @@
+import 'dart:async';
+
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 import 'package:teaching_platform/common/functions/error_functions.dart';
+import 'package:teaching_platform/common/functions/iterable_functions.dart';
 import 'package:teaching_platform/common/models/task/input.dart';
 import 'package:teaching_platform/common/models/task/question.dart';
 import 'package:teaching_platform/common/models/task/task.dart';
-import 'package:teaching_platform/common/widgets/line_shadow/line_shadow.dart';
-import 'package:teaching_platform/common/widgets/services/services.dart';
-import 'package:teaching_platform/tasks/widgets/question_column/question_column.dart';
+import 'package:teaching_platform/common/util_classes/channel.dart';
 import 'package:teaching_platform/tasks/widgets/task_column/task_column.dart';
-import 'package:teaching_platform/tasks/widgets/timer/timer.dart';
-import './models/state.dart' as page;
+import 'package:teaching_platform/tasks/widgets/timer/event.dart';
+import 'models/task_state.dart' as task_state;
 
 import 'widgets/awaiting_start_content/awaiting_start_content.dart';
 import 'widgets/finished_content/finished_content.dart';
@@ -30,22 +30,23 @@ class Page extends StatefulWidget {
   State<Page> createState() => _PageState();
 }
 
-class _PageState extends State<Page> with SingleTickerProviderStateMixin {
-  late final Ticker ticker;
-
+class _PageState extends State<Page> {
   IList<Task> tasks = _initialTestTasks;
-  late IList<page.State> states;
+  late IList<task_state.State> states;
+  late IList<Channel<TimerControllerEvent>> timerChannels;
 
   late int selectedTaskIndex;
 
   @override
   void initState() {
-    final ticker = createTicker(onTick);
-    ticker.start();
-    this.ticker = ticker;
+    states = List<task_state.State>.filled(
+      tasks.length, 
+      const task_state.AwaitingStart(),
+    ).lock;
 
-    states = List<page.State>.generate(tasks.length, (_) =>
-      const page.AwaitingStart(),
+    timerChannels = List.generate(
+      tasks.length,
+      (_) => Channel<TimerControllerEvent>(),
     ).lock;
 
     selectedTaskIndex = 0;
@@ -55,30 +56,7 @@ class _PageState extends State<Page> with SingleTickerProviderStateMixin {
 
   @override
   void dispose() {
-    ticker.dispose();
     super.dispose();
-  }
-
-  void onTick(Duration duration) {
-    for (var i = 0; i < states.length; i++) {
-      final state = states[i];
-      if (state is! page.Ready) continue;
-      setState(() {
-        final newRemaining = state.timeAllowed - (
-          duration - (state.startTime ?? duration)
-        );
-        final page.State newState;
-        if (newRemaining < Duration.zero) {
-          newState = const page.Finished();
-        } else {
-          newState = state.copyBy(
-            startTime: (startTime) => startTime ?? duration,
-            timeRemaining: (_) => newRemaining,
-          );
-        }
-        states = states.replace(i, newState);
-      });
-    }
   }
 
   void onInputChange({
@@ -97,14 +75,15 @@ class _PageState extends State<Page> with SingleTickerProviderStateMixin {
 
   void onTaskStart(int taskIndex) {
     final state = states[taskIndex];
-    if (state is! page.AwaitingStart) illegalState(state, "onTaskStart");
+    if (state is! task_state.AwaitingStart) illegalState(state, "onTaskStart");
+    final task = tasks[taskIndex];
+    timerChannels[taskIndex].add(const Start());
     setState(() => 
       states = states.replace(
         taskIndex, 
-        page.Ready(
-          tasks: tasks, 
-          timeAllowed: const Duration(seconds: 60),
-          timeRemaining: const Duration(seconds: 60),
+        task_state.Ready(
+          task: task, 
+          initialTimeRemaining: task.timeAllowed,
         ),
       ),
     );  
@@ -112,18 +91,17 @@ class _PageState extends State<Page> with SingleTickerProviderStateMixin {
 
   void onTaskFinish(int taskIndex) {
     final state = states[taskIndex];
-    if (state is! page.Ready) illegalState(state, "onTaskFinish");
+    if (state is! task_state.Ready) illegalState(state, "onTaskFinish");
     setState(() =>
       states = states.replace(
         taskIndex,
-        const page.Finished(),
+        const task_state.Finished(),
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final state = states[selectedTaskIndex];
     return LayoutBuilder(
       builder: (_, constraints) {
         return Row(
@@ -141,19 +119,23 @@ class _PageState extends State<Page> with SingleTickerProviderStateMixin {
             SizedBox(
               width: _mainBodyWidth(constraints),
               height: double.infinity,
-              child: switch (state) {
-                page.AwaitingStart() => AwaitingStartContent(
-                  taskIndex: selectedTaskIndex,
-                  onStart: onTaskStart,
-                ),
-                page.Ready() => ReadyContent(
-                  taskIndex: selectedTaskIndex,
-                  state: state,
-                  onInputChange: onInputChange,
-                  onFinish: onTaskFinish,
-                ),
-                page.Finished() => const FinishedContent(),
-              },
+              child: IndexedStack(
+                index: selectedTaskIndex,
+                children: states.mapIndexed((i, state) => switch (state) {
+                  task_state.AwaitingStart() => AwaitingStartContent(
+                    taskIndex: i,
+                    onStart: onTaskStart,
+                  ),
+                  task_state.Ready() => ReadyContent(
+                    taskIndex: i,
+                    state: state,
+                    timerChannel: timerChannels[i],
+                    onInputChange: onInputChange,
+                    onFinish: onTaskFinish,
+                  ),
+                  task_state.Finished() => const FinishedContent(),
+                }).toList(),
+              )
             )
           ],
         );
@@ -201,7 +183,7 @@ final _initialTestTasks = <Task>[
   ),
   (
     title: "Task 2",
-    timeAllowed: const Duration(seconds: 60),
+    timeAllowed: const Duration(seconds: 62),
     questions: <Question>[
       McQuestion(
         title: "Which one is an example of design thinking?",
