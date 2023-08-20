@@ -1,18 +1,22 @@
 import 'package:flutter/material.dart' hide Theme;
 import 'package:teaching_platform/common/theme/theme.dart';
+import 'package:teaching_platform/common/widgets/services/image_picker.dart';
 
 import 'clock.dart';
 
 class Services extends InheritedWidget {
   final Theme theme;
   final Clock clock;
+  final ImagePicker imagePicker;
 
-  const Services({
+  Services({
     super.key,
     this.theme = defaultTheme,
     this.clock = const DefaultClock(),
+    ImagePicker? imagePicker,
     required super.child
-  });
+  }) :
+    imagePicker = DefaultImagePicker();
 
   static Services? maybeOf(BuildContext context) {
     return context.dependOnInheritedWidgetOfExactType<Services>();

@@ -31,6 +31,11 @@ class _PostCreationCardState extends State<PostCreationCard> {
     super.dispose();
   }
 
+  void onAddImagePressed() async {
+    final services = Services.of(context);
+    final images = await services.imagePicker.imageFromPicker();
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Services.of(context).theme;
@@ -49,7 +54,7 @@ class _PostCreationCardState extends State<PostCreationCard> {
           ),
           const SizedBox(height: cardSpacing),
           ButtonRow(
-            onAddImagePressed: () => {},
+            onAddImagePressed: onAddImagePressed,
             onSubmitPressed: () => widget.onSubmit(controller.text),
           )
         ],
