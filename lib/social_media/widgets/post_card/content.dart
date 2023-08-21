@@ -1,14 +1,17 @@
+import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:flutter/material.dart';
-import 'package:teaching_platform/common/models/social_media/content.dart';
+import 'package:teaching_platform/common/models/social_media/post.dart';
 import 'package:teaching_platform/common/theme/theme.dart';
 import 'package:teaching_platform/common/widgets/loading_indicator/loading_indicator.dart';
 import 'package:teaching_platform/common/widgets/services/services.dart';
+import 'package:teaching_platform/social_media/widgets/post_card/image_carousel.dart';
+import 'package:teaching_platform/social_media/widgets/values.dart';
 
-class ContentWidget extends StatelessWidget {
-  final Content content;
+class Content extends StatelessWidget {
+  final Post post;
 
-  const ContentWidget(
-    this.content,
+  const Content(
+    this.post,
     {super.key}
   );
 
@@ -17,8 +20,8 @@ class ContentWidget extends StatelessWidget {
     final theme = Services.of(context).theme;
     return SizedBox(
       width: double.infinity,
-      child: switch (content) {
-        TextContent(text: final text) => Container(
+      child: switch (post.images.length) {
+        0 => Container(
           width: double.infinity,
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
@@ -26,7 +29,7 @@ class ContentWidget extends StatelessWidget {
             borderRadius: BorderRadius.circular(4),
           ),
           child: Text(
-            text,
+            post.text,
             style: theme.textStyle(
               size: 16,
               weight: FontWeight.normal,
@@ -34,20 +37,21 @@ class ContentWidget extends StatelessWidget {
             )
           )
         ),
-        // TODO: use image aspect ratio instead
-        ImageContent(image: final image) => AspectRatio(
-          aspectRatio: 4 / 3,
-          child: Image(
-            fit: BoxFit.cover,
-            loadingBuilder: (_, child, progress) {
-              if (progress == null) return child;
-              return const Center(child: LoadingIndicator());
-            },
-            errorBuilder: (_, __, ___) => Text("error"),
-            image: image,
-          )
+        _ => Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ImageCarousel(images: post.images),
+            Text(
+              post.text,
+              style: theme.textStyle(
+                size: 14,
+                weight: FontWeight.normal,
+                color: theme.colors.onSurface,
+              )
+            )
+          ].addBetween(const SizedBox(height: cardSpacing)),
         ),
-      },
+      }
     );
   }
 }

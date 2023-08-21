@@ -1,0 +1,3 @@
+enum PostCreationCardMessage {
+  clear,
+}

@@ -5,12 +5,12 @@ import 'package:teaching_platform/common/widgets/tappable/tappable.dart';
 import 'package:teaching_platform/social_media/widgets/values.dart';
 
 class ButtonRow extends StatelessWidget {
-  final void Function() onAddImagePressed;
+  final void Function() onAddImagesPressed;
   final void Function() onSubmitPressed;
 
   const ButtonRow({
     super.key,
-    required this.onAddImagePressed,
+    required this.onAddImagesPressed,
     required this.onSubmitPressed,
   });
 
@@ -23,7 +23,7 @@ class ButtonRow extends StatelessWidget {
         return Row(
           children: [
             Tappable(
-              onTap: onAddImagePressed,
+              onTap: onAddImagesPressed,
               child: Container(
                 width: buttonRowHeight,
                 height: buttonRowHeight,

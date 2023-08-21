@@ -13,6 +13,8 @@ import 'package:teaching_platform/social_media/page.dart' as social_media;
 
 import 'widgets/tab_bar.dart';
 
+import 'dart:ui' as ui;
+
 const _titles = [
   "HOME",
   "COURSES",
@@ -74,20 +76,7 @@ class _State extends State<Page> {
                   login.Page(),
                   courses.Page(),
                   page_tasks.Page(),
-                  social_media.Page(
-                    posts: <Post>[
-                      const (
-                        creator: (userName: "donaldtam", picture: NetworkImage("https://picsum.photos/100")),
-                        content: TextContent("This is my first post ever!"),
-                        liked: true,
-                      ),
-                      const (
-                        creator: (userName: "jackson123", picture: NetworkImage("https://picsum.photos/100")),
-                        content: ImageContent(NetworkImage("https://picsum.photos/200")),
-                        liked: false,
-                      ),
-                    ].lock
-                  ),
+                  social_media.Page(),
                 ]
               ),
             )

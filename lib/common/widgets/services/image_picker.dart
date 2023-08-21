@@ -1,29 +1,50 @@
 
-import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart' as lib;
+import 'dart:ui';
+
+import 'package:file_picker/file_picker.dart';
+import 'package:flutter/material.dart' hide Image;
+import 'package:teaching_platform/common/functions/error_functions.dart';
 
 abstract interface class ImagePicker {
-  Future<ImageProvider?> imageFromPicker();
-  Future<List<ImageProvider>?> imagesFromPicker();
+  Future<Image?> imageFromPicker();
+  Future<List<Image>> imagesFromPicker();
 }
 
 class DefaultImagePicker implements ImagePicker {
-  final lib.ImagePicker _picker;
+  final FilePicker _picker;
 
   DefaultImagePicker({
-    lib.ImagePicker? picker,
+    FilePicker? picker,
   }) :
-    _picker = picker ?? lib.ImagePicker();
+    _picker = picker ?? FilePicker.platform;
 
   @override
-  Future<ImageProvider?> imageFromPicker() async {
-    final file = await _picker.pickImage(source: lib.ImageSource.gallery);
-    // try {
-    //   final bytes = await file.readAsBytes();
-    // }
+  Future<Image?> imageFromPicker() async {
+    final result = await _picker.pickFiles(
+      type: FileType.image,
+      allowMultiple: false,
+    );
+    if (result == null) return null;
+    require(result.count == 1);
+    final bytes = result.files[0].bytes;
+    if (bytes == null) return null;
+    return await decodeImageFromList(bytes);
   }
 
   @override
-  Future<List<ImageProvider>?> imagesFromPicker() => Future.value(null);
-    // ImagePickerWeb.getMultiImagesAsFile();
+  Future<List<Image>> imagesFromPicker() async {
+    final result = await _picker.pickFiles(
+      type: FileType.image,
+      allowMultiple: true,
+    );
+    if (result == null) return [];
+    final images = List<Image>.empty(growable: true);
+    for (var i = 0; i < result.count; i++) {
+      final bytes = result.files[i].bytes;
+      if (bytes == null) continue;
+      final decodedImage = await decodeImageFromList(bytes);
+      images.add(decodedImage);
+    }
+    return images;
+  }    
 }

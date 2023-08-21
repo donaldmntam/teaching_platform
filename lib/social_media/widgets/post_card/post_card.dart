@@ -26,7 +26,7 @@ class PostCard extends StatelessWidget {
         children: [
           CreatorRow(post.creator),
           const SizedBox(height: cardSpacing),
-          ContentWidget(post.content),
+          Content(post),
           const SizedBox(height: cardSpacing),
           ButtonRow(
             liked: post.liked,

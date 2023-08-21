@@ -1,9 +1,11 @@
-import 'package:teaching_platform/common/models/social_media/user.dart';
+import 'dart:ui';
 
-import 'content.dart';
+import 'package:fast_immutable_collections/fast_immutable_collections.dart';
+import 'package:teaching_platform/common/models/social_media/user.dart';
 
 typedef Post = ({
   User creator,
-  Content content,
+  IList<Image> images,
+  String text,
   bool liked,
 });
