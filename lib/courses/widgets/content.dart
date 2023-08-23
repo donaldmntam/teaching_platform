@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart' hide TextButton;
 import 'package:teaching_platform/common/functions/iterable_functions.dart';
 import 'package:teaching_platform/common/functions/list_functions.dart';
+import 'package:teaching_platform/common/models/course/input.dart';
+import 'package:teaching_platform/common/models/course/question.dart';
 import 'package:teaching_platform/common/theme/theme.dart';
 import 'package:teaching_platform/common/widgets/button/selectable_text_button.dart';
 import 'package:teaching_platform/common/widgets/services/services.dart';
 import 'package:teaching_platform/common/models/course/course.dart';
 import 'package:teaching_platform/common/models/course/lesson.dart';
+import 'package:teaching_platform/courses/widgets/question_panel/question_panel.dart';
 import 'package:video_player/video_player.dart';
 
 import 'video_bar/controller.dart';
@@ -133,6 +136,11 @@ class _ContentState extends State<Content> {
           ),
         ),
         const SizedBox(height: _verticalSpacing),
+        QuestionPanel(
+          question: McQuestion(timeStamp: Duration(minutes: 2), description: "What is love?", options: ["Sex", "Kiss", "Hug"]),
+          input: McInput(null),
+          onInputChange: (input) => print("input changed!")
+        ),
       ],
     );
   }

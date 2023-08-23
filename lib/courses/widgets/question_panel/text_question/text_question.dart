@@ -1,21 +1,17 @@
 import 'package:flutter/material.dart' hide Title;
-import 'package:teaching_platform/common/models/task/input.dart';
-import 'package:teaching_platform/common/models/task/question.dart';
-import 'package:teaching_platform/common/theme/theme.dart';
-import 'package:teaching_platform/common/widgets/services/services.dart';
+import 'package:teaching_platform/common/models/course/input.dart';
+import 'package:teaching_platform/common/models/course/question.dart';
 import 'package:teaching_platform/common/widgets/text_field/long_text_field.dart';
 import 'package:teaching_platform/tasks/widgets/questions/values.dart';
 import '../description.dart';
 
 class TextQuestionWidget extends StatefulWidget {
-  final int index;
   final TextQuestion question;
   final TextInput initialInput;
-  final void Function(int index, TextInput input) onInputChange;
+  final void Function(TextInput input) onInputChange;
 
   const TextQuestionWidget({
     super.key,
-    required this.index,
     required this.question,
     required this.initialInput,
     required this.onInputChange,
@@ -51,8 +47,6 @@ class _TextQuestionWidgetState extends State<TextQuestionWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Services.of(context).theme;
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -61,7 +55,7 @@ class _TextQuestionWidgetState extends State<TextQuestionWidget> {
         LongTextField(
           controller: controller,
           onTextChange: (text) => 
-            widget.onInputChange(widget.index, TextInput(text)),
+            widget.onInputChange(TextInput(text)),
         )
       ]
     );

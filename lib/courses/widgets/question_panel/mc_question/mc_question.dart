@@ -1,19 +1,17 @@
 import 'package:flutter/material.dart' hide Title;
-import 'package:teaching_platform/common/models/task/input.dart';
-import 'package:teaching_platform/common/models/task/question.dart';
+import 'package:teaching_platform/common/models/course/input.dart';
+import 'package:teaching_platform/common/models/course/question.dart';
 import 'package:teaching_platform/tasks/widgets/questions/mc_question/option.dart';
 import 'package:teaching_platform/tasks/widgets/questions/values.dart';
 import '../description.dart';
 
 class McQuestionWidget extends StatefulWidget {
-  final int index;
   final McQuestion question;
   final McInput initialInput;
-  final void Function(int index, McInput input) onInputChange;
+  final void Function(McInput input) onInputChange;
 
   const McQuestionWidget({
     super.key,
-    required this.index,
     required this.question,
     required this.initialInput,
     required this.onInputChange,
@@ -40,7 +38,7 @@ class _McQuestionWidgetState extends State<McQuestionWidget> {
         Description(widget.question.description),
         const SizedBox(height: spacing),
         for (var i = 0; i < widget.question.options.length; i++) Padding(
-          padding: i == widget.question.options.length
+          padding: i == widget.question.options.length - 1
             ? const EdgeInsets.all(0)
             : const EdgeInsets.only(bottom: spacing),
           child: Option(
@@ -48,7 +46,7 @@ class _McQuestionWidgetState extends State<McQuestionWidget> {
             chosen: selectedIndex == i,
             onPressed: () {
               setState(() => selectedIndex = i);
-              widget.onInputChange(widget.index, McInput(i));
+              widget.onInputChange(McInput(i));
             }
           ),
         ),

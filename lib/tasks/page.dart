@@ -150,25 +150,25 @@ final _initialTestTasks = <Task>[
     timeAllowed: const Duration(minutes: 60),
     questions: <Question>[
       const TextQuestion(
-        title: "What is design thinking?",
+        description: "What is design thinking?",
       ),
       const TextQuestion(
-        title: "What is design thinking?",
+        description: "What is design thinking?",
       ),
       const TextQuestion(
-        title: "What is design thinking?",
+        description: "What is design thinking?",
       ),
       const TextQuestion(
-        title: "What is design thinking?",
+        description: "What is design thinking?",
       ),
       const TextQuestion(
-        title: "What is design thinking?",
+        description: "What is design thinking?",
       ),
       const TextQuestion(
-        title: "What is design thinking?",
+        description: "What is design thinking?",
       ),
       const TextQuestion(
-        title: "What is design thinking?",
+        description: "What is design thinking?",
       ),
     ].lock,
     inputs: [
@@ -186,7 +186,7 @@ final _initialTestTasks = <Task>[
     timeAllowed: const Duration(seconds: 62),
     questions: <Question>[
       McQuestion(
-        title: "Which one is an example of design thinking?",
+        description: "Which one is an example of design thinking?",
         options: <String>[
           "inventing a new chair",
           "inventing a new chair based on the design of an old chair",
@@ -194,7 +194,7 @@ final _initialTestTasks = <Task>[
         ].lock,
       ),
       McQuestion(
-        title: "Which one is an example of design thinking?",
+        description: "Which one is an example of design thinking?",
         options: <String>[
           "inventing a new chair",
           "inventing a new chair based on the design of an old chair",
@@ -202,7 +202,7 @@ final _initialTestTasks = <Task>[
         ].lock,
       ),
       McQuestion(
-        title: "Which one is an example of design thinking?",
+        description: "Which one is an example of design thinking?",
         options: <String>[
           "inventing a new chair",
           "inventing a new chair based on the design of an old chair",
@@ -210,7 +210,7 @@ final _initialTestTasks = <Task>[
         ].lock,
       ),
       McQuestion(
-        title: "Which one is an example of design thinking?",
+        description: "Which one is an example of design thinking?",
         options: <String>[
           "inventing a new chair",
           "inventing a new chair based on the design of an old chair",
@@ -218,7 +218,7 @@ final _initialTestTasks = <Task>[
         ].lock,
       ),
       McQuestion(
-        title: "Which one is an example of design thinking?",
+        description: "Which one is an example of design thinking?",
         options: <String>[
           "inventing a new chair",
           "inventing a new chair based on the design of an old chair",
