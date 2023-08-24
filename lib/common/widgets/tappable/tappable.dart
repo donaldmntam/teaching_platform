@@ -11,7 +11,7 @@ const _durationMillis = 300;
 const _opacityRate = (_maxOpacity - _minOpacity) / _durationMillis;
 
 class Tappable extends StatefulWidget {
-  final void Function() onTap;
+  final void Function()? onTap;
   final Widget child;
 
   const Tappable({
@@ -84,7 +84,7 @@ class _WidgetState extends widgets.State<Tappable>
     switch (state) {
       case _Down():
         state = _GoingUp(now);
-        widget.onTap();
+        widget.onTap?.call();
         ticker.start();
       default:
         break;
@@ -112,9 +112,18 @@ class _WidgetState extends widgets.State<Tappable>
       },
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
-        onTapDown: (_) => onTapDown(),
-        onTapUp: (_) => onTapUp(),
-        onTapCancel: () => onTapCancel(),
+        onTapDown: switch (widget.onTap) {
+          null => null,
+          _ => (_) => onTapDown()
+        },
+        onTapUp: switch (widget.onTap) {
+          null => null,
+          _ => (_) => onTapUp()
+        },
+        onTapCancel: switch (widget.onTap) {
+          null => null,
+          _ => () => onTapCancel()
+        },
         child: widget.child,
       )
     );

@@ -16,4 +16,9 @@ extension ExtendedDuration on Duration {
   }
 
   Duration roundedToSeconds() => Duration(seconds: inSeconds);
+
+  Duration coerceAtMost(Duration limit) {
+    if (this > limit) return limit;
+    return this;
+  }
 }

@@ -1,3 +1,4 @@
+import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:flutter/material.dart' hide TextButton;
 import 'package:teaching_platform/common/functions/iterable_functions.dart';
 import 'package:teaching_platform/common/functions/list_functions.dart';
@@ -86,6 +87,11 @@ class _ContentState extends State<Content> {
     }
   }
 
+  void stopVideoPlayerOnBreakpoint() {
+    playerController.pause();
+    paused = true;
+  }
+
   // void didSelectLesson(int index) {
   //   if (lessonIndex == index) return;
   //   changeVideoUrl(widget.course.lessons[index].videoUrl);
@@ -125,11 +131,15 @@ class _ContentState extends State<Content> {
               SizedBox(
                 width: double.infinity,
                 child: VideoBar(
+                  breakpoints: 
+                    widget.course.lessons[widget.lessonIndex].questions
+                    .map((question) => question.timeStamp).toIList(),
                   controller: barController,
                   onChange: (position) {
                     playerController.seekTo(position);
                   },
                   onToggle: toggleVideoPlayer,
+                  onBreakpointReached: stopVideoPlayerOnBreakpoint,
                 ),
               ),
             ]

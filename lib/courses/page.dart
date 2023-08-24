@@ -31,24 +31,9 @@ class _State extends widgets.State<Page> {
             lastCompletedQuestionIndex: -1,
             questions: [
               const TextQuestion(timeStamp: const Duration(seconds: 1), description: ""),
-              const TextQuestion(timeStamp: const Duration(hours: 1, minutes: 69, seconds: 1), description: ""),
-              const TextQuestion(timeStamp: const Duration(minutes: 23), description: ""),
-              const TextQuestion(timeStamp: const Duration(hours: 1), description: ""),
-              const TextQuestion(timeStamp: const Duration(seconds: 1), description: ""),
-              const TextQuestion(timeStamp: const Duration(seconds: 1), description: ""),
-              const TextQuestion(timeStamp: const Duration(seconds: 1), description: ""),
-              const TextQuestion(timeStamp: const Duration(seconds: 1), description: ""),
-
-              const TextQuestion(timeStamp: const Duration(seconds: 1), description: ""),
-              const TextQuestion(timeStamp: const Duration(seconds: 1), description: ""),
-              const TextQuestion(timeStamp: const Duration(seconds: 1), description: ""),
-              const TextQuestion(timeStamp: const Duration(seconds: 1), description: ""),
-
-              const TextQuestion(timeStamp: const Duration(seconds: 1), description: ""),
-              const TextQuestion(timeStamp: const Duration(seconds: 1), description: ""),
-              const TextQuestion(timeStamp: const Duration(seconds: 1), description: ""),
-              const TextQuestion(timeStamp: const Duration(seconds: 1), description: ""),
-
+              const TextQuestion(timeStamp: const Duration(seconds: 2), description: ""),
+              const TextQuestion(timeStamp: const Duration(seconds: 3), description: ""),
+              const TextQuestion(timeStamp: const Duration(seconds: 4), description: ""),
             ]
           )
         ))
