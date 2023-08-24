@@ -260,7 +260,6 @@ class _VideoBarState extends widgets.State<VideoBar>
     setState(() {});
   }
 
-  // TODO: make bar untouchable when at breakpoint or uninitialized
   @override
   Widget build(BuildContext context) {
     final theme = Services.of(context).theme;
