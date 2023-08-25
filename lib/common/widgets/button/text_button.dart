@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart' hide ButtonStyle;
+import 'package:teaching_platform/common/functions/block_functions.dart';
 import 'package:teaching_platform/common/theme/theme.dart';
 import 'package:teaching_platform/common/widgets/button/button.dart';
 import 'package:teaching_platform/common/widgets/services/services.dart';
@@ -8,7 +9,7 @@ import 'button_style.dart';
 class TextButton extends StatelessWidget {
   final String text;
   final ButtonStyle style;
-  final void Function() onPressed;
+  final void Function()? onPressed;
 
   const TextButton(
     this.text,
@@ -21,10 +22,15 @@ class TextButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Services.of(context).theme;
     return Button(
-      color: switch (style) {
-        ButtonStyle.primary => theme.colors.primary,
-        ButtonStyle.secondary => theme.colors.secondary,
-      },
+      color: run(() {
+        if (onPressed == null) {
+          return theme.colors.disabled;
+        }
+        return switch (style) {
+          ButtonStyle.primary => theme.colors.primary,
+          ButtonStyle.secondary => theme.colors.secondary,
+        };
+      }),
       onPressed: onPressed,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
@@ -33,10 +39,15 @@ class TextButton extends StatelessWidget {
           style: theme.textStyle(
             size: 24,
             weight: FontWeight.bold,
-            color: switch (style) {
-              ButtonStyle.primary => theme.colors.onPrimary,
-              ButtonStyle.secondary => theme.colors.onSecondary,
-            }
+            color: run(() {
+              if (onPressed == null) {
+                return theme.colors.onDisabled;
+              }
+              return switch (style) {
+                ButtonStyle.primary => theme.colors.onPrimary,
+                ButtonStyle.secondary => theme.colors.onSecondary,
+              };
+            })
           )
         ),
       )

@@ -1,7 +1,10 @@
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:flutter/material.dart' hide TextButton;
+import 'package:teaching_platform/common/functions/block_functions.dart';
 import 'package:teaching_platform/common/functions/iterable_functions.dart';
 import 'package:teaching_platform/common/functions/list_functions.dart';
+import 'package:teaching_platform/common/models/course/course_group.dart';
+import 'package:teaching_platform/common/models/course/course_inputs.dart';
 import 'package:teaching_platform/common/models/course/input.dart';
 import 'package:teaching_platform/common/models/course/question.dart';
 import 'package:teaching_platform/common/theme/theme.dart';
@@ -22,12 +25,14 @@ const _verticalSpacing = 16.0;
 class Content extends StatefulWidget {
   final int lessonIndex;
   final Course course;
+  final CourseInputs initialInputs;
   final void Function(int lessonIndex) didSelectLesson;
 
   const Content({
     super.key,
     required this.lessonIndex,
     required this.course,
+    required this.initialInputs,
     required this.didSelectLesson,
   });
 
@@ -40,6 +45,8 @@ class _ContentState extends State<Content> {
   late final VideoBarController barController;
 
   bool paused = true;
+  late CourseInputs inputs;
+  late int? questionIndex;
 
   @override
   void initState() {
@@ -57,6 +64,11 @@ class _ContentState extends State<Content> {
     this.playerController = playerController;
 
     barController = VideoBarController();
+
+    inputs = widget.initialInputs;
+    questionIndex = widget.course.lessons[widget.lessonIndex].questions.isEmpty
+      ? null
+      : 0;
 
     super.initState();
   }
@@ -100,17 +112,16 @@ class _ContentState extends State<Content> {
 
   @override
   Widget build(BuildContext context) {
+    final questionIndex = this.questionIndex;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _Title(widget.course.title),
-        const SizedBox(height: _verticalSpacing),
         _LessonSelection(
           widget.course.lessons,
           selectedIndex: widget.lessonIndex,
           onSelect: widget.didSelectLesson,
         ),
-        const SizedBox(height: _verticalSpacing),
         Container(
           decoration: const BoxDecoration(
             borderRadius: BorderRadius.all(Radius.circular(6))
@@ -145,13 +156,29 @@ class _ContentState extends State<Content> {
             ]
           ),
         ),
-        const SizedBox(height: _verticalSpacing),
-        QuestionPanel(
-          question: McQuestion(timeStamp: Duration(minutes: 2), description: "What is love?", options: ["Sex", "Kiss", "Hug"]),
-          input: McInput(null),
-          onInputChange: (input) => print("input changed!")
+        if (questionIndex != null) QuestionPanel(
+          lessonIndex: widget.lessonIndex,
+          questionIndex: questionIndex,
+          question: 
+            widget.course.lessons[widget.lessonIndex].questions[questionIndex],
+          input: inputs.input(
+            lessonIndex: widget.lessonIndex,
+            questionIndex: questionIndex,
+          ),
+          onInputChange: ({
+            required lessonIndex,
+            required questionIndex,
+            required input,
+          }) => setState(() {
+            inputs = inputs.copy(
+              lessonIndex: lessonIndex,
+              questionIndex: questionIndex,
+              input: input,
+            );
+          }),
+          onNext: () => barController.play(),
         ),
-      ],
+      ].addBetween(const SizedBox(height: _verticalSpacing)),
     );
   }
 

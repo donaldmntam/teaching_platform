@@ -9,4 +9,6 @@ typedef Colors = ({
   Color onSurface,
   Color background,
   Color onBackground,
+  Color disabled,
+  Color onDisabled,
 });

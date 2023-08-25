@@ -34,6 +34,8 @@ const Theme defaultTheme = (
     onSurface: Color.fromARGB(255, 0, 0, 0),
     background: Color.fromARGB(255, 240, 240, 240),
     onBackground: Color.fromARGB(255, 95, 95, 95),
+    disabled: Color.fromARGB(255, 67, 67, 67),
+    onDisabled: Color.fromARGB(255, 255, 255, 255),
   ),
   baseTextStyle: (
     fontFamily: "arial"

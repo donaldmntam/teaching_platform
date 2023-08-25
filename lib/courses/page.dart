@@ -1,8 +1,11 @@
+import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:flutter/material.dart' hide TextButton, State, Theme;
 import 'package:flutter/widgets.dart' as widgets show State;
 import 'package:teaching_platform/common/functions/iterable_functions.dart';
 import 'package:teaching_platform/common/functions/list_functions.dart';
 import 'package:teaching_platform/common/models/course/course_group.dart';
+import 'package:teaching_platform/common/models/course/course_group_inputs.dart';
+import 'package:teaching_platform/common/models/course/input.dart';
 import 'package:teaching_platform/common/models/course/question.dart';
 import 'package:teaching_platform/courses/widgets/content.dart';
 import 'package:teaching_platform/courses/widgets/course_column/course_column.dart';
@@ -39,6 +42,16 @@ class _State extends widgets.State<Page> {
         ))
       )
     )).toList();
+  final CourseGroupInputs initialInputs = List.generate(5, (i) =>
+    List.generate(8, (i) =>
+      [
+        const TextInput(""),
+        const TextInput(""),
+        const TextInput(""),
+        const TextInput(""),
+      ].lock
+    ).lock
+  ).lock;
   int groupIndex = 0;
   int courseIndex = 0;
   int lessonIndex = 0;
@@ -80,6 +93,7 @@ class _State extends widgets.State<Page> {
                     child: Content(
                       lessonIndex: lessonIndex,
                       course: testCoursesGroups[groupIndex].courses[courseIndex],
+                      initialInputs: initialInputs[groupIndex],
                       didSelectLesson: (index) => setState(() => 
                         lessonIndex = index
                       ),

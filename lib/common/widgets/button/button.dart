@@ -3,7 +3,7 @@ import 'package:teaching_platform/common/widgets/tappable/tappable.dart';
 
 class Button extends StatelessWidget {
   final Color color;
-  final void Function() onPressed;
+  final void Function()? onPressed;
   final Widget child;
 
   const Button({
