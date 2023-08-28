@@ -1,4 +1,4 @@
-import 'package:teaching_platform/courses/widgets/video_bar/video_bar.dart';
+import 'package:teaching_platform/courses/widgets/video_bar/video_bar_old.dart';
 
 abstract interface class VideoBarControllerListener {
   void shouldInitialize(Data data);

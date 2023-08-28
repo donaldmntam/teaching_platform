@@ -1,12 +1,8 @@
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:flutter/material.dart' hide TextButton;
-import 'package:teaching_platform/common/functions/block_functions.dart';
+import 'package:teaching_platform/common/functions/error_functions.dart';
 import 'package:teaching_platform/common/functions/iterable_functions.dart';
-import 'package:teaching_platform/common/functions/list_functions.dart';
-import 'package:teaching_platform/common/models/course/course_group.dart';
 import 'package:teaching_platform/common/models/course/course_inputs.dart';
-import 'package:teaching_platform/common/models/course/input.dart';
-import 'package:teaching_platform/common/models/course/question.dart';
 import 'package:teaching_platform/common/theme/theme.dart';
 import 'package:teaching_platform/common/widgets/button/selectable_text_button.dart';
 import 'package:teaching_platform/common/widgets/services/services.dart';
@@ -15,8 +11,8 @@ import 'package:teaching_platform/common/models/course/lesson.dart';
 import 'package:teaching_platform/courses/widgets/question_panel/question_panel.dart';
 import 'package:video_player/video_player.dart';
 
-import 'video_bar/controller.dart';
-import 'video_bar/video_bar.dart' hide State;
+import 'video_bar/state.dart' as video_bar;
+import 'video_bar/video_bar.dart';
 
 const _verticalSpacing = 16.0;
 
@@ -42,9 +38,8 @@ class Content extends StatefulWidget {
 
 class _ContentState extends State<Content> {
   late VideoPlayerController playerController;
-  late final VideoBarController barController;
+  video_bar.State barState = const video_bar.Loading();
 
-  bool paused = true;
   late CourseInputs inputs;
   late int? questionIndex;
 
@@ -53,17 +48,14 @@ class _ContentState extends State<Content> {
     final playerController = VideoPlayerController.network(
       widget.course.lessons[widget.lessonIndex].videoUrl
     );
-    playerController.initialize().then((_) =>
-      setState(() => 
-        barController.initialize((
-          duration: playerController.value.duration,
-          position: Duration.zero,
-        ))
-      )
-    );
+    playerController.initialize().then((_) {
+      barState = video_bar.Paused(
+        duration: playerController.value.duration,
+        position: playerController.value.position,
+        atBreakpoint: false,
+      );
+    });
     this.playerController = playerController;
-
-    barController = VideoBarController();
 
     inputs = widget.initialInputs;
     questionIndex = widget.course.lessons[widget.lessonIndex].questions.isEmpty
@@ -88,6 +80,22 @@ class _ContentState extends State<Content> {
   }
 
   void toggleVideoPlayer() {
+    final state = barState;
+    switch (state) {
+      case video_bar.Loading():
+        illegalState(state, "toggleVideoPlayer");
+      case video_bar.Paused():
+        if (state.atBreakpoint) illegalState(state, "toggleVideoPlayer");
+        barState = video_bar.Playing(
+          duration: state.duration,
+          startPosition: state.position,
+        );
+      case video_bar.Playing():
+        // TODO: use ticker here!
+        barState = video_bar.Paused(
+          duration: 
+        )
+    }
     if (paused) {
       playerController.play();
       barController.play();
@@ -97,6 +105,10 @@ class _ContentState extends State<Content> {
       barController.pause();
       paused = true;
     }
+  }
+
+  void slide() {
+
   }
 
   void stopVideoPlayerOnBreakpoint() {
@@ -142,15 +154,9 @@ class _ContentState extends State<Content> {
               SizedBox(
                 width: double.infinity,
                 child: VideoBar(
-                  breakpoints: 
-                    widget.course.lessons[widget.lessonIndex].questions
-                    .map((question) => question.timeStamp).toIList(),
-                  controller: barController,
-                  onChange: (position) {
-                    playerController.seekTo(position);
-                  },
+                  state: barState,
+                  onSlide: slide,
                   onToggle: toggleVideoPlayer,
-                  onBreakpointReached: stopVideoPlayerOnBreakpoint,
                 ),
               ),
             ]
