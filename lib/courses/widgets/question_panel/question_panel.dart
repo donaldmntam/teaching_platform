@@ -122,12 +122,18 @@ class _QuestionPanelState
               )
             ]
           ),
-          child: child,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              child,
+              const SizedBox(height: 16),
+              TextButton(
+                "Next",
+                onPressed: widget.onNext,
+              ),
+            ],
+          )
         ),
-        TextButton(
-          "Next",
-          onPressed: widget.onNext,
-        )
       ],
     );
   }

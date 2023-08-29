@@ -3,6 +3,7 @@ import 'package:flutter/material.dart' hide TextButton, State, Title;
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart' as widgets show State;
 import 'package:teaching_platform/common/functions/block_functions.dart';
+import 'package:teaching_platform/common/functions/duration_functions.dart';
 import 'package:teaching_platform/common/functions/error_functions.dart';
 import 'package:teaching_platform/common/models/course/course_inputs.dart';
 import 'package:teaching_platform/common/models/course/lesson.dart';
@@ -139,15 +140,23 @@ class _ContentState
       case Loading():
       case AtBreakpoint():
         illegalState(state, "slide");
-      case Playing(duration: final duration):
-      case Paused(duration: final duration):
+      case Playing(
+        duration: final duration,
+        nextQuestionIndex: final nextQuestionIndex,
+      ):
+      case Paused(
+        duration: final duration,
+        nextQuestionIndex: final nextQuestionIndex,
+      ):
+        final nextBreakpoint = nextQuestionIndex
+          .map((it) => widget.lesson.questions[it].timeStamp);
         this.state = Paused(
           duration: duration,
-          position: newPosition,
-          nextQuestionIndex: nextQuestionIndex(
-            widget.lesson.questions,
-            newPosition,
-          )
+          position: switch (nextBreakpoint) {
+            Some() => newPosition.coerceAtMost(nextBreakpoint.value),
+            None() => newPosition,
+          },
+          nextQuestionIndex: nextQuestionIndex,
         );
         setState(() {});
         playerController.seekTo(newPosition);
@@ -251,7 +260,10 @@ class _ContentState
               AspectRatio(
                 aspectRatio: 16 / 9,
                 child: GestureDetector(
-                  onTap: toggleVideoPlayer,
+                  onTap: switch (state) {
+                    AtBreakpoint() => null,
+                    _ => toggleVideoPlayer,
+                  },
                   child: Container(
                     color: Colors.black,
                     child: IgnorePointer(child: VideoPlayer(playerController)),

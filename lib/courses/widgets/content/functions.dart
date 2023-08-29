@@ -35,14 +35,14 @@ video_bar.State videoBarState(State state) {
   };
 }
 
-Optional<int> nextQuestionIndex(
-  IList<Question> questions,
-  Duration position,
-) {
-  for (var i = 0; i < questions.length; i++) {
-    final question = questions[i];
-    if (position < question.timeStamp) continue;
-    return Some(i);
-  }
-  return const None();
-}
+// Optional<int> nextQuestionIndex(
+//   IList<Question> questions,
+//   Duration position,
+// ) {
+//   for (var i = 0; i < questions.length; i++) {
+//     final question = questions[i];
+//     if (position < question.timeStamp) continue;
+//     return Some(i);
+//   }
+//   return const None();
+// }

@@ -32,11 +32,11 @@ class _State extends widgets.State<Page> {
             title: "lesson $i",
             videoUrl: "https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4",
             lastCompletedQuestionIndex: -1,
-            questions: [
-              const TextQuestion(timeStamp: const Duration(seconds: 1), description: ""),
-              const TextQuestion(timeStamp: const Duration(seconds: 2), description: ""),
-              const TextQuestion(timeStamp: const Duration(seconds: 3), description: ""),
-              const TextQuestion(timeStamp: const Duration(seconds: 4), description: ""),
+            questions: <Question>[
+              const TextQuestion(timeStamp: const Duration(seconds: 1), description: "What is love?"),
+              const TextQuestion(timeStamp: const Duration(seconds: 2), description: "Do you have a big dong?"),
+              const TextQuestion(timeStamp: const Duration(seconds: 3), description: "Knock knock, who's there?"),
+              const TextQuestion(timeStamp: const Duration(seconds: 4), description: "Joe who?"),
             ].lock
           )
         ).lock)
@@ -44,7 +44,7 @@ class _State extends widgets.State<Page> {
     )).toIList();
   final CourseGroupInputs initialInputs = List.generate(5, (i) =>
     List.generate(8, (i) =>
-      [
+      <Input>[
         const TextInput(""),
         const TextInput(""),
         const TextInput(""),
