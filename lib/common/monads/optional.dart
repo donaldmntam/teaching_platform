@@ -17,4 +17,13 @@ extension ExtendedOptional<T> on Optional<T> {
       None() => onNone(),
     };
   }
+
+  Optional<R> map<R>(R Function(T it) transform) {
+    switch (this) {
+      case Some(value: final value):
+        return Some(transform(value));
+      case None():
+        return const None();
+    }
+  }
 }

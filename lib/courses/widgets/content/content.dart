@@ -1,18 +1,19 @@
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
-import 'package:flutter/material.dart' hide TextButton;
+import 'package:flutter/material.dart' hide TextButton, State, Title;
+import 'package:flutter/scheduler.dart';
+import 'package:flutter/widgets.dart' as widgets show State;
 import 'package:teaching_platform/common/functions/error_functions.dart';
-import 'package:teaching_platform/common/functions/iterable_functions.dart';
 import 'package:teaching_platform/common/models/course/course_inputs.dart';
-import 'package:teaching_platform/common/theme/theme.dart';
-import 'package:teaching_platform/common/widgets/button/selectable_text_button.dart';
-import 'package:teaching_platform/common/widgets/services/services.dart';
+import 'package:teaching_platform/common/monads/optional.dart';
 import 'package:teaching_platform/common/models/course/course.dart';
-import 'package:teaching_platform/common/models/course/lesson.dart';
+import 'package:teaching_platform/courses/widgets/content/functions.dart';
 import 'package:teaching_platform/courses/widgets/question_panel/question_panel.dart';
 import 'package:video_player/video_player.dart';
 
-import 'video_bar/state.dart' as video_bar;
-import 'video_bar/video_bar.dart';
+import '../video_bar/video_bar.dart';
+import 'state.dart';
+import 'title.dart';
+import 'lesson_selection.dart';
 
 const _verticalSpacing = 16.0;
 
@@ -33,23 +34,31 @@ class Content extends StatefulWidget {
   });
 
   @override
-  State<Content> createState() => _ContentState();
+  widgets.State<Content> createState() => _ContentState();
 }
 
-class _ContentState extends State<Content> {
+class _ContentState
+  extends widgets.State<Content>
+  with SingleTickerProviderStateMixin
+{
+  late final Ticker ticker;
+
   late VideoPlayerController playerController;
-  video_bar.State barState = const video_bar.Loading();
+  State state = const Loading();
 
   late CourseInputs inputs;
   late int? questionIndex;
 
   @override
   void initState() {
+    ticker = createTicker(onTick);
+    ticker.start();
+
     final playerController = VideoPlayerController.network(
       widget.course.lessons[widget.lessonIndex].videoUrl
     );
     playerController.initialize().then((_) {
-      barState = video_bar.Paused(
+      state = Paused(
         duration: playerController.value.duration,
         position: playerController.value.position,
         atBreakpoint: false,
@@ -67,6 +76,7 @@ class _ContentState extends State<Content> {
 
   @override
   void dispose() {
+    ticker.dispose();
     playerController.dispose();
     super.dispose();
   }
@@ -80,56 +90,114 @@ class _ContentState extends State<Content> {
   }
 
   void toggleVideoPlayer() {
-    final state = barState;
+    final state = this.state;
     switch (state) {
-      case video_bar.Loading():
+      case Loading():
         illegalState(state, "toggleVideoPlayer");
-      case video_bar.Paused():
+      case Paused():
         if (state.atBreakpoint) illegalState(state, "toggleVideoPlayer");
-        barState = video_bar.Playing(
+        this.state = Playing(
           duration: state.duration,
           startPosition: state.position,
         );
-      case video_bar.Playing():
-        // TODO: use ticker here!
-        barState = video_bar.Paused(
-          duration: 
-        )
+        setState(() {});
+        playerController.seekTo(state.position);
+        playerController.play();
+      case Playing():
+        final position = state
+          .animationData
+          .map((it) => it.currentPosition)
+          .fold(() => state.startPosition);
+        this.state = Paused(
+          duration: state.duration,
+          position: position,
+          atBreakpoint: false,
+        );
+        setState(() {});
+        playerController.seekTo(position);
+        playerController.pause();
     }
-    if (paused) {
-      playerController.play();
-      barController.play();
-      paused = false;
-    } else {
-      playerController.pause();
-      barController.pause();
-      paused = true;
+  }
+
+  void slide(double value) {
+    final state = this.state;
+    switch (state) {
+      case Loading():
+        illegalState(state, "slide");
+      case Paused():
+        if (state.atBreakpoint) illegalState(state, "slide");
+        final newPosition = Duration(
+          milliseconds: (state.duration.inMilliseconds * value).toInt()
+        );
+        this.state = Paused(
+          duration: state.duration,
+          position: newPosition,
+          atBreakpoint: false,
+        );
+        setState(() {});
+        playerController.seekTo(newPosition);
+      case Playing():
+        final newPosition = Duration(
+          milliseconds: (state.duration.inMilliseconds * value).toInt()
+        );
+        this.state = Paused(
+          duration: state.duration,
+          position: newPosition,
+          atBreakpoint: false,
+        );
+        setState(() {});
+        playerController.seekTo(newPosition);
     }
   }
 
-  void slide() {
+  void continueFromBreakpoint() {
 
   }
 
-  void stopVideoPlayerOnBreakpoint() {
-    playerController.pause();
-    paused = true;
+  void onTick(Duration duration) {
+    final state = this.state;
+    switch (state) {
+      case Loading():
+      case Paused():      
+        break;
+      case Playing():
+        final oldAnimationData = state.animationData;
+        final PlayingAnimationData newAnimationData = 
+          switch (oldAnimationData) {
+            Some() => (
+              startTime: oldAnimationData.value.startTime,
+              currentPosition: (duration - oldAnimationData.value.startTime) + 
+                state.startPosition,
+            ),
+            None() => (
+              startTime: duration,
+              currentPosition: state.startPosition,
+            )
+          };
+        if (newAnimationData.currentPosition >= state.duration) {
+          this.state = Paused(
+            duration: state.duration,
+            position: state.duration,
+            atBreakpoint: false,
+          );
+        } else {
+          this.state = state.copy(
+            animationData: Some(newAnimationData),
+          );
+        }
+        setState(() {});
+    }
   }
-
-  // void didSelectLesson(int index) {
-  //   if (lessonIndex == index) return;
-  //   changeVideoUrl(widget.course.lessons[index].videoUrl);
-  //   setState(() => lessonIndex = index);
-  // }
 
   @override
   Widget build(BuildContext context) {
-    final questionIndex = this.questionIndex;
+    final state = this.state;
+    final questionIndex = this.questionIndex;    
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _Title(widget.course.title),
-        _LessonSelection(
+        Title(widget.course.title),
+        LessonSelection(
           widget.course.lessons,
           selectedIndex: widget.lessonIndex,
           onSelect: widget.didSelectLesson,
@@ -144,7 +212,7 @@ class _ContentState extends State<Content> {
               AspectRatio(
                 aspectRatio: 16 / 9,
                 child: GestureDetector(
-                  onTap:toggleVideoPlayer,
+                  onTap: toggleVideoPlayer,
                   child: Container(
                     color: Colors.black,
                     child: IgnorePointer(child: VideoPlayer(playerController)),
@@ -154,7 +222,8 @@ class _ContentState extends State<Content> {
               SizedBox(
                 width: double.infinity,
                 child: VideoBar(
-                  state: barState,
+                  value: sliderValue(state),
+                  state: videoBarState(state),
                   onSlide: slide,
                   onToggle: toggleVideoPlayer,
                 ),
@@ -182,7 +251,7 @@ class _ContentState extends State<Content> {
               input: input,
             );
           }),
-          onNext: () => barController.play(),
+          onNext: continueFromBreakpoint,
         ),
       ].addBetween(const SizedBox(height: _verticalSpacing)),
     );
@@ -191,62 +260,17 @@ class _ContentState extends State<Content> {
   void changeVideoUrl(String url) {
     this.playerController.dispose();
     final playerController = VideoPlayerController.network(url);
-    playerController.initialize().then((_) =>
-      setState(() => 
-        barController.initialize((
-          duration: playerController.value.duration,
-          position: Duration.zero,
-        ))
-      )
-    );
+    playerController.initialize().then((_) {
+      state = Paused(
+        duration: playerController.value.duration,
+        position: Duration.zero,
+        atBreakpoint: false,
+      );
+      setState(() {});
+    });
     this.playerController = playerController;
 
-    barController.seek(Duration.zero);
-  }
-}
-
-class _Title extends StatelessWidget {
-  final String text;
-
-  const _Title(this.text);
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Services.of(context).theme;
-    return Text(
-      text,
-      style: theme.textStyle(
-        color: theme.colors.primary,
-        size: 24,
-        weight: FontWeight.bold,
-      )
-    );
-  }
-}
-
-class _LessonSelection extends StatelessWidget {
-  final List<Lesson> lessons;
-  final int selectedIndex;
-  final void Function(int) onSelect;
-
-  const _LessonSelection(
-    this.lessons,
-    {required this.selectedIndex,
-    required this.onSelect}
-  );
-
-  @override
-  Widget build(BuildContext context) {
-    return Wrap(
-      spacing: 16,
-      runSpacing: 8,
-      children: lessons.mapIndexed<Widget>((i, lesson) =>
-        SelectableTextButton(
-          lesson.title,
-          selected: selectedIndex == i,
-          onPressed: () => onSelect(i), 
-        )
-      ).toList()
-    );
+    state = const Loading();
+    setState(() {});
   }
 }

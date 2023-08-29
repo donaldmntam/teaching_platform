@@ -7,7 +7,7 @@ import 'package:teaching_platform/common/models/course/course_group.dart';
 import 'package:teaching_platform/common/models/course/course_group_inputs.dart';
 import 'package:teaching_platform/common/models/course/input.dart';
 import 'package:teaching_platform/common/models/course/question.dart';
-import 'package:teaching_platform/courses/widgets/content.dart';
+import 'package:teaching_platform/courses/widgets/content/content.dart';
 import 'package:teaching_platform/courses/widgets/course_column/course_column.dart';
 import 'package:teaching_platform/courses/widgets/question_column/question_column.dart';
 
