@@ -1,3 +1,4 @@
+import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:flutter/material.dart' hide Theme;
 import 'package:teaching_platform/common/functions/iterable_functions.dart';
 import 'package:teaching_platform/common/widgets/services/services.dart';
@@ -7,7 +8,7 @@ import 'package:teaching_platform/courses/widgets/course_column/typedefs.dart';
 import 'course_group.dart';
 
 class CourseColumn extends StatefulWidget {
-  final List<CourseGroup> courseGroups;
+  final IList<CourseGroup> courseGroups;
   final OnCoursePressed onCoursePressed;
 
   const CourseColumn(

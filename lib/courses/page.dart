@@ -24,7 +24,7 @@ class Page extends StatefulWidget {
 
 class _State extends widgets.State<Page> {
   // List<Course> courses;
-  final testCoursesGroups = repeat(["Design Thinking", "Leadership", "Marketing"], 10).mapIndexed((i, title) => (
+  final IList<CourseGroup> testCoursesGroups = repeat(["Design Thinking", "Leadership", "Marketing"], 10).mapIndexed((i, title) => (
       title: title,
       courses: List.generate(5, (i) => 
         (title: "course $i", lessons: List.generate(8, 
@@ -37,11 +37,11 @@ class _State extends widgets.State<Page> {
               const TextQuestion(timeStamp: const Duration(seconds: 2), description: ""),
               const TextQuestion(timeStamp: const Duration(seconds: 3), description: ""),
               const TextQuestion(timeStamp: const Duration(seconds: 4), description: ""),
-            ]
+            ].lock
           )
-        ))
-      )
-    )).toList();
+        ).lock)
+      ).lock
+    )).toIList();
   final CourseGroupInputs initialInputs = List.generate(5, (i) =>
     List.generate(8, (i) =>
       [

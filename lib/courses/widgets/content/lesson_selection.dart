@@ -1,10 +1,11 @@
+import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:flutter/widgets.dart';
 import 'package:teaching_platform/common/functions/iterable_functions.dart';
 import 'package:teaching_platform/common/models/course/lesson.dart';
 import 'package:teaching_platform/common/widgets/button/selectable_text_button.dart';
 
 class LessonSelection extends StatelessWidget {
-  final List<Lesson> lessons;
+  final IList<Lesson> lessons;
   final int selectedIndex;
   final void Function(int) onSelect;
 

@@ -2,8 +2,11 @@ import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:flutter/material.dart' hide TextButton, State, Title;
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart' as widgets show State;
+import 'package:teaching_platform/common/functions/block_functions.dart';
 import 'package:teaching_platform/common/functions/error_functions.dart';
 import 'package:teaching_platform/common/models/course/course_inputs.dart';
+import 'package:teaching_platform/common/models/course/lesson.dart';
+import 'package:teaching_platform/common/models/course/question.dart';
 import 'package:teaching_platform/common/monads/optional.dart';
 import 'package:teaching_platform/common/models/course/course.dart';
 import 'package:teaching_platform/courses/widgets/content/functions.dart';
@@ -24,6 +27,8 @@ class Content extends StatefulWidget {
   final Course course;
   final CourseInputs initialInputs;
   final void Function(int lessonIndex) didSelectLesson;
+
+  Lesson get lesson => course.lessons[lessonIndex];
 
   const Content({
     super.key,
@@ -47,7 +52,6 @@ class _ContentState
   State state = const Loading();
 
   late CourseInputs inputs;
-  late int? questionIndex;
 
   @override
   void initState() {
@@ -58,18 +62,21 @@ class _ContentState
       widget.course.lessons[widget.lessonIndex].videoUrl
     );
     playerController.initialize().then((_) {
+      final Optional<int> nextQuestionIndex;
+      if (widget.lesson.questions.isEmpty) {
+        nextQuestionIndex = const None();
+      } else {
+        nextQuestionIndex = const Some(1);
+      }
       state = Paused(
         duration: playerController.value.duration,
         position: playerController.value.position,
-        atBreakpoint: false,
+        nextQuestionIndex: nextQuestionIndex,
       );
     });
     this.playerController = playerController;
 
     inputs = widget.initialInputs;
-    questionIndex = widget.course.lessons[widget.lessonIndex].questions.isEmpty
-      ? null
-      : 0;
 
     super.initState();
   }
@@ -84,7 +91,10 @@ class _ContentState
   @override
   void didUpdateWidget(Content oldWidget) {
     const newLessonIndex = 0;
-    changeVideoUrl(widget.course.lessons[newLessonIndex].videoUrl);
+    changeVideoUrl(
+      widget.course.lessons[newLessonIndex].videoUrl,
+      widget.lesson.questions,
+    );
     
     super.didUpdateWidget(oldWidget);
   }
@@ -93,15 +103,19 @@ class _ContentState
     final state = this.state;
     switch (state) {
       case Loading():
+      case AtBreakpoint():
         illegalState(state, "toggleVideoPlayer");
       case Paused():
-        if (state.atBreakpoint) illegalState(state, "toggleVideoPlayer");
+        final newPosition = state.position >= state.duration
+          ? Duration.zero
+          : state.position;
         this.state = Playing(
           duration: state.duration,
-          startPosition: state.position,
+          startPosition: newPosition,
+          nextQuestionIndex: state.nextQuestionIndex,
         );
         setState(() {});
-        playerController.seekTo(state.position);
+        playerController.seekTo(newPosition);
         playerController.play();
       case Playing():
         final position = state
@@ -111,7 +125,7 @@ class _ContentState
         this.state = Paused(
           duration: state.duration,
           position: position,
-          atBreakpoint: false,
+          nextQuestionIndex: state.nextQuestionIndex,
         );
         setState(() {});
         playerController.seekTo(position);
@@ -119,46 +133,52 @@ class _ContentState
     }
   }
 
-  void slide(double value) {
+  void slide(Duration newPosition) {
     final state = this.state;
     switch (state) {
       case Loading():
+      case AtBreakpoint():
         illegalState(state, "slide");
-      case Paused():
-        if (state.atBreakpoint) illegalState(state, "slide");
-        final newPosition = Duration(
-          milliseconds: (state.duration.inMilliseconds * value).toInt()
-        );
+      case Playing(duration: final duration):
+      case Paused(duration: final duration):
         this.state = Paused(
-          duration: state.duration,
+          duration: duration,
           position: newPosition,
-          atBreakpoint: false,
+          nextQuestionIndex: nextQuestionIndex(
+            widget.lesson.questions,
+            newPosition,
+          )
         );
         setState(() {});
         playerController.seekTo(newPosition);
-      case Playing():
-        final newPosition = Duration(
-          milliseconds: (state.duration.inMilliseconds * value).toInt()
-        );
-        this.state = Paused(
-          duration: state.duration,
-          position: newPosition,
-          atBreakpoint: false,
-        );
-        setState(() {});
-        playerController.seekTo(newPosition);
+        playerController.pause();
     }
   }
 
   void continueFromBreakpoint() {
-
+    final state = this.state;
+    if (state is! AtBreakpoint) illegalState(state, "continueFromBreakpoint");
+    final Optional<int> questionIndex;
+    if (state.questionIndex == widget.lesson.questions.length - 1) {
+      questionIndex = const None();
+    } else {
+      questionIndex = Some(state.questionIndex + 1);
+    }
+    this.state = Playing(
+      duration: state.duration,
+      startPosition: state.position,
+      nextQuestionIndex: questionIndex,
+    );
+    playerController.seekTo(state.position);
+    playerController.play();
   }
 
   void onTick(Duration duration) {
     final state = this.state;
     switch (state) {
       case Loading():
-      case Paused():      
+      case Paused():
+      case AtBreakpoint():
         break;
       case Playing():
         final oldAnimationData = state.animationData;
@@ -174,17 +194,37 @@ class _ContentState
               currentPosition: state.startPosition,
             )
           };
-        if (newAnimationData.currentPosition >= state.duration) {
+
+        final questionIndex = state.nextQuestionIndex;
+        if (questionIndex is Some<int>) {
+          final nextQuestion = widget.lesson.questions[questionIndex.value];
+          if (newAnimationData.currentPosition > nextQuestion.timeStamp) {
+            this.state = AtBreakpoint(
+              duration: state.duration,
+              position: nextQuestion.timeStamp,
+              questionIndex: questionIndex.value,
+            );
+            setState(() {});
+            playerController.seekTo(newAnimationData.currentPosition);
+            playerController.pause();
+            break;
+          }
+        }
+
+        final endReached = newAnimationData.currentPosition >= state.duration;
+        if (endReached) {
           this.state = Paused(
             duration: state.duration,
             position: state.duration,
-            atBreakpoint: false,
+            nextQuestionIndex: const None(),
           );
-        } else {
-          this.state = state.copy(
-            animationData: Some(newAnimationData),
-          );
-        }
+          setState(() {});
+          break;
+        } 
+
+        this.state = state.copy(
+          animationData: Some(newAnimationData),
+        );
         setState(() {});
     }
   }
@@ -192,7 +232,6 @@ class _ContentState
   @override
   Widget build(BuildContext context) {
     final state = this.state;
-    final questionIndex = this.questionIndex;    
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -222,7 +261,7 @@ class _ContentState
               SizedBox(
                 width: double.infinity,
                 child: VideoBar(
-                  value: sliderValue(state),
+                  value: videoBarValue(state),
                   state: videoBarState(state),
                   onSlide: slide,
                   onToggle: toggleVideoPlayer,
@@ -231,14 +270,13 @@ class _ContentState
             ]
           ),
         ),
-        if (questionIndex != null) QuestionPanel(
+        if (state is AtBreakpoint) QuestionPanel(
           lessonIndex: widget.lessonIndex,
-          questionIndex: questionIndex,
-          question: 
-            widget.course.lessons[widget.lessonIndex].questions[questionIndex],
+          questionIndex: state.questionIndex,
+          question: widget.lesson.questions[state.questionIndex],
           input: inputs.input(
             lessonIndex: widget.lessonIndex,
-            questionIndex: questionIndex,
+            questionIndex: state.questionIndex,
           ),
           onInputChange: ({
             required lessonIndex,
@@ -257,14 +295,23 @@ class _ContentState
     );
   }
 
-  void changeVideoUrl(String url) {
+  void changeVideoUrl(
+    String url,
+    IList<Question> questions,
+  ) {
     this.playerController.dispose();
     final playerController = VideoPlayerController.network(url);
     playerController.initialize().then((_) {
+      final Optional<int> nextQuestionIndex;
+      if (questions.isEmpty) {
+        nextQuestionIndex = const None();
+      } else {
+        nextQuestionIndex = const Some(0);
+      }
       state = Paused(
         duration: playerController.value.duration,
         position: Duration.zero,
-        atBreakpoint: false,
+        nextQuestionIndex: nextQuestionIndex,
       );
       setState(() {});
     });

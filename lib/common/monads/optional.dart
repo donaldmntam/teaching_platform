@@ -26,4 +26,11 @@ extension ExtendedOptional<T> on Optional<T> {
         return const None();
     }
   }
+
+  T unwrap() {
+    return switch (this) {
+      Some(value: final value) => value,
+      None() => throw "Optional unwrapped when it was None!",
+    };
+  }
 }

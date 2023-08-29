@@ -1,3 +1,4 @@
+import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter/material.dart' hide Theme;
@@ -9,7 +10,7 @@ import 'package:teaching_platform/courses/widgets/course_column/typedefs.dart';
 import 'package:teaching_platform/courses/widgets/question_column/question_widget.dart';
 
 class QuestionColumn extends StatelessWidget {
-  final List<Question> questions;
+  final IList<Question> questions;
 
   const QuestionColumn(
     this.questions,
@@ -32,7 +33,7 @@ class QuestionColumn extends StatelessWidget {
 
 Widget _spacerBuilder() => const SizedBox(height: 8);
 
-List<Widget Function()> _widgetBuilders(List<Question> questions) {
+List<Widget Function()> _widgetBuilders(IList<Question> questions) {
   final builders = List<Widget Function()>.empty(growable: true);
   builders.add(_spacerBuilder);
   for (var i = 0; i < questions.length; i++) {

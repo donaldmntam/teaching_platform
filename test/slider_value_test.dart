@@ -8,6 +8,6 @@ void main() => test("slider_value_test", () {
     duration: Duration(seconds: 10),
     position: Duration(seconds: 1),
   );
-  final value = sliderValue(state);
+  final value = videoBarValue(state);
   print("value $value");
 });

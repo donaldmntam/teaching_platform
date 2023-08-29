@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart' hide State;
+import 'package:teaching_platform/common/functions/block_functions.dart';
 import 'package:teaching_platform/common/widgets/services/services.dart';
 import 'package:teaching_platform/common/widgets/tappable/tappable.dart';
 
@@ -9,11 +10,16 @@ const _thumbSize = (_playButtonSize / 2) * 0.5;
 const _thumbOverlaySize = (_playButtonSize / 2) * 0.7;
 const _playButtonSize = 36.0;
 
+typedef VideoBarValue = ({
+  Duration position,
+  Duration duration,
+});
+
 class VideoBar extends StatelessWidget {
-  final double value;
+  final VideoBarValue value;
   final State state;
   final void Function() onToggle;
-  final void Function(double) onSlide;
+  final void Function(Duration newPosition) onSlide;
 
   const VideoBar({
     super.key,
@@ -39,14 +45,23 @@ class VideoBar extends StatelessWidget {
               State.playing => onToggle,
               State.paused => onToggle,
             },
-            child: Icon(
-              size: _playButtonSize,
-              switch (state) {
-                State.playing => Icons.pause,
-                State.paused => Icons.play_arrow,
-                State.loading => Icons.play_arrow,
-                State.atBreakpoint => Icons.play_arrow,
-              },
+            child: SizedBox.square(
+              dimension: _playButtonSize,
+              child: Center(
+                child: Icon(
+                  size: _playButtonSize * 0.8,
+                  switch (state) {
+                    State.playing => Icons.pause,
+                    State.paused => value.position >= value.duration
+                      ? Icons.replay
+                      : Icons.play_arrow,
+                    State.loading => Icons.play_arrow,
+                    State.atBreakpoint => value.position >= value.duration
+                      ? Icons.replay
+                      : Icons.play_arrow,
+                  },
+                ),
+              ),
             )
           ),
           Flexible(
@@ -68,13 +83,15 @@ class VideoBar extends StatelessWidget {
                   child: Slider(
                     activeColor: theme.colors.primary,
                     min: 0,
-                    value: value,
-                    onChanged: switch (state) {
-                      State.atBreakpoint => null,
-                      State.loading => null,
-                      State.playing => onSlide,
-                      State.paused => onSlide,
-                    },
+                    value: value.duration.inMilliseconds == 0
+                      ? 0
+                      : value.position.inMilliseconds / 
+                        value.duration.inMilliseconds,
+                    onChanged: sliderOnChangedCallback(
+                      state,
+                      value.duration,
+                      onSlide,
+                    ),
                   ),
                 ),
               ),
@@ -85,4 +102,22 @@ class VideoBar extends StatelessWidget {
       ),
     );
   }
+}
+
+void Function(double)? sliderOnChangedCallback(
+  State state,
+  Duration duration,
+  void Function(Duration newPosition) onSlide,
+) {
+  if (
+    state == State.atBreakpoint || 
+    state == State.loading
+  ) {
+    return null;
+  }
+  return (double value) => onSlide(
+    Duration(
+      milliseconds: (duration.inMilliseconds * value).toInt()
+    )
+  );
 }

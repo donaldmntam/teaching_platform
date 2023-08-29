@@ -1,3 +1,4 @@
+import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:teaching_platform/common/functions/iterable_functions.dart';
@@ -11,7 +12,7 @@ const _curve = Curves.easeInOutQuad;
 
 class CourseListWidget extends StatefulWidget {
   final int groupIndex;
-  final List<Course> courses;
+  final IList<Course> courses;
   final bool expanded;
   final OnCoursePressed onCoursePressed;
 
