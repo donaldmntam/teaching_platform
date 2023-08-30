@@ -1,13 +1,42 @@
-sealed class Input {}
+sealed class Input {
+  const Input();
 
-final class TextInput implements Input {
+  @override
+  int get hashCode {
+    final input = this;
+    switch (input) {
+      case TextInput():
+        return input.text.hashCode;
+      case McInput():
+        return input.selectedIndex.hashCode;
+    }
+  }
+
+  @override
+  bool operator ==(Object? other) {
+    if (other is! Input) return false;
+    final thisInput = this;
+    switch (thisInput) {
+      case TextInput():
+        if (other is! TextInput) return false;
+        return thisInput.text == other.text;
+      case McInput():
+        if (other is! McInput) return false;
+        return thisInput.selectedIndex == 
+          other.selectedIndex;
+    }
+  }
+}
+
+final class TextInput extends Input {
   final String text;
 
   const TextInput(this.text);
 }
 
-final class McInput implements Input {
+final class McInput extends Input {
   final int? selectedIndex;
 
   const McInput(this.selectedIndex);
 }
+

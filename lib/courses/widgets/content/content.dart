@@ -27,6 +27,7 @@ class Content extends StatefulWidget {
   final int lessonIndex;
   final Course course;
   final CourseInputs initialInputs;
+  final CourseInputs correctInputs;
   final void Function(int lessonIndex) didSelectLesson;
 
   Lesson get lesson => course.lessons[lessonIndex];
@@ -36,6 +37,7 @@ class Content extends StatefulWidget {
     required this.lessonIndex,
     required this.course,
     required this.initialInputs,
+    required this.correctInputs,
     required this.didSelectLesson,
   });
 
@@ -167,19 +169,46 @@ class _ContentState
   void continueFromBreakpoint() {
     final state = this.state;
     if (state is! AtBreakpoint) illegalState(state, "continueFromBreakpoint");
-    final Optional<int> questionIndex;
-    if (state.questionIndex == widget.lesson.questions.length - 1) {
-      questionIndex = const None();
-    } else {
-      questionIndex = Some(state.questionIndex + 1);
+    switch (state.inputState) {
+      case AwaitingSubmission(retryCount: final retryCount):  
+        final correct = inputs[state.questionIndex] == 
+          widget.correctInputs[state.questionIndex];
+        if (correct) {
+          final Optional<int> nextQuestionIndex;
+          if (state.questionIndex == widget.lesson.questions.length - 1) {
+            nextQuestionIndex = const None();
+          } else {
+            nextQuestionIndex = Some(state.questionIndex + 1);
+          }
+          this.state = Playing(
+            duration: state.duration,
+            startPosition: state.position,
+            nextQuestionIndex: nextQuestionIndex,
+          );
+          playerController.seekTo(state.position);
+          playerController.play();
+        } else {
+          if (retryCount >= 1) {
+            this.state = state.copy(
+              inputState: const ShowingResult(passed: false),
+            );
+            setState(() {});
+          } else {
+            this.state = Playing(
+              duration: state.duration,
+              startPosition: widget
+                .lesson
+                .questions[state.questionIndex - 1]
+                .timeStamp,
+              nextQuestionIndex: Some(state.questionIndex),
+            );
+            playerController.seekTo(state.position);
+            playerController.play();
+
+            }
+          this.state = state.copy(inputState: InputState.tryAgain);
+        }
     }
-    this.state = Playing(
-      duration: state.duration,
-      startPosition: state.position,
-      nextQuestionIndex: questionIndex,
-    );
-    playerController.seekTo(state.position);
-    playerController.play();
   }
 
   void onTick(Duration duration) {

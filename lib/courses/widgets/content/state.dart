@@ -48,14 +48,43 @@ final class Playing implements State {
   );
 }
 
+sealed class InputState {}
+
+final class AwaitingSubmission implements InputState {
+  final int retryCount;
+
+  const AwaitingSubmission({
+    required this.retryCount,
+  });
+}
+
+final class ShowingResult implements InputState {
+  final bool passed;
+
+  const ShowingResult({
+    required this.passed,
+  });
+}
+
 final class AtBreakpoint implements State {
   final Duration duration;
   final Duration position;
   final int questionIndex;
+  final InputState inputState;
 
   const AtBreakpoint({
     required this.duration,
     required this.position,
     required this.questionIndex,
+    required this.inputState,
   });
+
+  AtBreakpoint copy({
+    InputState? inputState
+  }) => AtBreakpoint(
+    duration: duration,
+    position: position,
+    questionIndex: questionIndex,
+    inputState: inputState ?? this.inputState,
+  );
 }

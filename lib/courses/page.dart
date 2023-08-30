@@ -52,6 +52,16 @@ class _State extends widgets.State<Page> {
       ].lock
     ).lock
   ).lock;
+  final CourseGroupInputs correctInputs = List.generate(5, (i) =>
+    List.generate(8, (i) =>
+      <Input>[
+        const TextInput("baby don't hurt me"),
+        const TextInput("yes"),
+        const TextInput("joe"),
+        const TextInput("joe mama"),
+      ].lock
+    ).lock
+  ).lock;
   int groupIndex = 0;
   int courseIndex = 0;
   int lessonIndex = 0;
