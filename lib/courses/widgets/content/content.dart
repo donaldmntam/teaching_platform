@@ -194,18 +194,18 @@ class _ContentState
             );
             setState(() {});
           } else {
+            final newPosition = widget
+              .lesson
+              .questions[state.questionIndex - 1]
+              .timeStamp;
             this.state = Playing(
               duration: state.duration,
-              startPosition: widget
-                .lesson
-                .questions[state.questionIndex - 1]
-                .timeStamp,
+              startPosition: newPosition,
               nextQuestionIndex: Some(state.questionIndex),
             );
-            playerController.seekTo(state.position);
+            playerController.seekTo(newPosition);
             playerController.play();
-
-            }
+          }
           this.state = state.copy(inputState: InputState.tryAgain);
         }
     }
