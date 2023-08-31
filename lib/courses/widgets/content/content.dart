@@ -43,6 +43,13 @@ class Content extends StatefulWidget {
 
   @override
   widgets.State<Content> createState() => _ContentState();
+
+  Optional<int> nextQuestionIndex(int currentIndex) {
+    if (currentIndex > lesson.questions.length - 1) {
+      return const None();
+    }
+    return Some(currentIndex + 1);
+  }
 }
 
 class _ContentState
@@ -166,48 +173,72 @@ class _ContentState
     }
   }
 
+  void submitAnswerAtBreakpoint() {
+    final state = this.state;
+    if (state is! AtBreakpoint) {
+      illegalState(state, "submitAnswerAtBreakpoint");
+    }
+    final inputState = state.inputState;
+    if (inputState is! AwaitingSubmission) {
+      illegalState(state, "submitAnswerAtBreakpoint");
+    }
+    final correct = inputs[state.questionIndex] == 
+      widget.correctInputs[state.questionIndex];
+    this.state = state.copy(
+      inputState: ShowingResult(
+        retryCount: inputState.retryCount,
+        passed: correct,
+      )
+    );
+    setState(() {});
+  }
+
   void continueFromBreakpoint() {
     final state = this.state;
-    if (state is! AtBreakpoint) illegalState(state, "continueFromBreakpoint");
-    switch (state.inputState) {
-      case AwaitingSubmission(retryCount: final retryCount):  
-        final correct = inputs[state.questionIndex] == 
-          widget.correctInputs[state.questionIndex];
-        if (correct) {
-          final Optional<int> nextQuestionIndex;
-          if (state.questionIndex == widget.lesson.questions.length - 1) {
-            nextQuestionIndex = const None();
-          } else {
-            nextQuestionIndex = Some(state.questionIndex + 1);
-          }
-          this.state = Playing(
-            duration: state.duration,
-            startPosition: state.position,
-            nextQuestionIndex: nextQuestionIndex,
-          );
-          playerController.seekTo(state.position);
-          playerController.play();
-        } else {
-          if (retryCount >= 1) {
-            this.state = state.copy(
-              inputState: const ShowingResult(passed: false),
-            );
-            setState(() {});
-          } else {
-            final newPosition = widget
-              .lesson
-              .questions[state.questionIndex - 1]
-              .timeStamp;
-            this.state = Playing(
-              duration: state.duration,
-              startPosition: newPosition,
-              nextQuestionIndex: Some(state.questionIndex),
-            );
-            playerController.seekTo(newPosition);
-            playerController.play();
-          }
-          this.state = state.copy(inputState: InputState.tryAgain);
-        }
+    if (state is! AtBreakpoint) {
+      illegalState(state, "continueFromBreakpoint");
+    }
+    final inputState = state.inputState;
+    if (inputState is! ShowingResult) {
+      illegalState(state, "continueFromBreakpoint");
+    }
+    if (inputState.passed) {
+      final nextQuestionIndex = widget.nextQuestionIndex(state.questionIndex);
+      this.state = Playing(
+        duration: state.duration,
+        startPosition: state.position,
+        nextQuestionIndex: nextQuestionIndex,
+      );
+      playerController.seekTo(state.position);
+      playerController.play();
+    } else {
+      if (inputState.maxRetryCountReached) {
+        final newPosition = widget
+          .lesson
+          .questions[state.questionIndex]
+          .timeStamp;
+        this.state = Playing(
+          duration: state.duration,
+          startPosition: newPosition,
+          nextQuestionIndex: widget.nextQuestionIndex(state.questionIndex),
+        );
+        setState(() {});
+        playerController.seekTo(newPosition);
+        playerController.play();
+      } else {
+        final newPosition = widget
+          .lesson
+          .questions[state.questionIndex - 1]
+          .timeStamp;
+        this.state = Playing(
+          duration: state.duration,
+          startPosition: newPosition,
+          nextQuestionIndex: Some(state.questionIndex),
+          mode: Rewatching(retryCount: inputState.retryCount),
+        );
+        playerController.seekTo(newPosition);
+        playerController.play();
+      }
     }
   }
 
