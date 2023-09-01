@@ -2,7 +2,6 @@ import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:flutter/material.dart' hide TextButton, State, Title;
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart' as widgets show State;
-import 'package:teaching_platform/common/functions/block_functions.dart';
 import 'package:teaching_platform/common/functions/duration_functions.dart';
 import 'package:teaching_platform/common/functions/error_functions.dart';
 import 'package:teaching_platform/common/models/course/course_inputs.dart';
@@ -11,14 +10,19 @@ import 'package:teaching_platform/common/models/course/question.dart';
 import 'package:teaching_platform/common/monads/optional.dart';
 import 'package:teaching_platform/common/models/course/course.dart';
 import 'package:teaching_platform/courses/widgets/content/functions.dart';
-import 'package:teaching_platform/courses/widgets/question_panel/question_panel.dart';
 import 'package:video_player/video_player.dart';
+import 'package:teaching_platform/common/functions/block_functions.dart';
 
 import '../video_bar/video_bar.dart';
 import 'state.dart';
 import 'title.dart';
 import 'lesson_selection.dart';
+import '../result_panel/result_panel.dart';
+import '../question_panel/question_panel.dart';
+import '../question_column/question_column.dart';
 
+const _mainRelativeWidth = 0.75;
+const _questionColumnRelativeWidth = 0.25;
 const _verticalSpacing = 16.0;
 
 // TODO: video player flickering
@@ -45,10 +49,11 @@ class Content extends StatefulWidget {
   widgets.State<Content> createState() => _ContentState();
 
   Optional<int> nextQuestionIndex(int currentIndex) {
-    if (currentIndex > lesson.questions.length - 1) {
+    final nextIndex = currentIndex + 1;
+    if (nextIndex > lesson.questions.length - 1) {
       return const None();
     }
-    return Some(currentIndex + 1);
+    return Some(nextIndex);
   }
 }
 
@@ -182,8 +187,15 @@ class _ContentState
     if (inputState is! AwaitingSubmission) {
       illegalState(state, "submitAnswerAtBreakpoint");
     }
-    final correct = inputs[state.questionIndex] == 
-      widget.correctInputs[state.questionIndex];
+    final currentInput = inputs.input(
+      lessonIndex: widget.lessonIndex,
+      questionIndex: state.questionIndex,
+    );
+    final correctInput = widget.correctInputs.input(
+      lessonIndex: widget.lessonIndex,
+      questionIndex: state.questionIndex,
+    );
+    final correct = currentInput == correctInput;
     this.state = state.copy(
       inputState: ShowingResult(
         retryCount: inputState.retryCount,
@@ -226,15 +238,20 @@ class _ContentState
         playerController.seekTo(newPosition);
         playerController.play();
       } else {
-        final newPosition = widget
-          .lesson
-          .questions[state.questionIndex - 1]
-          .timeStamp;
+        final Duration newPosition;
+        if (state.questionIndex == 0) {
+          newPosition = Duration.zero;
+        } else {
+          newPosition = widget
+            .lesson
+            .questions[state.questionIndex - 1]
+            .timeStamp;
+        }
         this.state = Playing(
           duration: state.duration,
           startPosition: newPosition,
           nextQuestionIndex: Some(state.questionIndex),
-          mode: Rewatching(retryCount: inputState.retryCount),
+          mode: Rewatching(retryCount: inputState.retryCount + 1),
         );
         playerController.seekTo(newPosition);
         playerController.play();
@@ -272,6 +289,12 @@ class _ContentState
               duration: state.duration,
               position: nextQuestion.timeStamp,
               questionIndex: questionIndex.value,
+              inputState: AwaitingSubmission(
+                retryCount: switch (state.mode) {
+                  Regular() => 0,
+                  Rewatching(retryCount: final count) => count,
+                }
+              ),
             );
             setState(() {});
             playerController.seekTo(newAnimationData.currentPosition);
@@ -301,69 +324,105 @@ class _ContentState
   @override
   Widget build(BuildContext context) {
     final state = this.state;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Title(widget.course.title),
-        LessonSelection(
-          widget.course.lessons,
-          selectedIndex: widget.lessonIndex,
-          onSelect: widget.didSelectLesson,
-        ),
-        Container(
-          decoration: const BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(6))
-          ),
-          clipBehavior: Clip.antiAlias,
-          child: Column(
-            children: [
-              AspectRatio(
-                aspectRatio: 16 / 9,
-                child: GestureDetector(
-                  onTap: switch (state) {
-                    AtBreakpoint() => null,
-                    _ => toggleVideoPlayer,
-                  },
-                  child: Container(
-                    color: Colors.black,
-                    child: IgnorePointer(child: VideoPlayer(playerController)),
+    return LayoutBuilder(
+      builder: (context, constraints) => Row(
+        children: [
+          SizedBox(
+            width: widget.lesson.questions.isEmpty
+              ? constraints.maxWidth
+              : constraints.maxWidth * _mainRelativeWidth,
+            height: constraints.maxHeight,
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Title(widget.course.title),
+                  LessonSelection(
+                    widget.course.lessons,
+                    selectedIndex: widget.lessonIndex,
+                    onSelect: widget.didSelectLesson,
                   ),
-                ),
-              ),
-              SizedBox(
-                width: double.infinity,
-                child: VideoBar(
-                  value: videoBarValue(state),
-                  state: videoBarState(state),
-                  onSlide: slide,
-                  onToggle: toggleVideoPlayer,
-                ),
-              ),
-            ]
+                  Container(
+                    decoration: const BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(6))
+                    ),
+                    clipBehavior: Clip.antiAlias,
+                    child: Column(
+                      children: [
+                        AspectRatio(
+                          aspectRatio: 16 / 9,
+                          child: GestureDetector(
+                            onTap: switch (state) {
+                              AtBreakpoint() => null,
+                              _ => toggleVideoPlayer,
+                            },
+                            child: Container(
+                              color: Colors.black,
+                              child: IgnorePointer(child: VideoPlayer(playerController)),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: double.infinity,
+                          child: VideoBar(
+                            value: videoBarValue(state),
+                            state: videoBarState(state),
+                            onSlide: slide,
+                            onToggle: toggleVideoPlayer,
+                          ),
+                        ),
+                      ]
+                    ),
+                  ),
+                  if (state is AtBreakpoint) run(() {
+                    final inputState = state.inputState;
+                    switch (inputState) {
+                      case AwaitingSubmission():
+                        return QuestionPanel(
+                          lessonIndex: widget.lessonIndex,
+                          questionIndex: state.questionIndex,
+                          question: widget.lesson.questions[state.questionIndex],
+                          input: inputs.input(
+                            lessonIndex: widget.lessonIndex,
+                            questionIndex: state.questionIndex,
+                          ),
+                          onInputChange: ({
+                            required lessonIndex,
+                            required questionIndex,
+                            required input,
+                          }) => setState(() {
+                            inputs = inputs.copy(
+                              lessonIndex: lessonIndex,
+                              questionIndex: questionIndex,
+                              input: input,
+                            );
+                          }),
+                          onNext: submitAnswerAtBreakpoint,
+                        );
+                      case ShowingResult():
+                        return ResultPanel(
+                          state: inputState,
+                          onContinue: continueFromBreakpoint,
+                        );
+                    }
+                  }),
+                ].addBetween(const SizedBox(height: _verticalSpacing)),
+              )
+            )
           ),
-        ),
-        if (state is AtBreakpoint) QuestionPanel(
-          lessonIndex: widget.lessonIndex,
-          questionIndex: state.questionIndex,
-          question: widget.lesson.questions[state.questionIndex],
-          input: inputs.input(
-            lessonIndex: widget.lessonIndex,
-            questionIndex: state.questionIndex,
-          ),
-          onInputChange: ({
-            required lessonIndex,
-            required questionIndex,
-            required input,
-          }) => setState(() {
-            inputs = inputs.copy(
-              lessonIndex: lessonIndex,
-              questionIndex: questionIndex,
-              input: input,
-            );
-          }),
-          onNext: continueFromBreakpoint,
-        ),
-      ].addBetween(const SizedBox(height: _verticalSpacing)),
+          Visibility(
+            visible: widget.lesson.questions.isNotEmpty,
+            child: SizedBox(
+              width: constraints.maxWidth * _questionColumnRelativeWidth,
+              height: constraints.maxHeight,
+              child: QuestionColumn(
+                state: state,
+                questions: widget.lesson.questions,
+              )
+            )
+          )
+        ]
+      )
     );
   }
 

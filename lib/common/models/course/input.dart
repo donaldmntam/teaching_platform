@@ -26,6 +26,15 @@ sealed class Input {
           other.selectedIndex;
     }
   }
+
+  @override
+  String toString() {
+    final localThis = this;
+    return switch (localThis) {
+      TextInput() => "TextInput { text: ${localThis.text} }",
+      McInput() => "McInput { selectedIndex: ${localThis.selectedIndex} }",
+    };
+  }
 }
 
 final class TextInput extends Input {

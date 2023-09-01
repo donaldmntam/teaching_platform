@@ -11,9 +11,8 @@ import 'package:teaching_platform/courses/widgets/content/content.dart';
 import 'package:teaching_platform/courses/widgets/course_column/course_column.dart';
 import 'package:teaching_platform/courses/widgets/question_column/question_column.dart';
 
-const _courseColumnRelativeWidth = 0.2;
-const _contentRelativeWidth = 0.6;
-const _questionColumnRelativeWidth = 0.2;
+const _courseColumnRelativeWidth = 0.25;
+const _contentRelativeWidth = 0.75;
 
 class Page extends StatefulWidget {
   const Page({super.key});
@@ -97,30 +96,19 @@ class _State extends widgets.State<Page> {
               SizedBox(
                 width: constraints.maxWidth * _contentRelativeWidth,
                 height: constraints.maxHeight,
-                child: SingleChildScrollView(
-                  child: Padding(
-                    padding: const EdgeInsets.all(32),
-                    child: Content(
-                      lessonIndex: lessonIndex,
-                      course: testCoursesGroups[groupIndex].courses[courseIndex],
-                      initialInputs: initialInputs[groupIndex],
-                      didSelectLesson: (index) => setState(() => 
-                        lessonIndex = index
-                      ),
+                child: Padding(
+                  padding: const EdgeInsets.all(32),
+                  child: Content(
+                    lessonIndex: lessonIndex,
+                    course: testCoursesGroups[groupIndex].courses[courseIndex],
+                    initialInputs: initialInputs[groupIndex],
+                    correctInputs: correctInputs[groupIndex],
+                    didSelectLesson: (index) => setState(() => 
+                      lessonIndex = index
                     ),
                   ),
                 ),
               ),
-              SizedBox(
-                width: constraints.maxWidth * _questionColumnRelativeWidth,
-                height: constraints.maxHeight,
-                child: QuestionColumn(
-                  testCoursesGroups[groupIndex]
-                    .courses[courseIndex]
-                    .lessons[lessonIndex]
-                    .questions
-                )
-              )
             ]
           ),
         );

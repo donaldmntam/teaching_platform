@@ -107,3 +107,4 @@ final class AtBreakpoint implements State {
     inputState: inputState ?? this.inputState,
   );
 }
+

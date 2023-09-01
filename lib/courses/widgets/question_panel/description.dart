@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:teaching_platform/common/theme/theme.dart';
 import 'package:teaching_platform/common/widgets/services/services.dart';
+import 'package:teaching_platform/courses/values.dart';
 
 class Description extends StatelessWidget {
   final String title;
@@ -13,11 +14,7 @@ class Description extends StatelessWidget {
     
     return Text(
       title,
-      style: theme.textStyle(
-        size: 20,
-        weight: FontWeight.bold,
-        color: theme.colors.onSurface,
-      ),
+      style: panelTextStyle(theme),
     );
   }
 }

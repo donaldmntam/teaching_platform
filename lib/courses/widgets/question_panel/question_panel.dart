@@ -9,6 +9,7 @@ import 'package:teaching_platform/common/widgets/button/text_button.dart';
 import 'package:teaching_platform/common/widgets/services/services.dart';
 import 'package:teaching_platform/courses/widgets/question_panel/mc_question/mc_question.dart';
 import 'package:teaching_platform/courses/widgets/question_panel/text_question/text_question.dart';
+import 'package:teaching_platform/courses/values.dart';
 
 const _animationDuration = Duration(milliseconds: 600);
 
@@ -79,6 +80,7 @@ class _QuestionPanelState
   Widget build(BuildContext context) {
     final question = widget.question;
     final input = widget.input;
+    final theme = Services.of(context).theme;
 
     final Widget child;
     switch (question) {
@@ -105,28 +107,19 @@ class _QuestionPanelState
           ),
         );
     }
-
+     
     return Column(
       children: [
         Container(
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(
+          padding: const EdgeInsets.all(panelSpacing),
+          decoration: panelDecoration(theme).copyWith(
             color: Color.lerp(startColor, endColor, animationValue),
-            borderRadius: BorderRadius.circular(8),
-            boxShadow: const [
-              BoxShadow(
-                color: Color(0x10000000),
-                spreadRadius: 2,
-                blurRadius: 2,
-                offset: Offset(0, 2),
-              )
-            ]
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               child,
-              const SizedBox(height: 16),
+              const SizedBox(height: panelSpacing),
               TextButton(
                 "Next",
                 onPressed: widget.onNext,
