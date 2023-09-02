@@ -57,7 +57,7 @@ class _State extends widgets.State<Page> {
       index,
       (post) => post.copyBy(
         comments: (comments) => comments.add((
-          creator: Services.of(context).user,
+          creator: Services.of(context).user!,
           text: comment,
         ))
       )

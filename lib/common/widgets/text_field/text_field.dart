@@ -4,7 +4,12 @@ import 'package:teaching_platform/common/theme/theme.dart';
 import 'package:teaching_platform/common/widgets/services/services.dart';
 
 class TextField extends StatelessWidget {
-  const TextField({super.key});
+  final void Function(String value)? onTextChange;
+  
+  const TextField({
+    super.key,
+    this.onTextChange,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -18,6 +23,7 @@ class TextField extends StatelessWidget {
       child: Material(
         color: const Color(0x00000000),
         child: material.TextField(
+          onChanged: onTextChange,
           decoration: const InputDecoration(
             contentPadding: EdgeInsets.symmetric(
               horizontal: 16,

@@ -1,19 +1,29 @@
 import 'package:flutter/material.dart' hide Theme;
-import 'package:teaching_platform/common/theme/theme.dart';
 import 'package:teaching_platform/common/widgets/services/services.dart';
 import 'package:teaching_platform/root/page.dart' as root;
+import 'package:teaching_platform/common/models/social_media/user.dart';
 
 void main() {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
+  @override
+  State<MyApp> createState() => _State();
+}
+
+class _State extends State<MyApp> {
+  User? user;
+
   @override
   Widget build(BuildContext context) {
     return Services(
+      user: user,
+      listener: (
+        didLogIn: (user) => setState(() => this.user = user),
+      ),
       child: const MaterialApp(
         title: 'Flutter Demo',
         home: root.Page()

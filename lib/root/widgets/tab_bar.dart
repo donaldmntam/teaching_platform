@@ -2,15 +2,21 @@ import 'package:flutter/material.dart' hide Theme;
 import 'package:teaching_platform/common/functions/iterable_functions.dart';
 import 'package:teaching_platform/common/theme/theme.dart';
 import 'package:teaching_platform/common/widgets/services/services.dart';
+import 'package:teaching_platform/common/widgets/tappable/tappable.dart';
+import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 
+typedef Tab = ({
+  String title,
+  bool enabled,
+});
 class TabBar extends StatelessWidget {
-  final List<String> titles;
+  final IList<Tab> tabs;
   final int selectedIndex;
   final void Function(int) onTap;
 
   const TabBar({
     super.key,
-    required this.titles,
+    required this.tabs,
     required this.selectedIndex,
     required this.onTap,
   });
@@ -21,12 +27,12 @@ class TabBar extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
-      children: titles.mapIndexed((i, title) =>
+      children: tabs.mapIndexed((i, tab) =>
         Flexible(
           flex: 1,
           fit: FlexFit.tight,
-          child: GestureDetector(
-            onTap: () => onTap(i),
+          child: Tappable(
+            onTap: tab.enabled ? () => onTap(i) : null,
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 0),
               // color: i % 2 == 0 ? Colors.red : Colors.blue,
@@ -35,7 +41,7 @@ class TabBar extends StatelessWidget {
                 child: FittedBox(
                   fit: BoxFit.scaleDown,
                   child: Text(
-                    title,
+                    tab.title,
                     maxLines: 1,
                     style: theme.textStyle(
                       size: 30,
