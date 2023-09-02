@@ -7,6 +7,11 @@ import 'package:teaching_platform/social_media/widgets/post_card/post_card.dart'
 import 'package:teaching_platform/social_media/widgets/post_creation_card/message.dart';
 import 'package:teaching_platform/social_media/widgets/post_creation_card/post_creation_card.dart';
 import 'dart:ui' as ui;
+import './widgets/post_card/listener.dart' as post_card;
+import 'package:teaching_platform/common/functions/iterable_functions.dart';
+import 'package:teaching_platform/common/widgets/services/services.dart';
+import 'package:teaching_platform/common/models/social_media/comment.dart';
+import './widgets/comment_dialog/comment_dialog.dart';
 
 class Page extends StatefulWidget {
   const Page({super.key});
@@ -21,13 +26,42 @@ class _State extends widgets.State<Page> {
 
   void onSubmit(String text, IList<ui.Image> images) {
     final Post newPost = (
-      creator: (userName: "donaldtam", picture: NetworkImage("https://picsum.photos/100")),
+      creator: const (userName: "donaldtam", picture: NetworkImage("https://picsum.photos/100")),
       text: text,
       images: images,
       liked: false,
+      comments: const IListConst([]),
     );
     setState(() => posts = [newPost, ...posts].lock);
     channel.add(PostCreationCardMessage.clear);
+  }
+
+  void like(int index) {
+    setState(() =>
+      posts = posts.replaceBy(
+        index,
+        (post) => post.copyBy(
+          liked: (liked) => !liked,
+        ),
+      )
+    );
+  }
+  
+  Future<void> openCommentDialog(int index) async {
+    final comment = await showDialog<String?>(
+      context: context,
+      builder: (context) => const CommentDialog(),
+    );
+    if (comment == null) return;
+    setState(() => posts = posts.replaceBy(
+      index,
+      (post) => post.copyBy(
+        comments: (comments) => comments.add((
+          creator: Services.of(context).user,
+          text: comment,
+        ))
+      )
+    ));
   }
 
   @override
@@ -36,6 +70,10 @@ class _State extends widgets.State<Page> {
       posts: posts,
       channel: channel,
       onSubmit: onSubmit,
+      listener: (
+        onLikePressed: like,
+        onCommentPressed: openCommentDialog,
+      ),
     );
     
     return ClipRect(
@@ -58,6 +96,7 @@ List<Widget> _widgets({
   required IList<Post> posts,
   required Channel<PostCreationCardMessage> channel,
   required void Function(String text, IList<ui.Image> images) onSubmit,
+  required post_card.Listener listener,
 }) {
   final widgets = List<Widget>.empty(growable: true);
   
@@ -67,7 +106,15 @@ List<Widget> _widgets({
       onSubmit: onSubmit,
     )
   );
-  widgets.addAll(posts.map((post) => PostCard(post)));
+  widgets.addAll(
+    posts.mapIndexed((i, post) => 
+      PostCard(
+        index: i,
+        post: post,
+        listener: listener,
+      )
+    )
+  );
 
   return widgets;
 }
@@ -78,11 +125,13 @@ final _initialPosts = <Post>[
     text: "This is my first post ever!",
     images: <ui.Image>[].lock,
     liked: true,
+    comments: <Comment>[].lock,
   ),
   (
     creator: (userName: "jackson123", picture: const NetworkImage("https://picsum.photos/100")),
     text: "This is my first post ever!",
     images: <ui.Image>[].lock,
     liked: false,
+    comments: <Comment>[].lock,
   ),
 ].lock;

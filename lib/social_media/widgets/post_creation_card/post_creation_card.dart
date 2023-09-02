@@ -1,7 +1,6 @@
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:flutter/material.dart' hide TextButton;
 import 'package:teaching_platform/common/util_classes/channel.dart';
-import 'package:teaching_platform/common/widgets/button/text_button.dart';
 import 'package:teaching_platform/common/widgets/services/services.dart';
 import 'package:teaching_platform/common/widgets/text_field/long_text_field.dart';
 import 'package:teaching_platform/social_media/widgets/post_creation_card/button_row.dart';
@@ -74,6 +73,7 @@ class _PostCreationCardState extends State<PostCreationCard> {
           SizedBox(
             height: 100,
             child: LongTextField(
+              singleLine: false,
               hint: "What's on your mind?",
               controller: controller,
             ),

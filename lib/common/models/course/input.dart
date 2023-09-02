@@ -19,7 +19,8 @@ sealed class Input {
     switch (thisInput) {
       case TextInput():
         if (other is! TextInput) return false;
-        return thisInput.text == other.text;
+        return thisInput.text.trim().toLowerCase() ==
+          other.text.trim().toLowerCase();
       case McInput():
         if (other is! McInput) return false;
         return thisInput.selectedIndex == 

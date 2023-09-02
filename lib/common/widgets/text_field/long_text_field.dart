@@ -4,12 +4,14 @@ import 'package:teaching_platform/common/theme/theme.dart';
 import 'package:teaching_platform/common/widgets/services/services.dart';
 
 class LongTextField extends StatelessWidget {
+  final bool singleLine;
   final String? hint;
   final void Function(String text)? onTextChange;
   final TextEditingController? controller;
 
   const LongTextField({
     super.key,
+    this.singleLine = true,
     this.hint,
     this.onTextChange,
     this.controller,
@@ -27,12 +29,15 @@ class LongTextField extends StatelessWidget {
       child: Material(
         color: const Color(0x00000000),
         child: material.TextField(
+          textAlignVertical: TextAlignVertical.top,
+          expands: !singleLine,
+          maxLines: singleLine ? 1 : null,
           controller: controller,
           onChanged: onTextChange,
           decoration: InputDecoration(
             contentPadding: const EdgeInsets.symmetric(
               horizontal: 16,
-              vertical: 4
+              vertical: 16,
             ), 
             hoverColor: const Color(0x00000000),
             fillColor: const Color(0x00000000),

@@ -1,18 +1,25 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Listener;
 import 'package:teaching_platform/common/models/social_media/post.dart';
 import 'package:teaching_platform/common/widgets/services/services.dart';
 import 'package:teaching_platform/social_media/widgets/post_card/button_row.dart';
 import 'package:teaching_platform/social_media/widgets/post_card/content.dart';
 import 'package:teaching_platform/social_media/widgets/post_card/creator_row.dart';
 import 'package:teaching_platform/social_media/widgets/values.dart';
+import 'listener.dart';
+import 'comment_section.dart';
+import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 
 class PostCard extends StatelessWidget {
+  final int index;
   final Post post;
+  final Listener listener;
 
-  const PostCard(
-    this.post,
-    {super.key}
-  );
+  const PostCard({
+    super.key,
+    required this.index,
+    required this.post,
+    required this.listener,
+  });
 
   // TODO: use constants (not relative for padding?)
 
@@ -23,20 +30,19 @@ class PostCard extends StatelessWidget {
       padding: const EdgeInsets.all(cardPadding),
       decoration: cardDecoration(theme),
       child: Column(
-        children: [
+        children: <Widget>[
           CreatorRow(post.creator),
-          const SizedBox(height: cardSpacing),
           Content(post),
-          const SizedBox(height: cardSpacing),
           ButtonRow(
+            index: index,
             liked: post.liked,
             bookmarked: false,
-            onLikePressed: () {}, 
-            onCommentPressed: () {},
-            onSharePressed: () {},
-            onBookmarkPressed: () {}
+            listener: listener,
           ),
-        ]
+          if (post.comments.isNotEmpty) CommentSection(
+            comments: post.comments,
+          ),
+        ].addBetween(const SizedBox(height: cardSpacing)),
       )
     );
   }

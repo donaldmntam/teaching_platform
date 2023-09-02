@@ -34,7 +34,8 @@ class Content extends StatelessWidget {
               size: 16,
               weight: FontWeight.normal,
               color: theme.colors.onBackground,
-            )
+            ),
+            maxLines: 50,
           )
         ),
         _ => Column(
@@ -47,7 +48,8 @@ class Content extends StatelessWidget {
                 size: 14,
                 weight: FontWeight.normal,
                 color: theme.colors.onSurface,
-              )
+              ),
+              maxLines: 50,
             )
           ].addBetween(const SizedBox(height: cardSpacing)),
         ),
