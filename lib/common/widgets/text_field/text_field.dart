@@ -18,8 +18,8 @@ class TextField extends StatelessWidget {
     final theme = Services.of(context).theme;
     return Container(
       clipBehavior: Clip.antiAlias,
-      decoration: ShapeDecoration(
-        shape: const StadiumBorder(),
+      decoration: BoxDecoration(
+        borderRadius: const BorderRadius.all(Radius.circular(8)),
         color: theme.colors.primary.withAlpha(50),
       ),
       child: Material(
