@@ -81,13 +81,14 @@ class _ContentState
       if (widget.lesson.questions.isEmpty) {
         nextQuestionIndex = const None();
       } else {
-        nextQuestionIndex = const Some(1);
+        nextQuestionIndex = const Some(0);
       }
       state = Paused(
         duration: playerController.value.duration,
         position: playerController.value.position,
         nextQuestionIndex: nextQuestionIndex,
       );
+      setState(() {});
     });
     this.playerController = playerController;
 
