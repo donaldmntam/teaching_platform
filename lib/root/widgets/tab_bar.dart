@@ -33,23 +33,25 @@ class TabBar extends StatelessWidget {
           fit: FlexFit.tight,
           child: Tappable(
             onTap: tab.enabled ? () => onTap(i) : null,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 0),
-              // color: i % 2 == 0 ? Colors.red : Colors.blue,
-              child: Transform.scale(
-                scale: selectedIndex == i ? 1 : 0.7,
-                child: FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: Text(
-                    tab.title,
-                    maxLines: 1,
-                    style: theme.textStyle(
-                      size: 30,
-                      color: theme.colors.primary,
-                      weight: selectedIndex == i
-                        ? FontWeight.bold
-                        : FontWeight.normal,
-                    )
+            child: Opacity(
+              opacity: tab.enabled ? 1.0 : 0.2,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 0),
+                child: Transform.scale(
+                  scale: selectedIndex == i ? 1 : 0.7,
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      tab.title,
+                      maxLines: 1,
+                      style: theme.textStyle(
+                        size: 30,
+                        color: theme.colors.primary,
+                        weight: selectedIndex == i
+                          ? FontWeight.bold
+                          : FontWeight.normal,
+                      )
+                    ),
                   ),
                 ),
               ),

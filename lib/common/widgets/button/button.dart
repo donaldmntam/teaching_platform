@@ -18,8 +18,8 @@ class Button extends StatelessWidget {
     return Tappable(
       onTap: onPressed,
       child: Container(
-        decoration: ShapeDecoration(
-          shape: const StadiumBorder(),
+        decoration: BoxDecoration(
+          borderRadius: const BorderRadius.all(Radius.circular(8)),
           color: color,
         ),
         child: child,

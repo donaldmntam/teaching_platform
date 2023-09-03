@@ -4,10 +4,12 @@ import 'package:teaching_platform/common/theme/theme.dart';
 import 'package:teaching_platform/common/widgets/services/services.dart';
 
 class TextField extends StatelessWidget {
+  final bool obscureText;
   final void Function(String value)? onTextChange;
   
   const TextField({
     super.key,
+    this.obscureText = false,
     this.onTextChange,
   });
 
@@ -23,6 +25,7 @@ class TextField extends StatelessWidget {
       child: Material(
         color: const Color(0x00000000),
         child: material.TextField(
+          obscureText: obscureText,
           onChanged: onTextChange,
           decoration: const InputDecoration(
             contentPadding: EdgeInsets.symmetric(

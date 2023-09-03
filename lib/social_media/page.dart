@@ -25,8 +25,9 @@ class _State extends widgets.State<Page> {
   final channel = Channel<PostCreationCardMessage>();
 
   void onSubmit(String text, IList<ui.Image> images) {
+    final user = Services.of(context).user!;
     final Post newPost = (
-      creator: const (userName: "donaldtam", picture: NetworkImage("https://picsum.photos/100")),
+      creator: user,
       text: text,
       images: images,
       liked: false,

@@ -5,15 +5,11 @@ import 'package:teaching_platform/common/widgets/button/text_button.dart';
 import 'package:teaching_platform/common/widgets/services/services.dart';
 import 'package:teaching_platform/common/widgets/text_field/text_field.dart';
 import 'package:teaching_platform/login/widgets/selector.dart';
-import 'listener.dart';
 import 'package:teaching_platform/common/models/social_media/user.dart';
 
 class Page extends StatefulWidget {
-  final Listener listener;
-    
   const Page({
     super.key,
-    required this.listener,
   });
 
   @override
@@ -30,7 +26,8 @@ class _PageState extends State<Page> {
       userName: userName,
       picture: const NetworkImage("https://picsum.photos/200"),
     );
-    widget.listener.didLogIn(user);
+    final services = Services.of(context);
+    services.listener.didLogIn(user);
   }
 
   @override
@@ -41,67 +38,71 @@ class _PageState extends State<Page> {
         builder: (context, constraints) {
           return SizedBox(
             width: _columnWidth(constraints),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                // TODO: image
-                Container(
-                  color: Colors.red,
-                  height: 300,
-                ),
-                const SizedBox(height: _spacing),
-                Selector(
-                  selectedType: selectedType,
-                  onTypeChanged: (type) => setState(() =>
-                    selectedType = type
-                  )
-                ),
-                const SizedBox(height: _spacing),
-                Row(
-                  children: [
-                    Text(
-                      "User name/Gmail: ",
-                      style: theme.textStyle(
-                        size: 24,
-                        weight: FontWeight.normal,
-                        color: theme.colors.primary,
-                      )
-                    ),
-                    Flexible(
-                      flex: 1,
-                      child: TextField(
-                        onTextChange: (v) => setState(() => userName = v),
-                      )
-                    ),
-                  ],
-                ),
-                const SizedBox(height: _spacing),
-                Row(
-                  children: [
-                    Text(
-                      "Password: ",
-                      style: theme.textStyle(
-                        size: 24,
-                        weight: FontWeight.normal,
-                        color: theme.colors.primary,
-                      )
-                    ),
-                    Flexible(
-                      flex: 1,
-                      child: TextField(
-                        onTextChange: (v) => setState(() => password = v),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    "assets/images/logo.png",
+                    width: _columnWidth(constraints),
+                    height: _imageHeight(constraints),
+                    fit: BoxFit.cover,
+                  ),
+                  const SizedBox(height: _spacing),
+                  Selector(
+                    selectedType: selectedType,
+                    onTypeChanged: (type) => setState(() =>
+                      selectedType = type
+                    )
+                  ),
+                  const SizedBox(height: _spacing),
+                  Row(
+                    children: [
+                      Text(
+                        "User-name/email: ",
+                        style: theme.textStyle(
+                          size: 24,
+                          weight: FontWeight.normal,
+                          color: theme.colors.primary,
+                        )
                       ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: _spacing),
-                TextButton(
-                  "Login",
-                  onPressed: _canLogIn(userName, password) ? logIn : null,
-                )
-              ]
-            ),
+                      Flexible(
+                        flex: 1,
+                        child: TextField(
+                          onTextChange: (v) => setState(() => userName = v),
+                        )
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: _spacing),
+                  Row(
+                    children: [
+                      Text(
+                        "Password: ",
+                        style: theme.textStyle(
+                          size: 24,
+                          weight: FontWeight.normal,
+                          color: theme.colors.primary,
+                        )
+                      ),
+                      Flexible(
+                        flex: 1,
+                        child: TextField(
+                          obscureText: true,
+                          onTextChange: (v) => setState(() => password = v),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: _spacing),
+                  TextButton(
+                    "Login",
+                    onPressed: _canLogIn(userName, password) ? logIn : null,
+                  )
+                ]
+              ),
+            )
           );
         }
       ),
@@ -117,3 +118,7 @@ double _columnWidth(BoxConstraints constraints) =>
   constraints.maxWidth * 0.5;
 
 const _spacing = 32.0;
+
+double _imageHeight(BoxConstraints constraints) =>
+  constraints.maxWidth / 7;
+

@@ -30,9 +30,10 @@ class SelectableTextButton extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
         child: Text(
-          text,
+          text.toUpperCase(),
           style: theme.textStyle(
             size: 24,
+            letterSpacing: 2,
             weight: FontWeight.bold,
             color: _foreground(theme, style),
           )

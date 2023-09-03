@@ -15,12 +15,15 @@ extension ExtendedTheme on Theme {
     required Color color,
     TextDecoration decoration = TextDecoration.none,
     TextOverflow? overflow = TextOverflow.ellipsis,
+    double? letterSpacing,
   }) => TextStyle(
     fontFamily: baseTextStyle.fontFamily,
     fontSize: size,
     color: color,
     decoration: decoration,
     overflow: overflow,
+    fontWeight: weight,
+    letterSpacing: letterSpacing,
   );
 }
 
@@ -38,6 +41,6 @@ const Theme defaultTheme = (
     onDisabled: Color.fromARGB(255, 255, 255, 255),
   ),
   baseTextStyle: (
-    fontFamily: "arial"
+    fontFamily: "Ubuntu",
   )
 );

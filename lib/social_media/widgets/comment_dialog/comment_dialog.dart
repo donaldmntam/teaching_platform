@@ -34,7 +34,7 @@ class _State extends State<CommentDialog> {
               fit: FlexFit.loose,
               child: LongTextField(
                 singleLine: false,
-                onTextChange: (value) => comment = value,
+                onTextChange: (value) => setState(() => comment = value),
               )
             ),
             const SizedBox(height: 12),
@@ -42,7 +42,9 @@ class _State extends State<CommentDialog> {
               alignment: Alignment.centerRight,
              child: TextButton(
                 "Confirm",
-                onPressed: () => Navigator.of(context).pop(comment),
+                onPressed: comment.isNotEmpty
+                  ? () => Navigator.of(context).pop(comment)
+                  : null,
               )
             ),
           ],

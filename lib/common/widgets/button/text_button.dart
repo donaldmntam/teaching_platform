@@ -35,10 +35,11 @@ class TextButton extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
         child: Text(
-          text,
+          text.toUpperCase(),
           style: theme.textStyle(
             size: 24,
             weight: FontWeight.bold,
+            letterSpacing: 2,
             color: run(() {
               if (onPressed == null) {
                 return theme.colors.onDisabled;

@@ -1,36 +1,30 @@
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:flutter/material.dart' hide TabBar, Theme, TextButton, Tab;
-import 'package:teaching_platform/common/models/social_media/content.dart';
-import 'package:teaching_platform/common/models/social_media/post.dart';
-import 'package:teaching_platform/common/models/task/input.dart';
-import 'package:teaching_platform/common/models/task/question.dart';
-import 'package:teaching_platform/common/models/task/task.dart';
 import 'package:teaching_platform/common/widgets/services/services.dart';
-import 'package:teaching_platform/login/page.dart' as login;
 import 'package:teaching_platform/courses/page.dart' as courses;
 import 'package:teaching_platform/tasks/page.dart' as page_tasks;
 import 'package:teaching_platform/social_media/page.dart' as social_media;
-import 'package:teaching_platform/common/models/social_media/user.dart';
 
 import 'widgets/tab_bar.dart';
 
-import 'dart:ui' as ui;
-
-const _initialTabs = IListConst(<Tab>[
-  (title: "HOME", enabled: true),
-  (title: "COURSES", enabled: false),
-  (title: "MISSION", enabled: false),
-  (title: "SOCIAL MEDIA", enabled: false),
-]);
-
-const _tabsAfterLoggingIn = IListConst(<Tab>[
-  (title: "HOME", enabled: true),
+// const _initialTabs = IListConst(<Tab>[
+//   (title: "HOME", enabled: true),
+//   (title: "COURSES", enabled: false),
+//   (title: "MISSION", enabled: false),
+//   (title: "SOCIAL MEDIA", enabled: false),
+// ]);
+// 
+// const _tabsAfterLoggingIn = IListConst(<Tab>[
+//   (title: "HOME", enabled: true),
+//   (title: "COURSES", enabled: true),
+//   (title: "MISSION", enabled: true),
+//   (title: "SOCIAL MEDIA", enabled: true),
+// ]);
+const _tabs = IListConst(<Tab>[
   (title: "COURSES", enabled: true),
   (title: "MISSION", enabled: true),
   (title: "SOCIAL MEDIA", enabled: true),
 ]);
-
-// TODO: breakpoints
 
 class Page extends StatefulWidget {
   const Page({
@@ -43,15 +37,7 @@ class Page extends StatefulWidget {
 
 class _State extends State<Page> {
   int currentTabIndex = 0;
-  IList<Tab> tabs = _initialTabs;
-
-  void didLogIn(User user) {
-    final services = Services.of(context);
-    services.listener.didLogIn(user);
-    setState(() =>
-      tabs = _tabsAfterLoggingIn,
-    );
-  }
+  IList<Tab> tabs = _tabs;
 
   @override
   Widget build(BuildContext context) {
@@ -60,8 +46,12 @@ class _State extends State<Page> {
       builder: (context, constraints) {
         return Column(
           children: [
-            Text(
-              "FUTVENTURELAB",
+            const SizedBox(height: 24),
+            Image.asset(
+              "assets/images/logo.png",
+              width: 500,
+              height: 80,
+              fit: BoxFit.cover,
             ),
             const SizedBox(
               height: 24,
@@ -87,12 +77,7 @@ class _State extends State<Page> {
               flex: 1,
               child: IndexedStack(
                 index: currentTabIndex,
-                children: [
-                  login.Page(
-                    listener: (
-                      didLogIn: didLogIn,
-                    ),
-                  ),
+                children: const [
                   courses.Page(),
                   page_tasks.Page(),
                   social_media.Page(),
