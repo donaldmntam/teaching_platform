@@ -22,3 +22,37 @@ extension ExtendedTask on Task {
     inputs: inputs?.call(this.inputs) ?? this.inputs,
   );
 }
+
+Task? jsonToTask(Object? json) {
+  if (
+    json case {
+      "title": String title,
+      "timeAllowed": {
+        "minutes": int minutes,
+        "seconds": int seconds,
+      },
+      "questions": List<Object?> encodedQuestions,
+      "inputs": List<Object?> encodedInputs,
+    }
+  ) {
+    final questions = List<Question>.empty(growable: true);
+    for (final encodedQuestion in encodedQuestions) {
+      final question = jsonToQuestion(encodedQuestion);
+      if (question == null) return null;
+      questions.add(question);
+    }
+    final inputs = List<Input>.empty(growable: true);
+    for (final encodedInput in encodedInputs) {
+      final input = jsonToInput(encodedInput);
+      if (input == null) return null;
+      inputs.add(input);
+    }
+    return (
+      title: title,
+      timeAllowed: Duration(minutes: minutes, seconds: seconds),
+      questions: questions.lock,
+      inputs: inputs.lock,
+    );
+  }
+  return null;
+}

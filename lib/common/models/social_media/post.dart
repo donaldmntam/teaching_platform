@@ -25,3 +25,18 @@ extension ExtendedPost on Post {
   );
 }
 
+Post? jsonToPost(Object? json) {
+  if (
+    json case {
+      "creator": Object? encodedCreator,
+      "images": List<String>? imageUrls,
+      "text": String text,
+      "liked": bool liked,
+      "comments": List<Object?> encodedComments,
+    }
+  ) {
+    final creator = jsonToCreator(encodedCreator);
+    if (creator == null) return null;
+    final 
+  }
+}

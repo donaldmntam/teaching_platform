@@ -41,3 +41,46 @@ final class McQuestion extends Question {
   int get hashCode => description.hashCode ^
     options.hashCode;
 }
+
+Question? jsonToQuestion(Object? json) {
+  if (
+    json case {
+      "type": String type,
+    }
+  ) {
+    return switch (type) {
+      "mc" => jsonToMcQuestion(json),
+      "text" => jsonToTextQuestion(json),
+      _ => null,
+    };
+  }
+  return null;
+}
+
+McQuestion? jsonToMcQuestion(Object? json) {
+  if (
+    json case {
+      "description": String description,
+      "options": List<String> options,
+    }
+  ) {
+    return McQuestion(
+      description: description,
+      options: options.lock,
+    );
+  }
+  return null;
+}
+
+TextQuestion? jsonToTextQuestion(Object? json) {
+  if (
+    json case {
+      "description": String description,
+    }
+  ) {
+    return TextQuestion(
+      description: description,
+    );
+  }
+  return null;
+}

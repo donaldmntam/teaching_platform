@@ -8,3 +8,27 @@ typedef Lesson = ({
   int lastCompletedQuestionIndex,
   IList<Question> questions,
 });
+
+Lesson? jsonToLesson(Object? json) {
+  if (
+    json case {
+      "title": String title,
+      "videoUrl": String videoUrl,
+      "questions": List<Object?> encodedQuestions,
+    }
+  ) {
+    final questions = List<Question>.empty(growable: true);
+    for (final encodedQuestion in encodedQuestions) {
+      final question = jsonToQuestion(encodedQuestion);
+      if (question == null) return null;
+      questions.add(question);
+    }
+    return (
+      title: title,
+      videoUrl: videoUrl,
+      lastCompletedQuestionIndex: 0,
+      questions: questions.lock,
+    );
+  }
+  return null;
+}

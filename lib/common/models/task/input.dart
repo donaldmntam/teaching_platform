@@ -35,3 +35,40 @@ final class McInput implements Input {
   @override
   String toString() => "McInput { selectedIndex: $selectedIndex }";
 }
+
+Input? jsonToInput(Object? json) {
+  if (
+    json case {
+      "type": String type,
+    }
+  ) {
+    return switch (type) {
+      "mc" => jsonToMcInput(json),
+      "text" => jsonToTextInput(json),
+      _ => null
+    };
+  }
+  return null;
+}
+
+McInput? jsonToMcInput(Object? json) {
+  if (
+    json case {
+      "selectedIndex": int selectedIndex,
+    }
+  ) {
+    return McInput(selectedIndex);
+  }
+  return null;
+}
+
+TextInput? jsonToTextInput(Object? json) {
+  if (
+    json case {
+      "text": String text,
+    }
+  ) {
+    return TextInput(text);
+  }
+  return null;
+}
