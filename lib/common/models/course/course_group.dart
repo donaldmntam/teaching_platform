@@ -27,3 +27,14 @@ CourseGroup? jsonToCourseGroup(Object? json) {
   }
   return null;
 }
+
+IList<CourseGroup>? jsonToCourseGroups(Object? json) {
+  if (json is! List<Object?>) return null;
+  final courseGroups = List<CourseGroup>.empty(growable: true);
+  for (final encoded in json) {
+    final courseGroup = jsonToCourseGroup(encoded);
+    if (courseGroup == null) return null;
+    courseGroups.add(courseGroup);
+  }
+  return courseGroups.lock;
+}

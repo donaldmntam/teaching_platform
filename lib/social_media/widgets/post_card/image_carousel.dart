@@ -1,12 +1,13 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
-import 'package:flutter/material.dart';
-import 'dart:ui' as ui;
+import 'package:flutter/material.dart' hide Image;
+import 'package:flutter/material.dart' as flutter show Image;
+import 'package:teaching_platform/common/models/image/image.dart';
 
 import 'package:teaching_platform/common/widgets/services/services.dart';
 
 class ImageCarousel extends StatefulWidget {
-  final IList<ui.Image> images;
+  final IList<Image> images;
 
   const ImageCarousel({
     super.key,
@@ -35,8 +36,8 @@ class _ImageCarouselState extends State<ImageCarousel> {
       color: theme.colors.background,
       child: CarouselSlider(
         items: widget.images.map((image) => 
-          RawImage(
-            image: image,
+          flutter.Image(
+            image: image.provider,
             fit: BoxFit.contain,
           )
         ).toList(),
@@ -50,10 +51,10 @@ class _ImageCarouselState extends State<ImageCarousel> {
   }
 }
 
-double _aspectRatio(IList<ui.Image> images) {
-  var maxAspectRatio = images[0].width / images[0].height;
+double _aspectRatio(IList<Image> images) {
+  var maxAspectRatio = images[0].aspectRatio;
   for (var i = 1; i < images.length; i++) {
-    final aspectRatio = images[i].width / images[i].height;
+    final aspectRatio = images[i].aspectRatio;
     if (aspectRatio > maxAspectRatio) maxAspectRatio = aspectRatio;
   }
   return maxAspectRatio;

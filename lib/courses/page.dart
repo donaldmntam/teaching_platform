@@ -9,38 +9,23 @@ import 'package:teaching_platform/common/models/course/input.dart';
 import 'package:teaching_platform/common/models/course/question.dart';
 import 'package:teaching_platform/courses/widgets/content/content.dart';
 import 'package:teaching_platform/courses/widgets/course_column/course_column.dart';
-import 'package:teaching_platform/courses/widgets/question_column/question_column.dart';
 
 const _courseColumnRelativeWidth = 0.25;
 const _contentRelativeWidth = 0.75;
 
 class Page extends StatefulWidget {
-  const Page({super.key});
+  final IList<CourseGroup> courseGroups;
+
+  const Page({
+    super.key,
+    required this.courseGroups,
+  });
 
   @override
   widgets.State<Page> createState() => _State();
 }
 
 class _State extends widgets.State<Page> {
-  // List<Course> courses;
-  final IList<CourseGroup> testCoursesGroups = repeat(["Design Thinking", "Leadership", "Marketing"], 10).mapIndexed((i, title) => (
-      title: title,
-      courses: List.generate(5, (i) => 
-        (title: "course $i", lessons: List.generate(8, 
-          (i) => (
-            title: "lesson $i",
-            videoUrl: "https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4",
-            lastCompletedQuestionIndex: -1,
-            questions: <Question>[
-              const TextQuestion(timeStamp: const Duration(seconds: 1), description: "What is love?"),
-              const TextQuestion(timeStamp: const Duration(seconds: 2), description: "Do you have a big dong?"),
-              const TextQuestion(timeStamp: const Duration(seconds: 3), description: "Knock knock, who's there?"),
-              const TextQuestion(timeStamp: const Duration(seconds: 4), description: "Joe who?"),
-            ].lock
-          )
-        ).lock)
-      ).lock
-    )).toIList();
   final CourseGroupInputs initialInputs = List.generate(5, (i) =>
     List.generate(8, (i) =>
       <Input>[
@@ -48,16 +33,6 @@ class _State extends widgets.State<Page> {
         const TextInput(""),
         const TextInput(""),
         const TextInput(""),
-      ].lock
-    ).lock
-  ).lock;
-  final CourseGroupInputs correctInputs = List.generate(5, (i) =>
-    List.generate(8, (i) =>
-      <Input>[
-        const TextInput("baby don't hurt me"),
-        const TextInput("yes"),
-        const TextInput("joe"),
-        const TextInput("joe mama"),
       ].lock
     ).lock
   ).lock;
@@ -86,7 +61,7 @@ class _State extends widgets.State<Page> {
                 width: constraints.maxWidth * _courseColumnRelativeWidth,
                 height: constraints.maxHeight,
                 child: CourseColumn(
-                  testCoursesGroups,
+                  widget.courseGroups,
                   onCoursePressed: (groupIndex, courseIndex) => setState(() {
                     this.groupIndex = groupIndex;
                     this.courseIndex = courseIndex;
@@ -100,9 +75,9 @@ class _State extends widgets.State<Page> {
                   padding: const EdgeInsets.all(32),
                   child: Content(
                     lessonIndex: lessonIndex,
-                    course: testCoursesGroups[groupIndex].courses[courseIndex],
+                    course: widget.courseGroups[groupIndex]
+                      .courses[courseIndex],
                     initialInputs: initialInputs[groupIndex],
-                    correctInputs: correctInputs[groupIndex],
                     didSelectLesson: (index) => setState(() => 
                       lessonIndex = index
                     ),
@@ -117,3 +92,38 @@ class _State extends widgets.State<Page> {
   }
 }
 
+final _mockData = repeat(["Design Thinking", "Leadership", "Marketing"], 10).mapIndexed((i, title) => (
+  title: title,
+  courses: List.generate(5, (i) => 
+    (title: "course $i", lessons: List.generate(8, 
+      (i) => (
+        title: "lesson $i",
+        videoUrl: "https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4",
+        lastCompletedQuestionIndex: -1,
+        questions: <Question>[
+          const TextQuestion(
+            timeStamp: Duration(seconds: 1),
+            description: "What is love?",
+            correctInputs: IListConst([TextInput("baby don't hurt me")]),
+          ),
+          const TextQuestion(
+            timeStamp: Duration(seconds: 2),
+            description: "Do you have a big dong?",
+            correctInputs: IListConst([TextInput("yes")]),
+          ),
+          const TextQuestion(
+            timeStamp: Duration(seconds: 3),
+            description: "Knock knock, who's there?",
+            correctInputs: IListConst([TextInput("joe")]),
+          ),
+          const TextQuestion(
+            timeStamp: Duration(seconds: 4),
+            description: "Joe who?", 
+            correctInputs: IListConst([TextInput("joe mama")]),
+          ),
+        ].lock
+        
+      )
+    ).lock)
+  ).lock
+)).toIList();

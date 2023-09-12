@@ -6,7 +6,6 @@ typedef Task = ({
   String title,
   Duration timeAllowed,
   IList<Question> questions,
-  IList<Input> inputs,
 });
 
 extension ExtendedTask on Task {
@@ -19,7 +18,6 @@ extension ExtendedTask on Task {
     title: title?.call(this.title) ?? this.title,
     timeAllowed: timeAllowed?.call(this.timeAllowed) ?? this.timeAllowed,
     questions: questions?.call(this.questions) ?? this.questions,
-    inputs: inputs?.call(this.inputs) ?? this.inputs,
   );
 }
 
@@ -32,7 +30,6 @@ Task? jsonToTask(Object? json) {
         "seconds": int seconds,
       },
       "questions": List<Object?> encodedQuestions,
-      "inputs": List<Object?> encodedInputs,
     }
   ) {
     final questions = List<Question>.empty(growable: true);
@@ -41,18 +38,22 @@ Task? jsonToTask(Object? json) {
       if (question == null) return null;
       questions.add(question);
     }
-    final inputs = List<Input>.empty(growable: true);
-    for (final encodedInput in encodedInputs) {
-      final input = jsonToInput(encodedInput);
-      if (input == null) return null;
-      inputs.add(input);
-    }
     return (
       title: title,
       timeAllowed: Duration(minutes: minutes, seconds: seconds),
       questions: questions.lock,
-      inputs: inputs.lock,
     );
   }
   return null;
+}
+
+IList<Task>? jsonToTasks(Object? json) {
+  if (json is! List<Object?>) return null;
+  final tasks = List<Task>.empty(growable: true);
+  for (final encoded in json) {
+    final task = jsonToTask(encoded);
+    if (task == null) return null;
+    tasks.add(task);
+  }
+  return tasks.lock;
 }

@@ -1,8 +1,8 @@
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Image;
+import 'package:flutter/material.dart' as flutter show Image;
 import 'package:teaching_platform/common/functions/iterable_functions.dart';
-import 'dart:ui' as ui;
-
+import 'package:teaching_platform/common/models/image/image.dart';
 import 'package:teaching_platform/common/widgets/services/services.dart';
 import 'package:teaching_platform/common/widgets/tappable/tappable.dart';
 
@@ -10,7 +10,7 @@ const _borderWidth = 3.0;
 const _iconSize = 14.0;
 
 class ImageRow extends StatelessWidget {
-  final IList<ui.Image> images;
+  final IList<Image> images;
   final void Function(int index) onDeleteImagePressed;
 
   const ImageRow({
@@ -34,7 +34,7 @@ class ImageRow extends StatelessWidget {
             height: 80,
             padding: const EdgeInsets.all(_borderWidth),
             child: AspectRatio(
-              aspectRatio: image.width / image.height,
+              aspectRatio: image.aspectRatio,
               child: Stack(
                 children: [
                   Container(
@@ -47,7 +47,7 @@ class ImageRow extends StatelessWidget {
                       ),
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    child: RawImage(image: image)
+                    child: flutter.Image(image: image.provider)
                   ),
                   Align(
                     alignment: Alignment.topRight,

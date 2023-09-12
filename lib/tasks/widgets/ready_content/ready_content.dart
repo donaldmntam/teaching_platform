@@ -64,7 +64,7 @@ class ReadyContent extends StatelessWidget {
               QuestionColumn(
                 taskIndex: taskIndex,
                 questions: state.task.questions,
-                inputs: state.task.inputs,
+                inputs: state.inputs,
                 onInputChange: onInputChange,
               ),
               const Align(

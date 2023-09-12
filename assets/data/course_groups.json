@@ -1,0 +1,33 @@
+[
+    {
+        "title": "Entrepreneurship Education",
+        "courses": [
+            {
+                "title": "Business Model",
+                "lessons": [
+                    {
+                        "title": "Business model canvas",
+                        "videoUrl": "https://youtu.be/clneirDuMp4",
+                        "questions": [
+                            {
+                                "type": "mc",
+                                "description": "哪個不是Canvas的導向？",
+                                "timeStamp": {
+                                    "minutes": 0,
+                                    "seconds": 36
+                                },
+                                "options": [
+                                    "價值導向",
+                                    "人事導向",
+                                    "需求導向",
+                                    "供給導向"
+                                ],
+                                "correctInput": 2
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

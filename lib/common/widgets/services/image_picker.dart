@@ -1,6 +1,5 @@
 
-import 'dart:ui';
-
+import 'package:teaching_platform/common/models/image/image.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart' hide Image;
 import 'package:teaching_platform/common/functions/error_functions.dart';
@@ -28,7 +27,11 @@ class DefaultImagePicker implements ImagePicker {
     require(result.count == 1);
     final bytes = result.files[0].bytes;
     if (bytes == null) return null;
-    return await decodeImageFromList(bytes);
+    final image = await decodeImageFromList(bytes);
+    return (
+      aspectRatio: image.width / image.height,
+      provider: MemoryImage(bytes),
+    );
   }
 
   @override
@@ -43,7 +46,10 @@ class DefaultImagePicker implements ImagePicker {
       final bytes = result.files[i].bytes;
       if (bytes == null) continue;
       final decodedImage = await decodeImageFromList(bytes);
-      images.add(decodedImage);
+      images.add((
+        aspectRatio: decodedImage.width / decodedImage.height,
+        provider: MemoryImage(bytes),
+      ));
     }
     return images;
   }    

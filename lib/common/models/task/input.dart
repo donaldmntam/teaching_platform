@@ -1,6 +1,8 @@
 sealed class Input {}
 
 final class TextInput implements Input {
+  static const TextInput empty = TextInput("");
+
   final String text;
 
   const TextInput(this.text);
@@ -19,6 +21,8 @@ final class TextInput implements Input {
 }
 
 final class McInput implements Input {
+  static const McInput empty = McInput(null);
+
   final int? selectedIndex;
   
   const McInput(this.selectedIndex);

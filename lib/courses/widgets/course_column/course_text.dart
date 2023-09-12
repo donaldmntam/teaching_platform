@@ -16,6 +16,7 @@ class CourseText extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
       width: double.infinity,
       height: height,
+      alignment: Alignment.center,
       child: Text(
         text,
         style: theme.textStyle(
@@ -24,6 +25,7 @@ class CourseText extends StatelessWidget {
           color: theme.colors.primary,
         ),
         overflow: TextOverflow.ellipsis,
+        
       )
     );
   }

@@ -31,7 +31,6 @@ class Content extends StatefulWidget {
   final int lessonIndex;
   final Course course;
   final CourseInputs initialInputs;
-  final CourseInputs correctInputs;
   final void Function(int lessonIndex) didSelectLesson;
 
   Lesson get lesson => course.lessons[lessonIndex];
@@ -41,7 +40,6 @@ class Content extends StatefulWidget {
     required this.lessonIndex,
     required this.course,
     required this.initialInputs,
-    required this.correctInputs,
     required this.didSelectLesson,
   });
 
@@ -192,15 +190,12 @@ class _ContentState
       lessonIndex: widget.lessonIndex,
       questionIndex: state.questionIndex,
     );
-    final correctInput = widget.correctInputs.input(
-      lessonIndex: widget.lessonIndex,
-      questionIndex: state.questionIndex,
-    );
-    final correct = currentInput == correctInput;
+    final correct = widget.lesson.questions[state.questionIndex]
+      .inputIsCorrect(currentInput);
     this.state = state.copy(
       inputState: ShowingResult(
         retryCount: inputState.retryCount,
-        passed: correct,
+        passed: correct.unwrap(),
       )
     );
     setState(() {});

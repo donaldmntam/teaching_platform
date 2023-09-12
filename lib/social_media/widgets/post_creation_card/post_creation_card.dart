@@ -1,5 +1,5 @@
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
-import 'package:flutter/material.dart' hide TextButton;
+import 'package:flutter/material.dart' hide TextButton, Image;
 import 'package:teaching_platform/common/util_classes/channel.dart';
 import 'package:teaching_platform/common/widgets/services/services.dart';
 import 'package:teaching_platform/common/widgets/text_field/long_text_field.dart';
@@ -7,11 +7,11 @@ import 'package:teaching_platform/social_media/widgets/post_creation_card/button
 import 'package:teaching_platform/social_media/widgets/post_creation_card/image_row.dart';
 import 'package:teaching_platform/social_media/widgets/post_creation_card/message.dart';
 import 'package:teaching_platform/social_media/widgets/values.dart';
-import 'dart:ui' as ui;
+import 'package:teaching_platform/common/models/image/image.dart';
 
 class PostCreationCard extends StatefulWidget {
   final Channel<PostCreationCardMessage> channel;
-  final void Function(String text, IList<ui.Image>) onSubmit;
+  final void Function(String text, IList<Image>) onSubmit;
 
   const PostCreationCard({
     super.key,
@@ -25,7 +25,7 @@ class PostCreationCard extends StatefulWidget {
 
 class _PostCreationCardState extends State<PostCreationCard> {
   final controller = TextEditingController();
-  IList<ui.Image> images = const IListConst([]);
+  IList<Image> images = const IListConst([]);
 
   @override
   void initState() {
@@ -56,7 +56,6 @@ class _PostCreationCardState extends State<PostCreationCard> {
   void onDeleteImagePressed(int index) {
     setState(() {
       final newImages = images.removeAt(index);
-      images[index].dispose();
       images = newImages;
     });
   }

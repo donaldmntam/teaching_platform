@@ -4,8 +4,20 @@ import 'package:teaching_platform/common/widgets/services/services.dart';
 import 'package:teaching_platform/courses/page.dart' as courses;
 import 'package:teaching_platform/tasks/page.dart' as page_tasks;
 import 'package:teaching_platform/social_media/page.dart' as social_media;
+import 'package:teaching_platform/common/models/course/course_group.dart';
+import 'package:flutter/services.dart';
+import 'package:teaching_platform/common/functions/json_functions.dart';
+import 'package:teaching_platform/common/monads/try.dart';
+import 'package:teaching_platform/common/models/social_media/post.dart';
+import 'package:teaching_platform/common/models/task/task.dart';
 
 import 'widgets/tab_bar.dart';
+
+typedef _Data = ({
+  IList<Task> tasks,
+  IList<CourseGroup> courseGroups,
+  IList<Post> posts,
+});
 
 // const _initialTabs = IListConst(<Tab>[
 //   (title: "HOME", enabled: true),
@@ -38,10 +50,45 @@ class Page extends StatefulWidget {
 class _State extends State<Page> {
   int currentTabIndex = 0;
   IList<Tab> tabs = _tabs;
+  _Data? data;
+
+  @override 
+  void initState() {
+    initData();
+    super.initState();
+  }
+  
+  void initData() async {
+    final tasksString =
+      await rootBundle.loadString("assets/data/tasks.json");
+    final courseGroupsString = 
+      await rootBundle.loadString("assets/data/course_groups.json");
+    final postsString =
+      await rootBundle.loadString("assets/data/posts.json");
+
+    final encodedTasks = tryJsonDecode(tasksString);
+    final encodedCourseGroups = tryJsonDecode(courseGroupsString);
+    final encodedPosts = tryJsonDecode(postsString);
+
+    final tasks = jsonToTasks(encodedTasks.unwrap());
+    final courseGroups = jsonToCourseGroups(encodedCourseGroups.unwrap());
+    final posts = jsonToPosts(encodedPosts.unwrap());
+
+    if (tasks == null) throw "Json to tasks failed!";
+    if (courseGroups == null) throw "Json to course groups failed!";
+    if (posts == null) throw "Json to posts failed!";
+
+    setState(() => data = (
+      tasks: tasks,
+      courseGroups: courseGroups,
+      posts: posts,
+    ));
+  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Services.of(context).theme;
+    final data = this.data;
     return LayoutBuilder(
       builder: (context, constraints) {
         return Column(
@@ -75,13 +122,15 @@ class _State extends State<Page> {
             ),
             Flexible(
               flex: 1,
-              child: IndexedStack(
+              child: data == null
+                ? const Center(child: CircularProgressIndicator())
+                : IndexedStack(
                 index: currentTabIndex,
-                children: const [
-                  courses.Page(),
-                  page_tasks.Page(),
-                  social_media.Page(),
-                ]
+                children: [
+                  courses.Page(courseGroups: data.courseGroups),
+                  page_tasks.Page(tasks: data.tasks),
+                  social_media.Page(initialPosts: data.posts),
+                ],
               ),
             )
           ]
