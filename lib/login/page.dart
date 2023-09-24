@@ -6,7 +6,6 @@ import 'package:teaching_platform/common/widgets/services/services.dart';
 import 'package:teaching_platform/common/widgets/text_field/text_field.dart';
 import 'package:teaching_platform/login/widgets/selector.dart';
 import 'package:teaching_platform/common/models/social_media/user.dart';
-import 'package:flutter/services.dart' show rootBundle;
 
 class Page extends StatefulWidget {
   const Page({
@@ -22,13 +21,8 @@ class _PageState extends State<Page> {
   String userName = "";
   String password = "";
 
-  String test = "";
-
   @override
   void initState() {
-    rootBundle.loadString("assets/data/test.json", cache: false).then((string) =>
-      setState(() => test = string),
-    );
     super.initState();
   }
 
@@ -54,7 +48,6 @@ class _PageState extends State<Page> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(test),
                   Image.asset(
                     "assets/images/logo.png",
                     width: _columnWidth(constraints),
