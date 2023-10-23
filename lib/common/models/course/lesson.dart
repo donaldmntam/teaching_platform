@@ -4,7 +4,7 @@ import 'package:teaching_platform/common/models/course/question.dart';
 
 typedef Lesson = ({
   String title,
-  String videoUrl,
+  String video,
   int lastCompletedQuestionIndex,
   IList<Question> questions,
 });
@@ -13,7 +13,7 @@ Lesson? jsonToLesson(Object? json) {
   if (
     json case {
       "title": String title,
-      "videoUrl": String videoUrl,
+      "video": String video,
       "questions": List<Object?> encodedQuestions,
     }
   ) {
@@ -25,7 +25,7 @@ Lesson? jsonToLesson(Object? json) {
     }
     return (
       title: title,
-      videoUrl: videoUrl,
+      video: video,
       lastCompletedQuestionIndex: 0,
       questions: questions.lock,
     );

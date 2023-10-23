@@ -71,8 +71,8 @@ class _ContentState
     ticker = createTicker(onTick);
     ticker.start();
 
-    final playerController = VideoPlayerController.network(
-      widget.course.lessons[widget.lessonIndex].videoUrl
+    final playerController = VideoPlayerController.asset(
+      widget.course.lessons[widget.lessonIndex].video
     );
     playerController.initialize().then((_) {
       final Optional<int> nextQuestionIndex;
@@ -106,7 +106,7 @@ class _ContentState
   void didUpdateWidget(Content oldWidget) {
     const newLessonIndex = 0;
     changeVideoUrl(
-      widget.course.lessons[newLessonIndex].videoUrl,
+      widget.course.lessons[newLessonIndex].video,
       widget.lesson.questions,
     );
     
@@ -136,6 +136,7 @@ class _ContentState
           .animationData
           .map((it) => it.currentPosition)
           .fold(() => state.startPosition);
+        print("position here $position");
         this.state = Paused(
           duration: state.duration,
           position: position,
@@ -423,11 +424,11 @@ class _ContentState
   }
 
   void changeVideoUrl(
-    String url,
+    String video,
     IList<Question> questions,
   ) {
     this.playerController.dispose();
-    final playerController = VideoPlayerController.network(url);
+    final playerController = VideoPlayerController.asset(video);
     playerController.initialize().then((_) {
       final Optional<int> nextQuestionIndex;
       if (questions.isEmpty) {

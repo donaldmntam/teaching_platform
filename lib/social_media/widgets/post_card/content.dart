@@ -31,7 +31,7 @@ class Content extends StatelessWidget {
           child: Text(
             post.text,
             style: theme.textStyle(
-              size: 16,
+              size: 20,
               weight: FontWeight.normal,
               color: theme.colors.onBackground,
             ),
@@ -45,7 +45,7 @@ class Content extends StatelessWidget {
             Text(
               post.text,
               style: theme.textStyle(
-                size: 14,
+                size: 20,
                 weight: FontWeight.normal,
                 color: theme.colors.onSurface,
               ),

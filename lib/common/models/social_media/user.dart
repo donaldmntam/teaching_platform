@@ -14,7 +14,7 @@ User? jsonToUser(Object? json) {
   ) {
     return (
       userName: userName,
-      picture: NetworkImage(imageUrl),
+      picture: AssetImage(imageUrl),
     );
   }
   return null;

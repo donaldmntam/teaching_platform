@@ -9,12 +9,12 @@ Image? jsonToImage(Object? json) {
   if (
     json case {
       "aspectRatio": num encodedAspectRatio,
-      "image": String imageUrl,
+      "image": String imagePath,
     }
   ) {
     return (
       aspectRatio: encodedAspectRatio.toDouble(),
-      provider: NetworkImage(imageUrl),
+      provider: AssetImage(imagePath),
     );
   }
   return null;

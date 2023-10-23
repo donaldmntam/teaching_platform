@@ -91,7 +91,7 @@ class _State extends widgets.State<Page> {
     return ClipRect(
       child: Center(
         child: SizedBox(
-          width: 500,
+          width: 700,
           child: ListView.separated(
             clipBehavior: Clip.none,
             itemCount: widgets.length,

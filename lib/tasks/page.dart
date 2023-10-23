@@ -16,9 +16,9 @@ import 'widgets/finished_content/finished_content.dart';
 import 'widgets/ready_content/ready_content.dart';
 
 double _mainBodyWidth(BoxConstraints constraints) => 
-  constraints.maxWidth * 0.8;
+  constraints.maxWidth * 0.7;
 double _taskColumnWidth(BoxConstraints constraints) =>
-  constraints.maxWidth * 0.2;
+  constraints.maxWidth * 0.3;
 
 class Page extends StatefulWidget {
   final IList<Task> tasks;

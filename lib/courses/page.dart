@@ -26,16 +26,7 @@ class Page extends StatefulWidget {
 }
 
 class _State extends widgets.State<Page> {
-  final CourseGroupInputs initialInputs = List.generate(5, (i) =>
-    List.generate(8, (i) =>
-      <Input>[
-        const TextInput(""),
-        const TextInput(""),
-        const TextInput(""),
-        const TextInput(""),
-      ].lock
-    ).lock
-  ).lock;
+  late final IList<IList<IList<IList<Input>>>> initialInputs;
   int groupIndex = 0;
   int courseIndex = 0;
   int lessonIndex = 0;
@@ -43,6 +34,16 @@ class _State extends widgets.State<Page> {
   @override
   void initState() {
     super.initState();
+    initialInputs = widget.courseGroups.map((group) =>
+      group.courses.map((course) =>
+        course.lessons.map((lesson) =>
+          lesson.questions.map((question) => switch(question) {
+            McQuestion() => const McInput(null),
+            TextQuestion() => const TextInput(""),
+          }).toIList(),
+        ).toIList(),
+      ).toIList(),
+    ).toIList();
   }
 
   @override
@@ -77,7 +78,7 @@ class _State extends widgets.State<Page> {
                     lessonIndex: lessonIndex,
                     course: widget.courseGroups[groupIndex]
                       .courses[courseIndex],
-                    initialInputs: initialInputs[groupIndex],
+                    initialInputs: initialInputs[groupIndex][courseIndex],
                     didSelectLesson: (index) => setState(() => 
                       lessonIndex = index
                     ),
@@ -92,38 +93,38 @@ class _State extends widgets.State<Page> {
   }
 }
 
-final _mockData = repeat(["Design Thinking", "Leadership", "Marketing"], 10).mapIndexed((i, title) => (
-  title: title,
-  courses: List.generate(5, (i) => 
-    (title: "course $i", lessons: List.generate(8, 
-      (i) => (
-        title: "lesson $i",
-        videoUrl: "https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4",
-        lastCompletedQuestionIndex: -1,
-        questions: <Question>[
-          const TextQuestion(
-            timeStamp: Duration(seconds: 1),
-            description: "What is love?",
-            correctInputs: IListConst([TextInput("baby don't hurt me")]),
-          ),
-          const TextQuestion(
-            timeStamp: Duration(seconds: 2),
-            description: "Do you have a big dong?",
-            correctInputs: IListConst([TextInput("yes")]),
-          ),
-          const TextQuestion(
-            timeStamp: Duration(seconds: 3),
-            description: "Knock knock, who's there?",
-            correctInputs: IListConst([TextInput("joe")]),
-          ),
-          const TextQuestion(
-            timeStamp: Duration(seconds: 4),
-            description: "Joe who?", 
-            correctInputs: IListConst([TextInput("joe mama")]),
-          ),
-        ].lock
-        
-      )
-    ).lock)
-  ).lock
-)).toIList();
+// final _mockData = repeat(["Design Thinking", "Leadership", "Marketing"], 10).mapIndexed((i, title) => (
+//   title: title,
+//   courses: List.generate(5, (i) => 
+//     (title: "course $i", lessons: List.generate(8, 
+//       (i) => (
+//         title: "lesson $i",
+//         videoUrl: "https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4",
+//         lastCompletedQuestionIndex: -1,
+//         questions: <Question>[
+//           const TextQuestion(
+//             timeStamp: Duration(seconds: 1),
+//             description: "What is love?",
+//             correctInputs: IListConst([TextInput("baby don't hurt me")]),
+//           ),
+//           const TextQuestion(
+//             timeStamp: Duration(seconds: 2),
+//             description: "Do you have a big dong?",
+//             correctInputs: IListConst([TextInput("yes")]),
+//           ),
+//           const TextQuestion(
+//             timeStamp: Duration(seconds: 3),
+//             description: "Knock knock, who's there?",
+//             correctInputs: IListConst([TextInput("joe")]),
+//           ),
+//           const TextQuestion(
+//             timeStamp: Duration(seconds: 4),
+//             description: "Joe who?", 
+//             correctInputs: IListConst([TextInput("joe mama")]),
+//           ),
+//         ].lock
+//         
+//       )
+//     ).lock)
+//   ).lock
+// )).toIList();

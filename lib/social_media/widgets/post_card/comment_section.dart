@@ -28,7 +28,8 @@ class CommentSection extends StatelessWidget {
                 shape: CircleBorder(),
               ),
               child: Image(
-                image: comment.creator.picture
+                image: comment.creator.picture,
+                fit: BoxFit.cover,
               ),
             ),
             const SizedBox(width: 10),
@@ -40,7 +41,7 @@ class CommentSection extends StatelessWidget {
                   Text(
                     comment.creator.userName,
                     style: theme.textStyle(
-                      size: 12,
+                      size: 18,
                       weight: FontWeight.bold,
                       color: theme.colors.onSurface,
                     ),
@@ -49,7 +50,7 @@ class CommentSection extends StatelessWidget {
                   Text(
                     comment.text,
                     style: theme.textStyle(
-                      size: 12,
+                      size: 18,
                       weight: FontWeight.normal,
                       color: theme.colors.onSurface,
                     ),

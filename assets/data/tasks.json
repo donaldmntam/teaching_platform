@@ -1,1 +1,69 @@
-[]
+[
+    {
+        "title": "Business Innovation",
+        "timeAllowed": {
+            "minutes": 60,
+            "seconds": 0
+        },
+        "questions": [
+            {
+                "type": "mc",
+                "description": "What is entrepreneurship?",
+                "options": [
+                    "The act of planting and growing trees", 
+                    "A famous novel written by Jane Austen",
+                    "The mindset and actions involved in starting a learning adventure",
+                    "The process of identifying business opportunities and taking risks to create and manage a successful venture"
+                ]
+            },
+            {
+                "type": "mc",
+                "description": "Which of the following is not a component of design thinking?",
+                "options": [
+                    "ideation", 
+                    "empathy",
+                    "analysis",
+                    "prototype"
+                ]
+            },
+            {
+                "type": "text",
+                "title": "Please describe how \"empathy\" helps us understand our target customers in the process of design thinking.",
+                "description": "Empathy plays a crucial role in the process of design thinking when it comes to understanding target customers. It allows designers to take a human-centered approach, ensuring that the final product or solution meets the specific needs and desires of the customers. Empathy serves as a foundation for understanding target customers in design thinking. It enables designers to gain insights, build deeper connections, and create solutions that address the actual problems and experiences of the users."
+            }
+        ]
+    },
+    {
+        "title": "Team Management",
+        "timeAllowed": {
+            "minutes": 60,
+            "seconds": 0
+        },
+        "questions": [
+            {
+                "type": "mc",
+                "description": "which of the following is not a component of transformational leadership?",
+                "options": [
+                    "Inspirational motivation",
+                    "Individualized consideration",
+                    "Transactional motivation",
+                    "Idealized influence"
+                ]
+            },
+            {
+                "type": "mc",
+                "description": "what's the difference between entrepreneurs and leaders?", 
+                "options": [
+                    "Entrepreneurs are individuals who start their own businesses or ventures, taking risks and pursuing opportunities, while leaders are individuals who guide and influence others towards a common goal within an organization.",
+                    "Entrepreneurs focus primarily on innovation and creating new products or services in the market, whereas leaders focus on managing and motivating a team towards achieving established goals.",
+                    "Entrepreneurs are typically self-driven and take ownership of their ideas, often assuming financial risks, while leaders can be found in various domains, including entrepreneurship, and are responsible for guiding and inspiring individuals or teams towards success."
+                ]
+            },
+            {
+                "type": "text",
+                "title": "Please describe what \"authentic leadership\" means in simple sentences.",
+                "description": "Authentic leadership refers to a style of leadership where individuals are true to themselves, their values, and beliefs. It involves being genuine, transparent, and consistent in actions and decision-making, inspiring trust and confidence in others. Authentic leaders prioritize integrity, honesty, and empathy, fostering positive relationships and creating a supportive work environment."
+            }
+        ]
+    }
+]

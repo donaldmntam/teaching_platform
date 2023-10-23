@@ -30,6 +30,7 @@ class CreatorRow extends StatelessWidget {
               color: theme.colors.background,
             ),
             child: Image(
+              fit: BoxFit.cover,
               image: creator.picture,
               width: _pictureSize,
               height: _pictureSize,
@@ -40,7 +41,7 @@ class CreatorRow extends StatelessWidget {
         Text(
           creator.userName,
           style: theme.textStyle(
-            size: 16,
+            size: 20,
             weight: FontWeight.normal,
             color: theme.colors.onSurface,
           )

@@ -1,1 +1,100 @@
-[]
+[
+    {
+        "creator": {
+            "userName": "donaldtam",
+            "picture": "assets/images/donaldtam.jpg"
+        },
+        "images": [
+            {
+                "aspectRatio": 1.33,
+                "image": "assets/images/my_first_lesson.jpg"
+            }
+        ],
+        "text": "Such good food of thought! Never thought that entreprenership is like this! #myfirstlesson #inspirationl",
+        "liked": true,
+        "comments": [
+            {
+                "creator": {
+                    "userName": "sunnythe1tang",
+                    "picture": "assets/images/sunny_avatar.png"
+                },
+                "text": "That's pretty cool!"
+            },
+            {
+                "creator": {
+                    "userName": "sallychan",
+                    "picture": "assets/images/sallychan.png"
+                },
+                "text": "Yes, hope I had the chance to listen as well"
+            }
+        ]
+    },
+    {
+        "creator": {
+            "userName": "missleung919",
+            "picture": "assets/images/miss_leung.png"
+        },
+        "images": [
+            {
+                "aspectRatio": 1.78,
+                "image": "assets/images/entrepreneurs_are_conquerers.jpeg"
+            }
+        ],
+        "text": "Entrepreneurs are all conquerors",
+        "liked": false,
+        "comments": [
+            {
+                "creator": {
+                    "userName": "donaldtam",
+                    "picture": "assets/images/donaldtam.jpg"
+                },
+                "text": "Agreed"
+            },
+            {
+                "creator": {
+                    "userName": "missyam123",
+                    "picture": "assets/images/missyam123.png"
+                },
+                "text": "That's great insight!!!"
+            }
+        ]
+    },
+    {
+        "creator": {
+            "userName": "sunnythe1tang",
+            "picture": "assets/images/sunny_avatar.png"
+        },
+        "images": [
+            {
+                "aspectRatio": 1.77,
+                "image": "assets/images/why_my_team_do_not_obey_me.png"
+            }
+        ],
+        "text": "How to get my team obey me? This is a question faced by many entrepreneurs. After watching this YouTube video from Rapid Psychology, I started to understand why. #obedience #teamanagement #occpuationalpsychology",
+        "liked": false,
+        "comments": []
+    },
+    {
+        "creator": {
+            "userName": "sallychan456",
+            "picture": "assets/images/sallychan.png"
+        },
+        "images": [
+            {
+                "aspectRatio": 1.78,
+                "image": "assets/images/who_wants_some_prawns.jpg"
+            }
+        ],
+        "text": "Who wants some of my prawns? Everyone says it's delicious. #homemade #seafood #newproducts",
+        "liked": false,
+        "comments": [
+            {
+                "creator": {
+                    "userName": "missyam123",
+                    "picture": "assets/images/missyam123.png"
+                },
+                "text": "Looks yum! How much is that?"
+            }
+        ]
+    }
+]

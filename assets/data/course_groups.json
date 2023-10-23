@@ -6,8 +6,8 @@
                 "title": "Business Model",
                 "lessons": [
                     {
-                        "title": "Business model canvas",
-                        "videoUrl": "https://youtu.be/clneirDuMp4",
+                        "title": "Business Model Canvas",
+                        "video": "https://github.com/donaldmntam/teaching_platform_videos/blob/main/business_model_canvas.mp4?raw=true",
                         "questions": [
                             {
                                 "type": "mc",
@@ -106,14 +106,14 @@
         ]
     },
     {
-        "title": "Team management",
+        "title": "Team Management",
         "courses": [
             {
-                "title": "Business Model",
+                "title": "Leadership",
                 "lessons": [
                     {
                         "title": "Leadership",
-                        "videoUrl": "https://www.youtube.com/watch?v=WuQotdtQGTI",
+                        "video": "https://github.com/donaldmntam/teaching_platform_videos/blob/main/business_model_canvas.mp4?raw=true",
                         "questions": [
                             {
                                 "type": "mc",

@@ -61,9 +61,18 @@ McQuestion? jsonToMcQuestion(Object? json) {
   if (
     json case {
       "description": String description,
-      "options": List<String> options,
+      "options": List<Object?> encodedOptions,
     }
   ) {
+    final options = List<String>.empty(growable: true);
+    for (final encodedOption in encodedOptions) {
+      if (encodedOption is! String) {
+        print("encodedOption is not string");
+        return null;
+      }
+      print("encodedOption is string");
+      options.add(encodedOption);
+    }
     return McQuestion(
       description: description,
       options: options.lock,
